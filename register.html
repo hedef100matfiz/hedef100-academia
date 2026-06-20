@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol | Hedef100 Academia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #f8fafc 1px, transparent 1px), linear-gradient(to bottom, #f8fafc 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 selection:bg-orange-500 selection:text-white min-h-screen flex flex-col relative">
+
+    <div class="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none"></div>
+
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200 shadow-sm py-4">
+        <div class="container mx-auto px-6 text-center md:text-left">
+            <a href="index.html" class="text-2xl font-extrabold tracking-tighter text-slate-900">
+                HEDEF100<span class="text-orange-500">.ACADEMIA</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-12 z-10 flex-1 flex justify-center items-center">
+        <div class="bg-white p-8 md:p-10 rounded-2xl shadow-2xl border border-orange-100 w-full max-w-2xl relative overflow-hidden">
+            
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-orange-600"></div>
+
+            <div class="text-center mb-8 mt-2">
+                <h1 class="text-2xl font-bold text-slate-900">Platforma Katılın</h1>
+                <p class="text-sm text-slate-500 mt-2">Lütfen kayıt olmak istediğiniz hesap türünü seçin.</p>
+            </div>
+
+            <div class="flex p-1 mb-8 space-x-1 bg-slate-100 rounded-xl">
+                <button id="student-btn" onclick="switchTab('student')" class="w-full py-2.5 text-sm font-bold rounded-lg bg-orange-500 text-white shadow-sm transition-all focus:outline-none">
+                    Öğrenci Kayıt
+                </button>
+                <button id="teacher-btn" onclick="switchTab('teacher')" class="w-full py-2.5 text-sm font-bold rounded-lg bg-transparent text-slate-600 hover:text-slate-800 transition-all focus:outline-none">
+                    Öğretmen Kayıt
+                </button>
+            </div>
+
+            <form id="student-form" onsubmit="event.preventDefault(); window.location.href='dashboard.html';" class="space-y-5 transition-opacity duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Ad Soyad</label>
+                        <input type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none" placeholder="Örn: Can Yılmaz" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Telefon Numarası</label>
+                        <input type="tel" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none" placeholder="05XX XXX XX XX" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Hedef Sınav / Düzey</label>
+                        <select class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-slate-700" required>
+                            <option value="" disabled selected>Seçiniz...</option>
+                            <option value="yks_sayisal">YKS - Sayısal</option>
+                            <option value="yks_ea">YKS - Eşit Ağırlık</option>
+                            <option value="yks_sozel">YKS - Sözel</option>
+                            <option value="lgs">LGS (Ortaokul)</option>
+                            <option value="kpss">KPSS (Lisans/Önlisans)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">E-posta Adresi</label>
+                        <input type="email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none" placeholder="ornek@email.com" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Şifre Belirleyin</label>
+                    <input type="password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded-lg transition-all shadow-[0_4px_14px_0_rgba(249,115,22,0.39)]">
+                    Öğrenci Olarak Kayıt Ol
+                </button>
+            </form>
+
+            <form id="teacher-form" onsubmit="event.preventDefault(); window.location.href='dashboard.html';" class="space-y-5 hidden transition-opacity duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Ad Soyad / Unvan</label>
+                        <input type="text" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none" placeholder="Örn: Ahmet Hoca" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Telefon Numarası</label>
+                        <input type="tel" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none" placeholder="05XX XXX XX XX" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Uzmanlık Branşı</label>
+                        <select class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-slate-700" required>
+                            <option value="" disabled selected>Branş Seçiniz...</option>
+                            <option value="matematik">Matematik</option>
+                            <option value="fizik">Fizik</option>
+                            <option value="kimya">Kimya</option>
+                            <option value="biyoloji">Biyoloji</option>
+                            <option value="turkce">Türkçe / Edebiyat</option>
+                            <option value="tarih">Tarih / Coğrafya</option>
+                            <option value="rehberlik">Rehberlik & Psikolojik Danışmanlık</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">E-posta Adresi</label>
+                        <input type="email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none" placeholder="ornek@kurum.com" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Şifre Belirleyin</label>
+                    <input type="password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="w-full mt-4 bg-slate-800 hover:bg-slate-900 text-white font-bold py-3.5 px-4 rounded-lg transition-all shadow-md">
+                    Eğitmen Olarak Başvur
+                </button>
+            </form>
+
+            <div class="mt-8 text-center text-sm text-slate-500">
+                <p>Zaten bir hesabınız var mı?</p>
+                <a href="login.html" class="font-bold text-slate-800 hover:text-orange-500 transition-colors mt-1 inline-block">Sisteme Giriş Yapın</a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const studentForm = document.getElementById('student-form');
+            const teacherForm = document.getElementById('teacher-form');
+            const studentBtn = document.getElementById('student-btn');
+            const teacherBtn = document.getElementById('teacher-btn');
+
+            if (tab === 'student') {
+                studentForm.classList.remove('hidden');
+                teacherForm.classList.add('hidden');
+                
+                studentBtn.className = "w-full py-2.5 text-sm font-bold rounded-lg bg-orange-500 text-white shadow-sm transition-all focus:outline-none";
+                teacherBtn.className = "w-full py-2.5 text-sm font-bold rounded-lg bg-transparent text-slate-600 hover:text-slate-800 transition-all focus:outline-none";
+            } else {
+                teacherForm.classList.remove('hidden');
+                studentForm.classList.add('hidden');
+                
+                teacherBtn.className = "w-full py-2.5 text-sm font-bold rounded-lg bg-orange-500 text-white shadow-sm transition-all focus:outline-none";
+                studentBtn.className = "w-full py-2.5 text-sm font-bold rounded-lg bg-transparent text-slate-600 hover:text-slate-800 transition-all focus:outline-none";
+            }
+        }
+    </script>
+</body>
+</html>
