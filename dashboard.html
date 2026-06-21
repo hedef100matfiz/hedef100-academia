@@ -9,12 +9,10 @@
     <style>
         body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
         .bg-grid-pattern { background-image: linear-gradient(to right, #f1f5f9 1px, transparent 1px), linear-gradient(to bottom, #f1f5f9 1px, transparent 1px); background-size: 30px 30px; }
-        
-        /* Modal Geçiş Animasyonları */
         .modal-enter { opacity: 0; transform: scale(0.95); }
         .modal-enter-active { opacity: 1; transform: scale(1); transition: opacity 0.3s ease-out, transform 0.3s ease-out; }
 
-        /* Karanlık Mod Renkleri */
+        /* Karanlık Mod */
         body.dark-theme { background-color: #0f172a; color: #f8fafc; }
         body.dark-theme .bg-grid-pattern { background-image: linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px); }
         body.dark-theme .bg-white { background-color: #1e293b !important; border-color: #334155 !important; }
@@ -49,7 +47,6 @@
 
         .focus-mode-active { overflow: hidden; }
         .focus-text-glow { text-shadow: 0 0 20px rgba(255,255,255,0.3); }
-
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
@@ -60,6 +57,7 @@
 
     <div class="absolute inset-0 bg-grid-pattern opacity-70 pointer-events-none"></div>
 
+    <!-- ÜST MENÜ -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm transition-colors duration-300">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -80,8 +78,11 @@
                 <div class="text-right hidden sm:block">
                     <p class="text-sm font-bold text-slate-900 user-name-display">Öğrenci</p>
                     <p class="text-xs text-indigo-600 font-bold user-id-display bg-indigo-50 px-1.5 py-0.5 rounded mt-0.5 inline-block border border-indigo-100">H100-XXXX</p>
+                    <!-- ÖĞRENCİ HEDEFİ BURAYA YANSIYACAK -->
+                    <p class="text-[10px] text-slate-500 mt-1 user-goal-display hidden italic font-semibold max-w-[150px] truncate"></p>
                 </div>
-                <div onclick="openModal('xpStoreModal')" class="user-initials-display w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold shadow-md cursor-pointer hover:bg-indigo-700 transition">
+                <!-- PROfİL AYARLARINI AÇAN İKON (ÖĞRENCİ İÇİN) -->
+                <div onclick="openModal('studentProfileModal')" class="user-initials-display w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold shadow-md cursor-pointer hover:ring-4 ring-indigo-200 transition bg-cover bg-center">
                     Ö
                 </div>
             </div>
@@ -90,6 +91,7 @@
 
     <main class="container mx-auto px-6 py-8 flex-1 relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
+        <!-- SOL VE ORTA KOLON -->
         <div class="lg:col-span-2 space-y-8">
             
             <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden transition-colors duration-300">
@@ -98,10 +100,13 @@
                 <p class="text-slate-500 max-w-xl text-sm md:text-base" data-tr="Sınava 142 gün kaldı. Elmas Lig'deki yerini korumak için bugünkü görevlerini bitirmeli ve sıralamada yükselmelisin." data-en="142 days left to the exam. Finish today's tasks to keep your spot in the Diamond League.">
                     Sınava 142 gün kaldı. Elmas Lig'deki yerini korumak için bugünkü görevlerini bitirmeli ve sıralamada yükselmelisin.
                 </p>
+                <!-- BÜYÜK HEDEF GÖRÜNÜMÜ -->
+                <p class="user-goal-display hidden mt-2 text-sm font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-3 py-1.5 rounded-lg inline-block"></p>
+
                 <div class="mt-6 cursor-pointer hover:opacity-80 transition" onclick="openModal('xpStoreModal')">
                     <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
                         <span data-tr="Elmas Lig | Kademe 3" data-en="Diamond League | Tier 3">Elmas Lig | Kademe 3</span>
-                        <span data-tr="850 / 1000 XP (Şampiyonluk Ligi'ne Son 150)" data-en="850 / 1000 XP (150 to Challenger)">850 / 1000 XP (Şampiyonluğa Son 150)</span>
+                        <span data-tr="850 / 1000 XP (Şampiyonluğa Son 150)" data-en="850 / 1000 XP (150 to Challenger)">850 / 1000 XP (Şampiyonluğa Son 150)</span>
                     </div>
                     <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
                         <div class="bg-gradient-to-r from-orange-400 to-orange-500 h-full rounded-full transition-all duration-1000" style="width: 85%"></div>
@@ -109,6 +114,7 @@
                 </div>
             </div>
 
+            <!-- Günlük Görevler -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-colors duration-300">
                 <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                     <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2" data-tr="Günlük Operasyonlar" data-en="Daily Operations">
@@ -148,13 +154,14 @@
                 </div>
             </div>
 
+            <!-- Koç Mesajları -->
             <div class="bg-gradient-to-r from-slate-900 to-slate-800 p-6 rounded-2xl border border-slate-800 shadow-sm relative overflow-hidden transition-colors duration-300">
                 <div class="flex items-center space-x-3 mb-4">
                     <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-md">AK</div>
                     <h3 class="text-md font-bold text-white" data-tr="Ahmet Hoca'dan Mesaj" data-en="Message from Mr. Ahmet">Ahmet Hoca'dan Mesaj</h3>
                 </div>
-                <p class="text-sm text-slate-300 leading-relaxed italic" data-tr='"Can, dünkü mesajını gördüm. Türevdeki sıkıntıyı çözmek için hafta sonuna ekstra soru çözüm kampı ekledim programına. Elmas Ligde kalacağız!"' data-en='"Can, saw your message. Added extra sessions this weekend. We will stay in the Diamond League!"'>
-                    "Can, dünkü mesajını gördüm. Türevdeki sıkıntıyı çözmek için hafta sonuna ekstra soru çözüm kampı ekledim programına. Elmas Ligde kalacağız!"
+                <p class="text-sm text-slate-300 leading-relaxed italic" data-tr='"Can, dünkü mesajını gördüm. Türevdeki sıkıntıyı çözmek için ekstra soru çözüm kampı ekledim programına. Elmas Ligde kalacağız!"' data-en='"Can, saw your message. Added extra sessions this weekend. We will stay in the Diamond League!"'>
+                    "Can, dünkü mesajını gördüm. Türevdeki sıkıntıyı çözmek için ekstra soru çözüm kampı ekledim programına. Elmas Ligde kalacağız!"
                 </p>
                 <div class="mt-4 pt-4 border-t border-slate-700 flex justify-between items-center">
                     <span class="text-xs text-slate-400 font-semibold" data-tr="5 dk önce" data-en="5 mins ago">5 dk önce</span>
@@ -164,8 +171,10 @@
 
         </div>
 
+        <!-- SAĞ KOLON -->
         <div class="space-y-6">
             
+            <!-- Sosyal Lig -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-colors duration-300 relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 opacity-50 pointer-events-none"></div>
                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3 flex items-center gap-2" data-tr="Hedef100 Sosyal Lig" data-en="Hedef100 Leaderboard">
@@ -185,7 +194,7 @@
                         <span class="absolute -left-1 -top-1 flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span></span>
                         <div class="flex items-center gap-3 pl-1">
                             <span class="text-lg font-black text-slate-400">5</span>
-                            <div class="user-initials-display w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs shadow-sm">Ö</div>
+                            <div class="user-initials-display w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xs shadow-sm bg-cover bg-center">Ö</div>
                             <span class="text-sm font-bold text-indigo-700" data-tr="Sen" data-en="You">Sen</span>
                         </div>
                         <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded shadow-sm border border-indigo-100">850 XP</span>
@@ -193,6 +202,7 @@
                 </div>
             </div>
             
+            <!-- Kontrol Paneli -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-colors duration-300">
                 <h3 class="text-lg font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3" data-tr="Kontrol Paneli" data-en="Control Panel">Kontrol Paneli</h3>
                 <div class="grid grid-cols-2 gap-3">
@@ -219,6 +229,7 @@
                 </div>
             </div>
 
+            <!-- Ayarlar -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm transition-colors duration-300">
                 <h3 class="text-md font-bold text-slate-900 mb-4 border-b border-slate-100 pb-3 flex items-center gap-2" data-tr="Sistem Ayarları" data-en="System Settings">
                     <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
@@ -244,262 +255,189 @@
         </div>
     </main>
 
+    <!-- ================= MODALLAR ================= -->
+
+    <!-- YENİ: ÖĞRENCİ PROFİL AYARLARI MODALI -->
+    <div id="studentProfileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="modal-bg bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden transform scale-95 transition-transform duration-300" id="studentProfileModalContent">
+            <div class="relative h-28 bg-gradient-to-r from-indigo-500 to-blue-600 flex justify-end p-4">
+                <button onclick="closeModal('studentProfileModal')" class="text-white/50 hover:text-white bg-black/20 rounded-full p-1 h-fit"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="px-8 pb-8 pt-0 relative">
+                <!-- Fotoğraf Yükleme Alanı -->
+                <div class="relative w-28 h-28 mx-auto -mt-14 mb-4">
+                    <div id="studentProfileImagePreview" class="w-full h-full bg-slate-100 border-4 border-white rounded-full shadow-lg flex items-center justify-center text-slate-400 font-bold text-2xl overflow-hidden bg-cover bg-center">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <label for="studentProfilePicUpload" class="absolute bottom-0 right-0 bg-indigo-500 text-white p-2 rounded-full cursor-pointer hover:bg-indigo-600 transition shadow-md border-2 border-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16a1 1 0 011-1h1.5l1.2-1.6A2 2 0 018.3 13h7.4a2 2 0 011.6.7l1.2 1.6H20a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+                        <input type="file" id="studentProfilePicUpload" class="hidden" accept="image/*">
+                    </label>
+                </div>
+                
+                <h3 class="font-black text-xl text-slate-900 text-center mb-6" data-tr="Öğrenci Profili & Hedefler" data-en="Student Profile & Goals">Öğrenci Profili & Hedefler</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1" data-tr="Büyük Hedefin (Bölüm / Kariyer)" data-en="Your Ultimate Goal">Büyük Hedefin (Bölüm / Kariyer)</label>
+                        <input type="text" id="studentGoalInput" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-colors" placeholder="Örn: OMÜ İşletme kazanıp Almanya'ya geçiş yapmak">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1" data-tr="Motivasyon Sözün" data-en="Motivation Quote">Motivasyon Sözün</label>
+                        <textarea id="studentAboutInput" rows="3" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-indigo-500 outline-none transition-colors resize-none" placeholder="Seni ne motive eder?"></textarea>
+                    </div>
+                    <button onclick="saveStudentProfile()" class="w-full bg-slate-900 text-white font-extrabold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-lg mt-2" data-tr="Profili Kaydet" data-en="Save Profile">Profili Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. Odaklanma Modalı -->
     <div id="pomodoroModal" class="fixed inset-0 z-[9999] hidden opacity-0 transition-opacity duration-1000 flex items-center justify-center">
         <div id="focusBackground" class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 to-black transition-colors duration-[2000ms]"></div>
         <div class="relative z-10 w-full max-w-2xl px-6 flex flex-col items-center justify-center text-white h-full">
-            <button onclick="exitFocusMode()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors bg-white/10 p-3 rounded-full backdrop-blur-md">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <button onclick="exitFocusMode()" class="absolute top-8 right-8 text-white/50 hover:text-white transition-colors bg-white/10 p-3 rounded-full backdrop-blur-md"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             <div id="focusSetup" class="text-center w-full transform transition-all duration-500">
                 <h2 class="text-4xl md:text-5xl font-black mb-4 focus-text-glow tracking-tighter" data-tr="Sınırlarını Aş." data-en="Push Your Limits.">Sınırlarını Aş.</h2>
-                <p class="text-slate-300 mb-12 text-lg" data-tr="Odaklanma süreni belirle ve dış dünyayı kapat." data-en="Set your focus time and shut out the world.">Odaklanma süreni belirle ve dış dünyayı kapat.</p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
-                    <button onclick="startFocusTimer(25)" class="bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md py-4 px-8 rounded-2xl text-xl font-bold transition-all hover:scale-105">25 Dk</button>
-                    <button onclick="startFocusTimer(50)" class="bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md py-4 px-8 rounded-2xl text-xl font-bold transition-all hover:scale-105">50 Dk</button>
+                    <button onclick="startFocusTimer(25)" class="bg-white/10 hover:bg-white/20 border border-white/20 py-4 px-8 rounded-2xl text-xl font-bold">25 Dk</button>
+                    <button onclick="startFocusTimer(50)" class="bg-white/10 hover:bg-white/20 border border-white/20 py-4 px-8 rounded-2xl text-xl font-bold">50 Dk</button>
                     <div class="relative">
-                        <input type="number" id="customFocusTime" placeholder="Özel (Dk)" class="w-32 bg-white/10 border border-white/20 backdrop-blur-md py-4 px-4 rounded-2xl text-xl font-bold text-white placeholder-white/50 outline-none text-center h-full">
+                        <input type="number" id="customFocusTime" placeholder="Özel (Dk)" class="w-32 bg-white/10 border border-white/20 py-4 px-4 rounded-2xl text-xl font-bold text-white placeholder-white/50 outline-none text-center h-full">
                         <button onclick="startCustomFocus()" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-slate-900 p-2 rounded-xl"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></button>
                     </div>
                 </div>
             </div>
             <div id="focusRunning" class="hidden text-center w-full transform transition-all duration-500 scale-95 opacity-0">
                 <div class="text-[8rem] md:text-[12rem] font-black tracking-tighter leading-none focus-text-glow font-mono" id="focusTimeDisplay">25:00</div>
-                <p class="text-xl text-white/70 italic mt-6" id="focusQuote">"Başlamak için mükemmel olmayı bekleme..."</p>
                 <div class="mt-12 flex justify-center gap-6">
-                    <button id="pauseBtn" onclick="togglePauseFocus()" class="bg-white/20 hover:bg-white/30 backdrop-blur-md py-3 px-8 rounded-full text-sm font-bold tracking-widest uppercase transition-all" data-tr="DURAKLAT" data-en="PAUSE">DURAKLAT</button>
-                    <button onclick="exitFocusMode()" class="bg-red-500/80 hover:bg-red-500 backdrop-blur-md py-3 px-8 rounded-full text-sm font-bold tracking-widest uppercase transition-all" data-tr="BİTİR" data-en="FINISH">BİTİR</button>
+                    <button id="pauseBtn" onclick="togglePauseFocus()" class="bg-white/20 hover:bg-white/30 py-3 px-8 rounded-full text-sm font-bold uppercase" data-tr="DURAKLAT" data-en="PAUSE">DURAKLAT</button>
+                    <button onclick="exitFocusMode()" class="bg-red-500/80 hover:bg-red-500 py-3 px-8 rounded-full text-sm font-bold uppercase" data-tr="BİTİR" data-en="FINISH">BİTİR</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 2. AI Kütüphane Modalı -->
     <div id="libraryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="modal-bg bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="libraryModalContent">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-indigo-50 transition-colors">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-indigo-50">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></div>
-                    <div>
-                        <h3 class="font-bold text-lg text-indigo-900" data-tr="Yapay Zeka Kaynak Önerileri" data-en="AI Resource Suggestions">Yapay Zeka Kaynak Önerileri</h3>
-                        <p class="text-xs text-indigo-700 font-bold" data-tr="Eksiklerine göre özel derlenmiş materyaller." data-en="Materials specially compiled based on your weak points.">Eksiklerine göre özel derlenmiş materyaller.</p>
-                    </div>
+                    <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg></div>
+                    <h3 class="font-bold text-lg text-indigo-900" data-tr="AI Kaynak Önerileri" data-en="AI Resources">AI Kaynak Önerileri</h3>
                 </div>
                 <button onclick="closeModal('libraryModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            
             <div class="p-6 overflow-y-auto space-y-4 flex-1 bg-slate-50">
-                <div class="bg-white border border-slate-200 rounded-xl p-4 flex gap-4 items-center hover:shadow-md transition">
+                <div class="bg-white border border-slate-200 rounded-xl p-4 flex gap-4 items-center hover:shadow-md">
                     <div class="w-16 h-16 bg-red-100 text-red-600 rounded-lg flex items-center justify-center flex-shrink-0"><svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"></path></svg></div>
                     <div class="flex-1">
-                        <span class="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded uppercase" data-tr="ZAYIF NOKTA: FİZİK" data-en="WEAKNESS: PHYSICS">ZAYIF NOKTA: FİZİK</span>
-                        <h4 class="font-bold text-slate-800 text-sm mt-1">Fotoelektrik Olay Püf Noktaları</h4>
-                        <p class="text-xs text-slate-500 mt-1" data-tr="Hatalarını sıfırlayacak kısa özet video." data-en="A short summary video to fix your errors.">Hatalarını sıfırlayacak kısa özet video.</p>
+                        <span class="text-[10px] font-bold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded">FİZİK</span>
+                        <h4 class="font-bold text-slate-800 text-sm mt-1">Fotoelektrik Olay Özet</h4>
                     </div>
-                    <button onclick="showToast('Video oynatılıyor...');" class="bg-slate-800 text-white font-bold py-2 px-4 rounded-lg text-xs whitespace-nowrap" data-tr="İzle" data-en="Watch">İzle</button>
+                    <button onclick="showToast('Video açılıyor...');" class="bg-slate-800 text-white font-bold py-2 px-4 rounded-lg text-xs" data-tr="İzle" data-en="Watch">İzle</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 3. Koç Keşfet Modalı -->
     <div id="findCoachModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="modal-bg bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]" id="findCoachModalContent">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-emerald-50 transition-colors">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-emerald-50">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>
-                    <div>
-                        <h3 class="font-bold text-lg text-emerald-900" data-tr="Eğitmen Kadromuz & Koç Seçimi" data-en="Our Educators & Coach Selection">Eğitmen Kadromuz & Koç Seçimi</h3>
-                        <p class="text-xs text-emerald-700 font-bold" data-tr="Sana en uygun rehberi bul ve hedefine uç." data-en="Find your guide and fly to your goal.">Sana en uygun rehberi bul ve hedefine uç.</p>
-                    </div>
+                    <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg></div>
+                    <h3 class="font-bold text-lg text-emerald-900" data-tr="Eğitmen Kadromuz" data-en="Our Educators">Eğitmen Kadromuz</h3>
                 </div>
                 <button onclick="closeModal('findCoachModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            
             <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-slate-50">
-                <div class="bg-white border border-orange-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
-                    <div class="absolute top-0 right-0 bg-orange-500 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg tracking-wider" data-tr="ÖNERİLEN EĞİTMEN" data-en="RECOMMENDED">ÖNERİLEN EĞİTMEN</div>
+                <div class="bg-white border border-orange-200 rounded-2xl p-6 shadow-sm">
                     <div class="flex flex-col md:flex-row gap-6 items-start">
-                        <div class="w-20 h-20 bg-slate-800 text-white rounded-2xl flex items-center justify-center font-extrabold text-2xl shadow-lg flex-shrink-0">AK</div>
+                        <div class="w-20 h-20 bg-slate-800 text-white rounded-2xl flex items-center justify-center font-extrabold text-2xl">AK</div>
                         <div class="flex-1">
                             <h4 class="font-bold text-slate-900 text-xl">Ahmet Kula</h4>
-                            <p class="text-sm text-orange-600 font-bold mb-3" data-tr="Matematik & Fizik Koordinatörü" data-en="Math & Physics Coordinator">Matematik & Fizik Koordinatörü</p>
-                            <p class="text-sm text-slate-600 mb-4 leading-relaxed italic">
-                                "LGS, TYT, AYT ve KPSS süreçlerinde analitik düşünme becerileri kazandırarak öğrencilerin korktuğu branşları avantaja çeviriyorum. Sistemli takip ve yeni nesil soru çözümleri ile net artışı garantili."
-                            </p>
+                            <p class="text-sm text-orange-600 font-bold mb-3">Matematik & Fizik Koordinatörü</p>
+                            <p class="text-sm text-slate-600">LGS, TYT, AYT süreçlerinde sistemli takip ile net artışı garantili.</p>
                         </div>
-                        <div class="flex flex-col gap-2 w-full md:w-auto">
-                            <button onclick="showToast('Ahmet Kula\'ya koçluk talebiniz iletildi. Koç onayladığında bildirim alacaksınız.'); closeModal('findCoachModal');" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-xl transition shadow-md whitespace-nowrap text-sm" data-tr="Koçluk Talep Et" data-en="Request Coaching">Koçluk Talep Et</button>
-                            <button onclick="openModal('coachProfileModal')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-6 rounded-xl transition whitespace-nowrap text-sm" data-tr="Detaylı İncele" data-en="View Details">Detaylı İncele</button>
-                        </div>
+                        <button onclick="showToast('Koçluk talebi iletildi!'); closeModal('findCoachModal');" class="bg-orange-500 text-white font-bold py-2.5 px-6 rounded-xl text-sm" data-tr="Talep Et" data-en="Request">Talep Et</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id="coachProfileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-[60] flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="modal-bg bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform scale-95 transition-transform duration-300 flex flex-col" id="coachProfileModalContent">
-            <div class="relative h-32 bg-gradient-to-r from-orange-500 to-amber-500">
-                <button onclick="closeModal('coachProfileModal')" class="absolute top-4 right-4 text-white hover:text-red-200 bg-black/20 rounded-full p-1"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <div class="px-6 pb-6 pt-0 relative bg-slate-50 flex-1">
-                <div class="w-24 h-24 bg-slate-800 text-white rounded-full flex items-center justify-center font-extrabold text-3xl shadow-xl absolute -top-12 border-4 border-slate-50">AK</div>
-                <div class="mt-14">
-                    <h4 class="font-bold text-slate-900 text-2xl">Ahmet Kula</h4>
-                    <p class="text-sm text-orange-600 font-bold mb-4">Matematik & Fizik Koordinatörü</p>
-                    <div class="space-y-4">
-                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                            <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Eğitim & Uzmanlık</h5>
-                            <p class="text-sm text-slate-700">Uzun yıllara dayanan deneyimiyle, özellikle LGS, TYT, AYT ve KPSS gruplarında analitik problem çözme yeteneği kazandırır. Hedef100 Akademi kurucularındandır.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- 4. Net Girme Modalı -->
     <div id="examEntryModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="modal-bg bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="examEntryModalContent">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-blue-50 transition-colors">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg></div>
-                    <h3 class="font-bold text-lg text-blue-900" data-tr="Deneme Neti Gir" data-en="Enter Exam Score">Deneme Neti Gir</h3>
-                </div>
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-blue-50">
+                <h3 class="font-bold text-lg text-blue-900" data-tr="Deneme Neti Gir" data-en="Enter Score">Deneme Neti Gir</h3>
                 <button onclick="closeModal('examEntryModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div class="p-6 space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-1" data-tr="Deneme Adı / Yayını" data-en="Exam Name">Deneme Adı / Yayını</label>
-                    <input type="text" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-colors" placeholder="Örn: 3D Yayınları Deneme">
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1" data-tr="Matematik Neti" data-en="Math Score">Matematik Neti</label>
-                        <input type="number" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-colors" placeholder="0.0">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-1" data-tr="Fizik Neti" data-en="Physics Score">Fizik Neti</label>
-                        <input type="number" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 outline-none transition-colors" placeholder="0.0">
-                    </div>
-                </div>
-                <button onclick="showToast('Netler sisteme işlendi ve grafikler güncellendi.'); closeModal('examEntryModal');" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition mt-2 shadow-md" data-tr="Sisteme Kaydet" data-en="Save to System">Sisteme Kaydet</button>
+                <input type="text" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-lg p-2.5 outline-none" placeholder="Deneme Adı">
+                <button onclick="showToast('Netler işlendi.'); closeModal('examEntryModal');" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg" data-tr="Kaydet" data-en="Save">Kaydet</button>
             </div>
         </div>
     </div>
 
-    <div id="sendMessageModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="modal-bg bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform scale-95 transition-transform duration-300" id="sendMessageModalContent">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-orange-50 transition-colors">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg></div>
-                    <h3 class="font-bold text-lg text-orange-900" data-tr="Koça Mesaj Yaz" data-en="Message Coach">Koça Mesaj Yaz</h3>
-                </div>
-                <button onclick="closeModal('sendMessageModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <div class="p-6 space-y-4">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2" data-tr="Mesajınız" data-en="Your Message">Mesajınız</label>
-                    <textarea rows="4" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 outline-none text-sm transition-colors" placeholder="Hocanıza sormak veya bildirmek istediğiniz nedir?"></textarea>
-                </div>
-                <div class="flex justify-end space-x-3 mt-4">
-                    <button onclick="closeModal('sendMessageModal')" class="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 transition" data-tr="İptal" data-en="Cancel">İptal</button>
-                    <button onclick="showToast('Mesajınız koça başarıyla iletildi!'); closeModal('sendMessageModal');" class="bg-orange-500 text-white font-bold py-2 px-6 rounded-lg hover:bg-orange-600 transition shadow-md" data-tr="Gönder" data-en="Send">Gönder</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
+    <!-- 5. Gelişmiş Analiz Modalı -->
     <div id="analyticsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="modal-bg bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="analyticsModalContent">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-amber-50 transition-colors">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-amber-500 text-white rounded-full flex items-center justify-center shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg></div>
-                    <h3 class="font-bold text-lg text-amber-900" data-tr="Gelişmiş Deneme Analizi" data-en="Advanced Exam Analysis">Gelişmiş Deneme Analizi</h3>
-                </div>
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-amber-50">
+                <h3 class="font-bold text-lg text-amber-900" data-tr="Grafiklerim" data-en="My Charts">Grafiklerim</h3>
                 <button onclick="closeModal('analyticsModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div class="p-6 space-y-6">
-                <div>
-                    <h4 class="text-sm font-bold text-slate-800 mb-3" data-tr="YKS Sayısal Net Gelişimi" data-en="YKS Science Score Progress">YKS Sayısal Net Gelişimi (Son 3 Ay)</h4>
-                    <div class="space-y-4">
-                        <div>
-                            <div class="flex justify-between text-xs mb-1 text-slate-600"><span data-tr="Ekim Ortalaması" data-en="October Average">Ekim Ortalaması</span><span class="font-bold">75 Net</span></div>
-                            <div class="w-full bg-slate-100 h-3 rounded-full"><div class="bg-slate-400 h-3 rounded-full" style="width: 55%"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-xs mb-1 text-slate-600"><span data-tr="Kasım Ortalaması" data-en="November Average">Kasım Ortalaması</span><span class="font-bold">88 Net</span></div>
-                            <div class="w-full bg-slate-100 h-3 rounded-full"><div class="bg-indigo-400 h-3 rounded-full" style="width: 70%"></div></div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between text-xs mb-1 text-slate-600"><span data-tr="Aralık Ortalaması" data-en="December Average">Aralık Ortalaması</span><span class="font-bold text-orange-600">94.5 Net</span></div>
-                            <div class="w-full bg-slate-100 h-3 rounded-full"><div class="bg-orange-500 h-3 rounded-full" style="width: 85%"></div></div>
-                        </div>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1"><span>Aralık Ortalaması</span><span class="font-bold text-orange-600">94.5 Net</span></div>
+                        <div class="w-full bg-slate-100 h-3 rounded-full"><div class="bg-orange-500 h-3 rounded-full" style="width: 85%"></div></div>
                     </div>
                 </div>
                 <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200">
-                    <p class="text-sm font-bold text-emerald-800" data-tr="AI Notu: İvmen mükemmel. Bu hızla sınava kadar 110 net barajını aşman çok olası." data-en="AI Note: Your momentum is perfect. Very likely to pass 110 threshold.">AI Notu: İvmen mükemmel. Bu hızla sınava kadar 110 net barajını aşman çok olası.</p>
+                    <p class="text-sm font-bold text-emerald-800">AI Notu: İvmen mükemmel.</p>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 6. XP Marketi Modalı -->
     <div id="xpStoreModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="modal-bg bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="xpStoreModalContent">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-orange-50 to-amber-50">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center text-white shadow-lg"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd"></path></svg></div>
-                    <div>
-                        <h3 class="font-bold text-lg text-orange-900" data-tr="Ödül Marketi" data-en="Reward Store">Ödül Marketi</h3>
-                        <p class="text-xs text-orange-700 font-bold">Bakiye: 850 XP</p>
-                    </div>
-                </div>
+                <h3 class="font-bold text-lg text-orange-900" data-tr="Ödül Marketi" data-en="Reward Store">Ödül Marketi</h3>
                 <button onclick="closeModal('xpStoreModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-orange-500 transition cursor-pointer">
-                    <div>
-                        <span class="text-xs font-bold bg-orange-100 text-orange-700 px-2 py-1 rounded mb-2 inline-block">1000 XP</span>
-                        <h4 class="font-bold text-slate-800 text-sm mb-1" data-tr="1 Saat Ekstra Birebir Koçluk" data-en="1 Hour Extra Coaching">1 Saat Ekstra Birebir Koçluk</h4>
-                        <p class="text-xs text-slate-500">Ahmet Hoca ile istediğin bir konuda özel çalışma seansı.</p>
-                    </div>
-                    <button onclick="showToast('XP Yetersiz! Görevleri tamamlayarak XP kazan.')" class="mt-4 w-full bg-slate-100 text-slate-400 font-bold py-2 rounded-lg text-xs" data-tr="Kilitli" data-en="Locked">Kilitli</button>
-                </div>
-                <div class="border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-emerald-500 transition cursor-pointer">
-                    <div>
-                        <span class="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-1 rounded mb-2 inline-block">500 XP</span>
-                        <h4 class="font-bold text-slate-800 text-sm mb-1" data-tr="Haftalık Telafi Hakkı" data-en="Weekly Makeup Pass">Haftalık Telafi Hakkı</h4>
-                        <p class="text-xs text-slate-500">Yapamadığın bir görevi ceza puanı almadan yarına aktar.</p>
-                    </div>
-                    <button onclick="showToast('Ödül satın alındı! Bakiye: 350 XP'); closeModal('xpStoreModal');" class="mt-4 w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 rounded-lg text-xs shadow-md transition" data-tr="Satın Al" data-en="Redeem">Satın Al</button>
+                <div class="border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-orange-500 transition">
+                    <div><span class="text-xs font-bold bg-orange-100 text-orange-700 px-2 py-1 rounded mb-2 inline-block">1000 XP</span><h4 class="font-bold text-sm">1 Saat Ekstra Koçluk</h4></div>
+                    <button onclick="showToast('XP Yetersiz!')" class="mt-4 w-full bg-slate-100 text-slate-400 font-bold py-2 rounded-lg text-xs">Kilitli</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 7. Bildirimler Modalı -->
     <div id="notificationsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-start justify-center p-4 sm:p-12 opacity-0 transition-opacity duration-300">
         <div class="modal-bg bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden transform scale-95 transition-transform duration-300 mt-12 sm:absolute sm:top-4 sm:right-4 sm:mt-16" id="notificationsModalContent">
-            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50 transition-colors">
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-md text-slate-900" data-tr="Bildirimler" data-en="Notifications">Bildirimler</h3>
                 <button onclick="closeModal('notificationsModal')" class="text-slate-400 hover:text-red-500"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
-            <div class="divide-y divide-slate-100 max-h-80 overflow-y-auto">
-                <div class="p-4 hover:bg-slate-50 cursor-pointer transition-colors">
-                    <p class="text-xs font-bold text-orange-600 mb-1">Koçluk Sistemi</p>
-                    <p class="text-sm text-slate-700">Koçun sana yeni bir görev atadı: "Analitik Geometri"</p>
-                    <p class="text-[10px] text-slate-400 mt-1">1 saat önce</p>
-                </div>
-                <div class="p-4 hover:bg-slate-50 cursor-pointer opacity-70 transition-colors">
-                    <p class="text-xs font-bold text-blue-600 mb-1">Sosyal Lig</p>
-                    <p class="text-sm text-slate-700">Tebrikler! Geçen haftayı 5. sırada tamamladın.</p>
-                    <p class="text-[10px] text-slate-400 mt-1">2 gün önce</p>
-                </div>
-            </div>
+            <div class="p-4"><p class="text-sm text-slate-700">Yeni bildiriminiz yok.</p></div>
         </div>
     </div>
 
+    <!-- JS ALANI -->
     <script>
-        // İsim ve ID Çekme Sistemi (Local Storage)
+        // Veri Çekme (DİNAMİK PROFİL SİSTEMİ)
         document.addEventListener('DOMContentLoaded', () => {
             const storedName = localStorage.getItem('hedef100_userName') || localStorage.getItem('hedef100_studentName');
             const storedId = localStorage.getItem('hedef100_userId');
+            const storedAvatar = localStorage.getItem('hedef100_studentAvatar');
+            const storedGoal = localStorage.getItem('hedef100_studentGoal');
+            const storedAbout = localStorage.getItem('hedef100_studentAbout');
             
             if(storedName && storedName.trim() !== '') {
                 const nameParts = storedName.trim().split(' ');
@@ -507,14 +445,75 @@
                 if(nameParts.length > 1) initials += nameParts[nameParts.length - 1][0];
                 
                 document.querySelectorAll('.user-name-display').forEach(el => el.innerText = storedName);
-                document.querySelectorAll('.user-initials-display').forEach(el => el.innerText = initials.toUpperCase());
+                if(!storedAvatar) {
+                    document.querySelectorAll('.user-initials-display').forEach(el => el.innerText = initials.toUpperCase());
+                }
             }
             if(storedId) {
                 document.querySelectorAll('.user-id-display').forEach(el => el.innerText = storedId);
             }
+            if(storedAvatar) {
+                document.querySelectorAll('.user-initials-display').forEach(el => {
+                    el.style.backgroundImage = `url(${storedAvatar})`;
+                    el.innerText = '';
+                });
+                document.getElementById('studentProfileImagePreview').style.backgroundImage = `url(${storedAvatar})`;
+                document.getElementById('studentProfileImagePreview').innerHTML = '';
+            }
+            if(storedGoal) {
+                document.getElementById('studentGoalInput').value = storedGoal;
+                document.querySelectorAll('.user-goal-display').forEach(el => {
+                    el.innerText = '🎯 Hedef: ' + storedGoal;
+                    el.classList.remove('hidden');
+                });
+            }
+            if(storedAbout) {
+                document.getElementById('studentAboutInput').value = storedAbout;
+            }
         });
 
-        // Şık Bildirim (Toast) Fonksiyonu
+        // Profil Resmi (Base64) İşlemi
+        document.getElementById('studentProfilePicUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onloadend = function() {
+                const base64Data = reader.result;
+                document.getElementById('studentProfileImagePreview').style.backgroundImage = `url(${base64Data})`;
+                document.getElementById('studentProfileImagePreview').innerHTML = '';
+                document.getElementById('studentProfileImagePreview').setAttribute('data-temp-image', base64Data);
+            }
+            reader.readAsDataURL(file);
+        });
+
+        // Profili Kaydetme
+        function saveStudentProfile() {
+            const goal = document.getElementById('studentGoalInput').value;
+            const about = document.getElementById('studentAboutInput').value;
+            const tempImg = document.getElementById('studentProfileImagePreview').getAttribute('data-temp-image');
+
+            if(tempImg) {
+                localStorage.setItem('hedef100_studentAvatar', tempImg);
+                document.querySelectorAll('.user-initials-display').forEach(el => {
+                    el.style.backgroundImage = `url(${tempImg})`;
+                    el.innerText = '';
+                });
+            }
+            localStorage.setItem('hedef100_studentGoal', goal);
+            localStorage.setItem('hedef100_studentAbout', about);
+
+            if(goal) {
+                document.querySelectorAll('.user-goal-display').forEach(el => {
+                    el.innerText = '🎯 Hedef: ' + goal;
+                    el.classList.remove('hidden');
+                });
+            }
+
+            closeModal('studentProfileModal');
+            showToast('Profiliniz başarıyla güncellendi!');
+        }
+
+        // Araçlar
         function showToast(message) {
             const toast = document.createElement('div');
             toast.className = 'fixed bottom-5 right-5 bg-slate-800 text-white px-6 py-4 rounded-xl shadow-2xl z-[100] transform transition-all duration-300 translate-y-20 opacity-0 flex items-center gap-3 font-bold text-sm border border-slate-700';
@@ -524,7 +523,6 @@
             setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); setTimeout(() => toast.remove(), 300); }, 3500);
         }
 
-        // Açılır Pencere (Modal) Yönetimi
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
             const content = document.getElementById(modalId + 'Content');
@@ -542,22 +540,16 @@
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
 
-        // Görev Tamamlama Efekti
         function completeTask(taskId) {
             const task = document.getElementById(taskId);
             if(task) {
-                task.innerHTML = `<div class="flex items-center space-x-4 opacity-60"><div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div><div><h4 class="font-bold text-slate-900 text-sm line-through">Görev Tamamlandı</h4><p class="text-xs text-slate-500">Tebrikler!</p></div></div><span class="text-xs font-bold text-emerald-600">+50 XP Eklendi</span>`;
+                task.innerHTML = `<div class="flex items-center space-x-4 opacity-60"><div class="w-8 h-8 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></div><div><h4 class="font-bold text-slate-900 text-sm line-through">Görev Tamamlandı</h4></div></div><span class="text-xs font-bold text-emerald-600">+50 XP</span>`;
                 task.className = "p-4 md:p-6 flex items-center justify-between bg-emerald-50/30 transition-colors";
-                showToast("Görev başarıyla tamamlandı! XP kazanıldı.");
+                showToast("Görev başarıyla tamamlandı!");
             }
         }
 
-        // Karanlık Mod
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-theme', document.getElementById('darkModeToggle').checked);
-        }
-
-        // Dil Değiştirme
+        function toggleDarkMode() { document.body.classList.toggle('dark-theme', document.getElementById('darkModeToggle').checked); }
         function changeLanguage() {
             const lang = document.getElementById('languageSelect').value;
             document.querySelectorAll('[data-tr]').forEach(el => {
@@ -569,86 +561,57 @@
             });
         }
 
-        // --- VİZYONER ODAKLANMA MODU SİSTEMİ ---
+        // Odaklanma Modu
         let focusInterval; let totalSeconds = 0; let isPaused = false;
-        const focusBackgrounds = ['from-indigo-950 to-black', 'from-rose-950 to-black', 'from-emerald-950 to-black', 'from-slate-900 to-black'];
-
-        function requestFullScreen(element) {
-            if(element.requestFullscreen) element.requestFullscreen();
-            else if(element.webkitRequestFullscreen) element.webkitRequestFullscreen();
-        }
-        function exitFullScreen() {
-            if(document.fullscreenElement) {
-                if(document.exitFullscreen) document.exitFullscreen();
-                else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
-            }
-        }
-
+        function requestFullScreen(element) { if(element.requestFullscreen) element.requestFullscreen(); else if(element.webkitRequestFullscreen) element.webkitRequestFullscreen(); }
+        function exitFullScreen() { if(document.fullscreenElement) { if(document.exitFullscreen) document.exitFullscreen(); else if(document.webkitExitFullscreen) document.webkitExitFullscreen(); } }
+        
         function openFocusModal(defaultMinutes = null) {
             const modal = document.getElementById('pomodoroModal');
             document.body.classList.add('focus-mode-active');
-            const randomBg = focusBackgrounds[Math.floor(Math.random() * focusBackgrounds.length)];
-            document.getElementById('focusBackground').className = `absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] ${randomBg} transition-colors duration-[2000ms]`;
             modal.classList.remove('hidden');
             setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
             if(defaultMinutes) document.getElementById('customFocusTime').value = defaultMinutes;
             requestFullScreen(document.documentElement);
         }
-
         function startCustomFocus() {
             const mins = document.getElementById('customFocusTime').value;
             if(mins && mins > 0) startFocusTimer(mins);
             else showToast("Lütfen geçerli bir dakika giriniz.");
         }
-
         function startFocusTimer(minutes) {
             totalSeconds = minutes * 60; isPaused = false;
-            document.getElementById('focusSetup').classList.add('opacity-0', 'scale-95');
-            setTimeout(() => {
-                document.getElementById('focusSetup').classList.add('hidden');
-                const runningScreen = document.getElementById('focusRunning');
-                runningScreen.classList.remove('hidden');
-                setTimeout(() => runningScreen.classList.remove('opacity-0', 'scale-95'), 50);
-            }, 500);
+            document.getElementById('focusSetup').classList.add('hidden');
+            const runningScreen = document.getElementById('focusRunning');
+            runningScreen.classList.remove('hidden');
+            setTimeout(() => runningScreen.classList.remove('opacity-0', 'scale-95'), 50);
             updateFocusDisplay();
             clearInterval(focusInterval);
-            focusInterval = setInterval(timerTick, 1000);
+            focusInterval = setInterval(() => {
+                if(!isPaused) {
+                    totalSeconds--; updateFocusDisplay();
+                    if(totalSeconds <= 0) { showToast("Süre doldu!"); exitFocusMode(); }
+                }
+            }, 1000);
         }
-
-        function timerTick() {
-            if(isPaused) return;
-            totalSeconds--;
-            updateFocusDisplay();
-            if(totalSeconds <= 0) {
-                clearInterval(focusInterval);
-                showToast("Süre doldu! Harika bir odaklanma seansıydı.");
-                exitFocusMode();
-            }
-        }
-
         function updateFocusDisplay() {
             const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
             const s = (totalSeconds % 60).toString().padStart(2, '0');
             document.getElementById('focusTimeDisplay').innerText = `${m}:${s}`;
         }
-
         function togglePauseFocus() {
             isPaused = !isPaused;
             const btn = document.getElementById('pauseBtn');
-            const lang = document.getElementById('languageSelect').value;
-            btn.innerText = isPaused ? (lang === 'en' ? "RESUME" : "DEVAM ET") : (lang === 'en' ? "PAUSE" : "DURAKLAT");
-            if(isPaused) { btn.classList.replace('bg-white/20', 'bg-orange-500'); } 
-            else { btn.classList.replace('bg-orange-500', 'bg-white/20'); }
+            btn.innerText = isPaused ? "DEVAM ET" : "DURAKLAT";
+            btn.className = isPaused ? "bg-orange-500 hover:bg-orange-600 py-3 px-8 rounded-full text-sm font-bold uppercase" : "bg-white/20 hover:bg-white/30 py-3 px-8 rounded-full text-sm font-bold uppercase";
         }
-
         function exitFocusMode() {
             clearInterval(focusInterval); exitFullScreen();
-            const modal = document.getElementById('pomodoroModal');
-            modal.classList.add('opacity-0');
+            document.getElementById('pomodoroModal').classList.add('opacity-0');
             setTimeout(() => {
-                modal.classList.add('hidden'); document.body.classList.remove('focus-mode-active');
+                document.getElementById('pomodoroModal').classList.add('hidden'); document.body.classList.remove('focus-mode-active');
                 document.getElementById('focusRunning').classList.add('hidden', 'opacity-0', 'scale-95');
-                document.getElementById('focusSetup').classList.remove('hidden', 'opacity-0', 'scale-95');
+                document.getElementById('focusSetup').classList.remove('hidden');
             }, 1000);
         }
     </script>
