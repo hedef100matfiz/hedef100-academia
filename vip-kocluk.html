@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIP Koçluk Hizmeti | Hedef100 Academia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #f1f5f9 1px, transparent 1px), linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-800 min-h-screen flex flex-col relative selection:bg-emerald-500 selection:text-white">
+
+    <div class="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none z-0"></div>
+
+    <!-- ÜST MENÜ (NAVBAR) -->
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-100 shadow-sm py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <!-- Logo -->
+            <a href="index.html" class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black">H</div>
+                <span class="text-xl md:text-2xl font-black tracking-tighter text-slate-900">
+                    HEDEF100<span class="text-orange-500">.ACADEMIA</span>
+                </span>
+            </a>
+
+            <!-- Ortadaki Linkler (VIP Koçluk Aktif) -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors">Ana Sayfa</a>
+                <a href="sistemimiz.html" class="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors">Sistemimiz</a>
+                <a href="online-deneme.html" class="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors">Online Deneme Sistemi</a>
+                <a href="vip-kocluk.html" class="text-sm font-black text-emerald-600 border-b-2 border-emerald-600 pb-1">VIP Koçluk</a>
+            </div>
+
+            <!-- Giriş Butonu -->
+            <div class="flex items-center gap-4">
+                <a href="login.html" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-6 py-2.5 rounded-lg shadow-md transition-transform transform hover:-translate-y-0.5">
+                    Sisteme Giriş
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION (Başlık Alanı) -->
+    <main class="flex-1 flex flex-col relative z-10">
+        <section class="container mx-auto px-6 py-16 md:py-24 text-center">
+            <div class="inline-block bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-extrabold px-4 py-1.5 rounded-full mb-6 tracking-wider uppercase">
+                BİREBİR REHBERLİK & AKADEMİK DANIŞMANLIK
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-6">
+                Sınav Yolculuğunu <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-600">Şansa Değil, Profesyonellere</span> Bırak.
+            </h1>
+            <p class="text-lg text-slate-500 max-w-3xl mx-auto leading-relaxed">
+                Her öğrencinin öğrenme hızı, biyolojik ritmi ve akademik temeli farklıdır. VIP Koçluk hizmetimizle seni binlerce kişiyle aynı kalıba sokmuyor; tamamen sana özel, veriye dayalı ve psikolojik süreçlerini de yöneten bir ekosistem sunuyoruz.
+            </p>
+        </section>
+
+        <!-- ÖZELLİKLER BÖLÜMÜ -->
+        <section class="bg-slate-50 py-20 border-y border-slate-200">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-black text-slate-900">VIP Koçluk Neleri Kapsar?</h2>
+                    <p class="text-slate-500 mt-2">Sıradan bir program yazıp geçmiyoruz, başarıyı birlikte inşa ediyoruz.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    
+                    <!-- Özellik 1 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex gap-6 hover:shadow-md transition-shadow">
+                        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Bireysel ve Dinamik Program</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">Koçun, okul/dershane saatlerini, hedefini (Örn: Tıp Fakültesi) ve mevcut netlerini analiz ederek sana özel haftalık bir program hazırlar. İşler planlandığı gibi gitmezse program anında güncellenir.</p>
+                        </div>
+                    </div>
+
+                    <!-- Özellik 2 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex gap-6 hover:shadow-md transition-shadow">
+                        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">7/24 Kesintisiz İletişim</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">Panelindeki "Gelişmiş İletişim Merkezi" sayesinde takıldığın soruları, motivasyon kaybı yaşadığın anları koçuna saniyeler içinde iletebilir, anında yanıt alabilirsin.</p>
+                        </div>
+                    </div>
+
+                    <!-- Özellik 3 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex gap-6 hover:shadow-md transition-shadow">
+                        <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Derinlemesine Net Analizi</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">Koçun, yapay zeka araçlarımızı kullanarak girdiğin denemeleri analiz eder. Hangi dersten, hangi konunun, hangi kazanımında eksiğin olduğunu tespit edip müdahale eder.</p>
+                        </div>
+                    </div>
+
+                    <!-- Özellik 4 -->
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex gap-6 hover:shadow-md transition-shadow">
+                        <div class="w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Psikolojik Süreç Yönetimi</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">Sınav sadece bilgiyle değil, sağlam bir psikoloji ile kazanılır. Deneme stresi, odaklanma sorunları ve motivasyon kaybı gibi anlarda koçun sana tam destek sağlar.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- KİMLER İÇİN UYGUN -->
+        <section class="container mx-auto px-6 py-20 text-center">
+            <h2 class="text-3xl font-black text-slate-900 mb-10">Kimler VIP Koçluk Almalı?</h2>
+            <div class="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+                <span class="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-full shadow-sm font-semibold">Zaman yönetiminde zorlananlar</span>
+                <span class="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-full shadow-sm font-semibold">Netleri belli bir seviyede takılı kalanlar</span>
+                <span class="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-full shadow-sm font-semibold">Sınav stresini yönetemeyenler</span>
+                <span class="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-full shadow-sm font-semibold">Nereden başlayacağını bilemeyenler</span>
+                <span class="bg-white border border-slate-200 text-slate-700 px-6 py-3 rounded-full shadow-sm font-semibold">Derece hedefleyip hata payı bırakmak istemeyenler</span>
+            </div>
+        </section>
+
+        <!-- ÇAĞRI (CALL TO ACTION) -->
+        <section class="bg-gradient-to-r from-emerald-600 to-teal-800 py-16 text-center px-6">
+            <h2 class="text-3xl font-black text-white mb-6">Başarı Tesadüf Değildir.</h2>
+            <p class="text-emerald-100 mb-8 max-w-xl mx-auto">Türkiye'nin en seçkin eğitmen kadrosuyla çalışmak ve hedeflerine giden yolda asla yalnız yürümemek için kontenjanlar dolmadan başvurunu yap.</p>
+            <a href="register.html" class="inline-block bg-white text-teal-800 font-extrabold text-lg py-4 px-10 rounded-xl shadow-xl transition-transform transform hover:scale-105">
+                VIP Koçluk Başvurusu Yap
+            </a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm font-semibold">© 2026 Hedef100 Academia. Tüm Hakları Saklıdır.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
