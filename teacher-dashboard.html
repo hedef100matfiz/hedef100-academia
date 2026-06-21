@@ -126,7 +126,7 @@
                             </p>
                             <p class="text-sm text-slate-600 mt-2 leading-relaxed" data-tr="Hocam matematikte türev fasikülünün 3. testinde tıkandım, programı biraz esnetebilir miyiz?" data-en="Teacher, I got stuck on the 3rd test of the derivative fascicle, can we stretch the program a bit?">Hocam matematikte türev fasikülünün 3. testinde tıkandım, programı biraz esnetebilir miyiz?</p>
                         </div>
-                        <button onclick="openModal('replyModal')" class="flex-shrink-0 bg-white border border-slate-200 text-slate-700 hover:text-orange-500 hover:border-orange-500 text-xs font-bold py-2 px-4 rounded-lg transition-colors shadow-sm" data-tr="Cevapla ➔" data-en="Reply ➔">Cevapla ➔</button>
+                        <button onclick="openModal('messagesModal')" class="flex-shrink-0 bg-white border border-slate-200 text-slate-700 hover:text-orange-500 hover:border-orange-500 text-xs font-bold py-2 px-4 rounded-lg transition-colors shadow-sm" data-tr="Cevapla ➔" data-en="Reply ➔">Cevapla ➔</button>
                     </div>
                 </div>
             </div>
@@ -502,6 +502,43 @@
                 document.body.classList.remove('dark-theme');
             }
         }
+        function sendRealChatMessage() {
+        const input = document.getElementById('chatInputArea');
+        const message = input.value.trim();
+        
+        if(message !== "") {
+            const chatBox = document.getElementById('chatHistoryBox');
+            
+            // Yeni mesaj balonunu oluştur
+            const bubble = document.createElement('div');
+            bubble.className = 'flex gap-3 max-w-[85%] ml-auto justify-end mb-4 opacity-0 transform translate-y-4 transition-all duration-300';
+            
+            const timeNow = new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+            
+            bubble.innerHTML = `
+                <div>
+                    <div class="bg-orange-500 text-white p-3 rounded-2xl rounded-br-none shadow-sm text-sm leading-relaxed">
+                        ${message}
+                    </div>
+                    <span class="text-[10px] text-slate-400 mt-1 block text-right">${timeNow}</span>
+                </div>
+                <div class="w-8 h-8 bg-slate-800 text-white rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 mt-auto shadow-sm">AK</div>
+            `;
+            
+            chatBox.appendChild(bubble);
+            
+            // Animasyonu tetikle
+            setTimeout(() => {
+                bubble.classList.remove('opacity-0', 'translate-y-4');
+            }, 50);
+            
+            // Sohbeti en alta kaydır
+            chatBox.scrollTop = chatBox.scrollHeight;
+            
+            // İnputu temizle
+            input.value = "";
+        }
+    }
 
         // Dil Değiştirme ve Çeviri Motoru
         function changeLanguage() {
