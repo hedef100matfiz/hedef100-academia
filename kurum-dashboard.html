@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kurum Paneli | Hedef.100Academia</title>
+    <title>Kurum Paneli | hedef.100academia</title>
     <style>
-        /* CSS Değişkenleri - Akademi Konseptine Uygun Renkler */
+        /* CSS Değişkenleri - Akademi Konsepti */
         :root {
-            --primary-dark: #1e293b; /* Koyu Lacivert */
+            --primary-dark: #1e293b;
             --primary-light: #334155;
-            --accent-color: #3b82f6; /* Canlı Akademi Mavisi */
-            --success-color: #10b981; /* Hedef Başarı Yeşili */
+            --accent-color: #3b82f6; 
+            --success-color: #10b981; 
+            --danger-color: #ef4444;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #334155;
@@ -20,7 +21,7 @@
         body, html {
             margin: 0;
             padding: 0;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
         }
@@ -50,7 +51,7 @@
 
         .sidebar-header h2 {
             margin: 0;
-            font-size: 20px;
+            font-size: 22px;
             color: #fff;
             letter-spacing: 0.5px;
         }
@@ -65,6 +66,7 @@
             list-style: none;
             padding: 15px 0;
             margin: 0;
+            flex-grow: 1;
         }
 
         .sidebar-menu li a {
@@ -81,6 +83,24 @@
             background-color: var(--primary-light);
             color: #fff;
             border-left-color: var(--accent-color);
+        }
+
+        .sidebar-footer {
+            padding: 15px 0;
+            border-top: 1px solid #334155;
+        }
+
+        .sidebar-footer a {
+            display: block;
+            padding: 15px 25px;
+            color: #ef4444;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .sidebar-footer a:hover {
+            background-color: rgba(239, 68, 68, 0.1);
         }
 
         /* Ana İçerik */
@@ -209,6 +229,8 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn-view-all:hover {
@@ -257,17 +279,19 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>hedef.100</h2>
-                <span>Academia Kurum Paneli</span>
+                <span>Kurum Paneli</span>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="#" class="active">Özet Ekranı</a></li>
-                <li><a href="#">Şubeler / Sınıflar</a></li>
-                <li><a href="#">Öğrenci Yönetimi</a></li>
-                <li><a href="#">Eğitmen Kadrosu</a></li>
-                <li><a href="#">Sınav & Deneme Sonuçları</a></li>
-                <li><a href="#">Hedef Takip Raporları</a></li>
-                <li><a href="#">Sistem Ayarları</a></li>
+                <li><a href="index.html">← Site Ana Sayfası</a></li>
+                <li><a href="kurum-dashboard.html" class="active">Özet Ekranı</a></li>
+                <li><a href="kurumsal.html">Kurumsal Bilgiler</a></li>
+                <li><a href="teacher-dashboard.html">Eğitmen Paneli (Önizleme)</a></li>
+                <li><a href="online-deneme.html">Online Deneme Yönetimi</a></li>
+                <li><a href="vip-kocluk.html">VİP Koçluk İşlemleri</a></li>
             </ul>
+            <div class="sidebar-footer">
+                <a href="login.html">🚪 Güvenli Çıkış Yap</a>
+            </div>
         </aside>
 
         <main class="main-content">
@@ -277,13 +301,13 @@
                     <input type="text" placeholder="Öğrenci, eğitmen veya sınıf ara...">
                 </div>
                 <div class="user-profile">
-                    <span>Çorum Merkez Şubesi Yönetimi</span>
-                    <div class="avatar">ÇM</div>
+                    <span>Yönetici Paneli</span>
+                    <div class="avatar">YP</div>
                 </div>
             </header>
 
             <div class="page-content">
-                <h1 class="page-title">Kurum İstatistikleri</h1>
+                <h1 class="page-title">Kurum İstatistikleri ve Genel Bakış</h1>
                 
                 <div class="stats-grid">
                     <div class="stat-card">
@@ -291,23 +315,23 @@
                         <p class="value">845</p>
                     </div>
                     <div class="stat-card purple">
-                        <h3>Tamamlanan Deneme Sınavı</h3>
-                        <p class="value">24</p>
+                        <h3>Sistemdeki Eğitmen</h3>
+                        <p class="value">32</p>
                     </div>
                     <div class="stat-card success">
                         <h3>Aylık Hedefe Ulaşma Oranı</h3>
                         <p class="value">%78.5</p>
                     </div>
                     <div class="stat-card warning">
-                        <h3>Riskli (Hedef Gerisinde) Öğrenci</h3>
-                        <p class="value">42</p>
+                        <h3>Bekleyen Kurum Başvurusu</h3>
+                        <p class="value">5</p>
                     </div>
                 </div>
 
                 <div class="table-container">
                     <div class="table-header">
                         <h3>Son Eklenen Sınav ve Hedef Analizleri</h3>
-                        <button class="btn-view-all">Tümünü Gör</button>
+                        <a href="online-deneme.html" class="btn-view-all">Tüm Denemeleri Gör</a>
                     </div>
                     <table>
                         <thead>
