@@ -134,3 +134,146 @@
         </div>
 
         <div class="space-y-8">
+            
+            <div class="bg-slate-900 text-white p-6 rounded-2xl shadow-lg border border-slate-800">
+                <h3 class="text-lg font-bold mb-4">Hızlı Eylemler</h3>
+                <div class="space-y-3">
+                    <button onclick="openModal('addStudentModal')" class="w-full flex items-center justify-center space-x-2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 px-4 rounded-xl transition-all shadow-[0_0_15px_rgba(249,115,22,0.3)] transform hover:-translate-y-0.5">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        <span>Yeni Öğrenci Ekle</span>
+                    </button>
+                    <button onclick="openModal('bulkResultModal')" class="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 px-4 rounded-xl border border-slate-700 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        <span>Toplu Deneme Sonucu Gir</span>
+                    </button>
+                    <button onclick="openModal('assignProgramModal')" class="w-full flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold py-3 px-4 rounded-xl border border-slate-700 transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                        <span>Haftalık Programları Ata</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-indigo-50 to-white p-6 rounded-2xl border border-indigo-100 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <svg class="w-16 h-16 text-indigo-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                </div>
+                <div class="flex items-center space-x-2 mb-4">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+                    </span>
+                    <h3 class="text-md font-extrabold text-indigo-900 tracking-tight">Hedef100 AI Analiz</h3>
+                </div>
+                <p class="text-sm text-slate-600 mb-4 leading-relaxed">
+                    <strong>Can Yılmaz'ın</strong> son 3 fizik denemesinde "Modern Fizik" konusunda %40 başarı düşüşü tespit edildi. Otomatik telafi testi ve konu tekrar videosu atanmasını onaylıyor musunuz?
+                </p>
+                <div class="flex gap-2">
+                    <button class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 rounded shadow transition">Sisteme İşle & Ata</button>
+                    <button class="px-3 bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50 text-xs font-bold py-2 rounded transition">Yoksay</button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm relative">
+                <div class="flex items-center space-x-3 mb-4 border-b border-slate-100 pb-4">
+                    <div class="w-8 h-8 bg-slate-100 text-slate-700 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h3 class="text-md font-bold text-slate-900">Ajanda & Hatırlatmalar</h3>
+                </div>
+                <ul class="space-y-4 text-sm text-slate-600">
+                    <li class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-orange-500 rounded-full mt-1.5"></div>
+                        <p><strong>Bugün 18:00</strong> - YKS Sayısal grubu haftalık değerlendirme Zoom toplantısı.</p>
+                    </li>
+                    <li class="flex items-start space-x-3">
+                        <div class="w-2 h-2 bg-slate-300 rounded-full mt-1.5"></div>
+                        <p>LGS grubuna yeni nesil matematik soruları PDF'i sisteme yüklenecek.</p>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="addStudentModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="addStudentModalContent">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-lg text-slate-900">Yeni Öğrenci Ekle</h3>
+                <button onclick="closeModal('addStudentModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">Öğrenci Adı Soyadı</label>
+                    <input type="text" class="w-full border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Ad Soyad">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-1">Grup / Sınav</label>
+                    <select class="w-full border border-slate-200 rounded-lg p-2.5 focus:ring-2 focus:ring-orange-500 outline-none">
+                        <option>YKS Sayısal</option><option>YKS Eşit Ağırlık</option><option>LGS</option><option>KPSS</option>
+                    </select>
+                </div>
+                <button onclick="closeModal('addStudentModal'); alert('Öğrenci eklendi!')" class="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition">Sisteme Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="bulkResultModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="bulkResultModalContent">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-lg text-slate-900">Toplu Sonuç Yükle</h3>
+                <button onclick="closeModal('bulkResultModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-6 text-center space-y-4">
+                <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 bg-slate-50 hover:bg-slate-100 transition cursor-pointer">
+                    <svg class="w-10 h-10 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    <p class="text-sm font-bold text-slate-700">Excel veya PDF Dosyasını Sürükle</p>
+                    <p class="text-xs text-slate-500 mt-1">veya seçmek için tıkla</p>
+                </div>
+                <button onclick="closeModal('bulkResultModal');" class="w-full bg-slate-800 text-white font-bold py-3 rounded-lg hover:bg-slate-900 transition">Yükle ve Analiz Et</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="assignProgramModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="assignProgramModalContent">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <h3 class="font-bold text-lg text-slate-900">Program Ata</h3>
+                <button onclick="closeModal('assignProgramModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-sm text-slate-600">Şablon programı seçip ilgili gruba anında aktarabilirsiniz.</p>
+                <select class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-orange-500 outline-none">
+                    <option>Şablon: YKS Sayısal - Hafta 12</option>
+                    <option>Şablon: LGS Matematik Kampı</option>
+                </select>
+                <button onclick="closeModal('assignProgramModal'); alert('Programlar öğrencilerin paneline düştü!');" class="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition">Tüm Gruba Ata</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal Açma/Kapama İşlevleri
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(modalId + 'Content');
+            modal.classList.remove('hidden');
+            // Animasyon için kısa gecikme
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(modalId + 'Content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            // Animasyon bitiminde gizle
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
