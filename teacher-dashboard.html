@@ -30,9 +30,12 @@
         
         body.dark-theme .bg-orange-50 { background-color: rgba(249, 115, 22, 0.15) !important; border-color: rgba(249, 115, 22, 0.3) !important; }
         body.dark-theme .bg-indigo-50 { background-color: rgba(99, 102, 241, 0.15) !important; border-color: rgba(99, 102, 241, 0.3) !important; }
+        body.dark-theme .bg-blue-50 { background-color: rgba(59, 130, 246, 0.15) !important; border-color: rgba(59, 130, 246, 0.3) !important; }
+        body.dark-theme .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.15) !important; border-color: rgba(16, 185, 129, 0.3) !important; }
         
         body.dark-theme .text-orange-700 { color: #fdba74 !important; }
         body.dark-theme .text-indigo-700 { color: #818cf8 !important; }
+        body.dark-theme .text-indigo-900 { color: #c7d2fe !important; }
         body.dark-theme .modal-bg { background-color: #1e293b !important; border-color: #334155 !important; }
         body.dark-theme input, body.dark-theme select, body.dark-theme textarea { background-color: #0f172a !important; color: #f8fafc !important; border-color: #334155 !important; }
 
@@ -51,6 +54,7 @@
 
     <!-- ================= SOL MENÜ (SIDEBAR) ================= -->
     <aside id="sidebar" class="sidebar-expanded bg-white border-r border-slate-200 flex flex-col transition-all duration-300 z-50 shadow-sm relative">
+        <!-- Logo -->
         <div class="h-20 flex items-center justify-center border-b border-slate-100 transition-all px-4">
             <a href="index.html" class="flex items-center gap-2 overflow-hidden">
                 <div class="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center text-white font-black flex-shrink-0">H</div>
@@ -58,44 +62,58 @@
             </a>
         </div>
 
-        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-2">
-            <p class="px-3 text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest sidebar-text whitespace-nowrap">Eğitmen Paneli</p>
-            
-            <a href="#" class="flex items-center gap-3 px-3 py-3 bg-indigo-50 text-indigo-600 rounded-xl font-bold transition-colors group">
+        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1">
+            <!-- ANA EKRAN -->
+            <p class="px-3 text-[10px] font-bold text-slate-400 mb-2 uppercase tracking-widest sidebar-text whitespace-nowrap">Ana Ekran</p>
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 bg-orange-50 text-orange-600 rounded-xl font-bold transition-colors group">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                 <span class="sidebar-text whitespace-nowrap text-sm">Gösterge Paneli</span>
             </a>
 
-            <p class="px-3 text-[10px] font-bold text-slate-400 mt-6 mb-2 uppercase tracking-widest sidebar-text whitespace-nowrap">Operasyonlar</p>
-
-            <button onclick="openModal('createClassModal')" class="w-full flex items-center gap-3 px-3 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group">
-                <svg class="w-5 h-5 flex-shrink-0 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                <span class="sidebar-text whitespace-nowrap text-sm">Yeni Sınıf Kur</span>
+            <!-- YAPAY ZEKA MODÜLLERİ -->
+            <p class="px-3 text-[10px] font-bold text-slate-400 mt-6 mb-2 uppercase tracking-widest sidebar-text whitespace-nowrap">Yapay Zeka (Eğitmen)</p>
+            <button onclick="openModal('aiAnalystModal')" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group relative">
+                <span class="absolute top-2.5 right-3 flex h-2 w-2 sidebar-text"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span></span>
+                <svg class="w-5 h-5 flex-shrink-0 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                <span class="sidebar-text whitespace-nowrap text-sm">AI Sınıf Analisti</span>
+            </button>
+            <button onclick="openModal('aiTestGeneratorModal')" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group">
+                <svg class="w-5 h-5 flex-shrink-0 group-hover:text-purple-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <span class="sidebar-text whitespace-nowrap text-sm">AI Test Üretici</span>
             </button>
 
-            <button onclick="openModal('addStudentByIdModal')" class="w-full flex items-center gap-3 px-3 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group">
+            <!-- OPERASYONLAR & ARAÇLAR -->
+            <p class="px-3 text-[10px] font-bold text-slate-400 mt-6 mb-2 uppercase tracking-widest sidebar-text whitespace-nowrap">Operasyonlar</p>
+            <button onclick="openModal('createClassModal')" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group">
+                <svg class="w-5 h-5 flex-shrink-0 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <span class="sidebar-text whitespace-nowrap text-sm">Yeni Sınıf Kur</span>
+            </button>
+            <button onclick="openModal('addStudentByIdModal')" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group">
                 <svg class="w-5 h-5 flex-shrink-0 group-hover:text-orange-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                 <span class="sidebar-text whitespace-nowrap text-sm">ID ile Öğrenci Ekle</span>
             </button>
-
-            <button onclick="openModal('assignProgramModal')" class="w-full flex items-center gap-3 px-3 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group">
-                <svg class="w-5 h-5 flex-shrink-0 group-hover:text-emerald-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            <button onclick="openModal('assignProgramModal')" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group">
+                <svg class="w-5 h-5 flex-shrink-0 group-hover:text-teal-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 <span class="sidebar-text whitespace-nowrap text-sm">Toplu Program Ata</span>
             </button>
-
-            <button onclick="openModal('messagesModal')" class="w-full flex items-center gap-3 px-3 py-3 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group relative">
+            <button onclick="openModal('bulkResultModal')" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group">
+                <svg class="w-5 h-5 flex-shrink-0 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                <span class="sidebar-text whitespace-nowrap text-sm">Toplu Sonuç Yükle</span>
+            </button>
+            <button onclick="openModal('messagesModal')" class="w-full flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-xl font-bold transition-colors group relative">
                 <span class="absolute top-3 right-3 flex h-2 w-2 sidebar-text"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span></span>
                 <svg class="w-5 h-5 flex-shrink-0 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
                 <span class="sidebar-text whitespace-nowrap text-sm">İletişim Merkezi</span>
             </button>
         </nav>
 
+        <!-- Ayarlar & Daralt Butonu -->
         <div class="p-4 border-t border-slate-100 flex flex-col gap-2">
-            <button onclick="openModal('settingsModal')" class="flex items-center gap-3 px-3 py-3 text-slate-500 hover:text-slate-800 rounded-xl font-bold transition-colors">
+            <button onclick="openModal('settingsModal')" class="flex items-center gap-3 px-3 py-2.5 text-slate-500 hover:text-slate-800 rounded-xl font-bold transition-colors">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
-                <span class="sidebar-text whitespace-nowrap text-sm">Sistem Ayarları</span>
+                <span class="sidebar-text whitespace-nowrap text-sm">Ayarlar</span>
             </button>
-            <button onclick="toggleSidebar()" class="flex items-center gap-3 px-3 py-3 text-slate-400 hover:text-slate-600 rounded-xl font-bold transition-colors bg-slate-50">
+            <button onclick="toggleSidebar()" class="flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-600 rounded-xl font-bold transition-colors bg-slate-50">
                 <svg id="sidebarToggleIcon" class="w-5 h-5 flex-shrink-0 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
                 <span class="sidebar-text whitespace-nowrap text-xs uppercase tracking-wider">Menüyü Daralt</span>
             </button>
@@ -119,19 +137,20 @@
                     <p class="text-sm font-bold text-slate-900 user-name-display">Eğitmen</p>
                     <p class="text-xs text-slate-500 font-mono bg-slate-100 px-1.5 py-0.5 rounded mt-0.5 inline-block user-id-display">H100-XXXX</p>
                 </div>
-                <div onclick="openModal('teacherProfileModal')" class="user-initials-display w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center font-bold shadow-md cursor-pointer hover:ring-4 ring-orange-200 transition bg-cover bg-center">
-                    EG
-                </div>
+                <div onclick="openModal('teacherProfileModal')" class="user-initials-display w-10 h-10 bg-slate-800 text-white rounded-full flex items-center justify-center font-bold shadow-md cursor-pointer hover:ring-4 ring-orange-200 transition bg-cover bg-center">EG</div>
             </div>
         </header>
 
+        <!-- Pano İçeriği (Orta Ekran Tertemiz) -->
         <main class="p-6 lg:p-8 flex-1 relative z-10 w-full max-w-6xl mx-auto space-y-8">
+            <!-- Karşılama -->
             <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden transition-colors">
                 <div class="absolute right-0 top-0 w-40 h-40 bg-orange-50 rounded-bl-full -mr-4 -mt-4 opacity-50"></div>
                 <h1 class="text-2xl md:text-3xl font-extrabold mb-2 text-slate-900">Hoş Geldin, <span class="user-name-display text-orange-500">Hocam</span>!</h1>
-                <p class="text-slate-500 max-w-xl text-sm md:text-base">LGS, TYT, AYT ve KPSS gruplarınızdaki öğrencilerin bu haftaki analitik raporları derlendi. Sınıflarınızın genel performansı yükseliş trendinde.</p>
+                <p class="text-slate-500 max-w-xl text-sm md:text-base">Gruplarınızdaki öğrencilerin bu haftaki analitik raporları derlendi. Sınıflarınızın genel performansı yükseliş trendinde.</p>
             </div>
 
+            <!-- İstatistik Kartları -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm border-l-4 border-l-orange-500 transition-colors">
                     <p class="text-sm font-semibold text-slate-500 mb-1">Toplam Öğrenci</p>
@@ -150,6 +169,7 @@
                 </div>
             </div>
 
+            <!-- Alt Grid: Sınıflar & Öğrenciler (Solda Menü Olduğu İçin Sağ Taraf Boşaltıldı) -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Sınıf ve Grup Yönetimi -->
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden transition-colors flex flex-col">
@@ -211,7 +231,7 @@
         </main>
     </div>
 
-    <!-- ================= MODALLAR ================= -->
+    <!-- ================= MODALLAR (AÇILIR PENCERELER) ================= -->
 
     <!-- Eğitmen Profil Modalı -->
     <div id="teacherProfileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
@@ -225,27 +245,27 @@
                         <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     </div>
                     <label for="profilePicUpload" class="absolute bottom-0 right-0 bg-orange-500 text-white p-2 rounded-full cursor-pointer hover:bg-orange-600 transition shadow-md border-2 border-white">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16a1 1 0 011-1h1.5l1.2-1.6A2 2 0 018.3 13h7.4a2 2 0 011.6.7l1.2 1.6H20a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 16a1 1 0 011-1h1.5l1.2-1.6A2 2 0 018.3 13h7.4a2 2 0 011.6.7l1.2 1.6H20a1 1 0 011 1v4a1 1 0 01-1 1H4a1 1 0 01-1-1v-4z"></path></svg>
                         <input type="file" id="profilePicUpload" class="hidden" accept="image/*">
                     </label>
                 </div>
                 <h3 class="font-black text-xl text-slate-900 text-center mb-6">Eğitmen Profili</h3>
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Eğitim & Uzmanlık Branşı</label>
-                        <input type="text" id="expertiseInput" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-orange-500 outline-none transition-colors" placeholder="Örn: Fizik & Matematik Koordinatörü">
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Eğitim & Uzmanlık Branşı</label>
+                        <input type="text" id="expertiseInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Örn: Fizik Koordinatörü">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Vizyon & Hakkımda</label>
-                        <textarea id="aboutMeInput" rows="4" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-orange-500 outline-none transition-colors resize-none" placeholder="Öğrencilerine kendini tanıt..."></textarea>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Vizyon & Hakkımda</label>
+                        <textarea id="aboutMeInput" rows="4" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 focus:ring-2 focus:ring-orange-500 outline-none resize-none" placeholder="Kendinizi tanıtın..."></textarea>
                     </div>
-                    <button onclick="saveTeacherProfile()" class="w-full bg-slate-900 text-white font-extrabold py-3.5 rounded-xl hover:bg-slate-800 transition shadow-lg mt-2">Profili Güncelle</button>
+                    <button onclick="saveTeacherProfile()" class="w-full bg-slate-900 text-white font-extrabold py-3.5 rounded-xl shadow-lg mt-2">Profili Güncelle</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Sınıf Oluşturma Modalı -->
+    <!-- Yeni Sınıf Kur Modalı -->
     <div id="createClassModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="modal-bg bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="createClassModalContent">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-indigo-50">
@@ -256,8 +276,8 @@
                 <button onclick="closeModal('createClassModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div class="p-6 space-y-4">
-                <input type="text" id="classNameInput" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl p-3 outline-none" placeholder="Sınıf Adı">
-                <select id="classLevelInput" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl p-3 outline-none">
+                <input type="text" id="classNameInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none" placeholder="Sınıf Adı">
+                <select id="classLevelInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none">
                     <option value="YKS">YKS</option><option value="LGS">LGS</option><option value="KPSS">KPSS</option>
                 </select>
                 <button onclick="createNewClass()" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl shadow-lg">Sınıfı Oluştur</button>
@@ -265,15 +285,15 @@
         </div>
     </div>
 
-    <!-- Hedef ID ile Öğrenci Ekleme Modalı -->
+    <!-- Öğrenci Ekle Modalı -->
     <div id="addStudentByIdModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
         <div class="modal-bg bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="addStudentByIdModalContent">
             <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-orange-50">
-                <h3 class="font-bold text-lg text-orange-900">ID ile Sisteme Kaydet</h3>
+                <h3 class="font-bold text-lg text-orange-900">ID ile Öğrenci Ekle</h3>
                 <button onclick="closeModal('addStudentByIdModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div class="p-6 space-y-5">
-                <input type="text" id="targetIdInput" class="w-full bg-slate-50 text-slate-800 border border-slate-200 rounded-xl p-3 font-mono text-center text-lg uppercase outline-none" placeholder="H100-XXXX">
+                <input type="text" id="targetIdInput" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 font-mono text-center text-lg uppercase outline-none" placeholder="H100-XXXX">
                 <button onclick="addStudentMock()" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl shadow-lg">Sisteme Çek</button>
             </div>
         </div>
@@ -301,7 +321,7 @@
                 <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chatHistoryBox"></div>
                 <div class="p-4 border-t border-slate-200 bg-white">
                     <div class="flex gap-2">
-                        <textarea id="chatInputArea" rows="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none" placeholder="Sınıfa mesaj gönder..."></textarea>
+                        <textarea id="chatInputArea" rows="1" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none" placeholder="Mesaj gönder..."></textarea>
                         <button onclick="sendRealChatMessage()" class="p-3 bg-blue-600 text-white rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg></button>
                     </div>
                 </div>
@@ -309,15 +329,60 @@
         </div>
     </div>
 
-    <!-- Sınıfa Program Atama Modalı -->
-    <div id="assignProgramModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="modal-bg bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="assignProgramModalContent">
-            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-emerald-50">
-                <h3 class="font-bold text-lg text-emerald-900">Program Ata</h3>
-                <button onclick="closeModal('assignProgramModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+    <!-- Toplu Sonuç Yükle Modalı -->
+    <div id="bulkResultModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="modal-bg bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="bulkResultModalContent">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-amber-50">
+                <h3 class="font-bold text-lg text-amber-900">Toplu Sonuç Yükle</h3>
+                <button onclick="closeModal('bulkResultModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-6 text-center space-y-4">
+                <div class="border-2 border-dashed border-slate-300 rounded-xl p-8 bg-slate-50 cursor-pointer">
+                    <svg class="w-10 h-10 text-slate-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                    <p class="text-sm font-bold text-slate-700">Excel Dosyasını Buraya Sürükle</p>
+                </div>
+                <button onclick="closeModal('bulkResultModal'); showToast('Sonuçlar yüklendi.');" class="w-full bg-amber-600 text-white font-bold py-3.5 rounded-xl">Yükle ve Analiz Et</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- YENİ: AI Sınıf Analisti Modalı -->
+    <div id="aiAnalystModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="modal-bg bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="aiAnalystModalContent">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-indigo-50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></div>
+                    <h3 class="font-bold text-lg text-indigo-900">AI Sınıf Analisti</h3>
+                </div>
+                <button onclick="closeModal('aiAnalystModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <div class="p-6 space-y-4">
-                <button onclick="closeModal('assignProgramModal'); showToast('Program tüm öğrencilere atandı.');" class="w-full bg-emerald-600 text-white font-bold py-3.5 rounded-xl">Toplu Ata</button>
+                <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-200">
+                    <p class="text-sm font-bold text-indigo-900 mb-2">2026 AYT Sayısal Sınıfı Raporu</p>
+                    <p class="text-xs text-indigo-700">Son denemede sınıfın %65'i <strong>Modern Fizik</strong>, %40'ı <strong>Türev</strong> konusunda hata yapmıştır. Acil telafi dersi önerilir.</p>
+                </div>
+                <button onclick="closeModal('aiAnalystModal'); showToast('Analiz raporu kaydedildi.');" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl shadow-lg">Raporu Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- YENİ: AI Test Üretici Modalı -->
+    <div id="aiTestGeneratorModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="modal-bg bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-transform duration-300" id="aiTestGeneratorModalContent">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-purple-50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg></div>
+                    <h3 class="font-bold text-lg text-purple-900">AI Test Üretici</h3>
+                </div>
+                <button onclick="closeModal('aiTestGeneratorModal')" class="text-slate-400 hover:text-red-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-sm text-slate-600">Sınıfın zayıf kazanımlarına göre otomatik test PDF'i oluşturun.</p>
+                <select class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 outline-none text-sm">
+                    <option>Konu: Modern Fizik (AI Önerisi)</option>
+                    <option>Konu: Türev (AI Önerisi)</option>
+                </select>
+                <button onclick="closeModal('aiTestGeneratorModal'); showToast('PDF test üretiliyor... Sınıfa atanacak.');" class="w-full bg-purple-600 text-white font-bold py-3.5 rounded-xl shadow-lg">Test Üret & Ata</button>
             </div>
         </div>
     </div>
@@ -341,6 +406,7 @@
         </div>
     </div>
 
+    <div id="assignProgramModal" class="hidden"><div id="assignProgramModalContent"></div></div>
     <div id="studentDetailModal" class="hidden"><div id="studentDetailModalContent"></div></div>
     <div id="notificationsModal" class="hidden"><div id="notificationsModalContent"></div></div>
 
@@ -376,18 +442,11 @@
                 if(nameParts.length > 1) initials += nameParts[nameParts.length - 1][0];
                 
                 document.querySelectorAll('.user-name-display').forEach(el => el.innerText = storedName);
-                if(!storedAvatar) {
-                    document.querySelectorAll('.user-initials-display').forEach(el => el.innerText = initials.toUpperCase());
-                }
+                if(!storedAvatar) { document.querySelectorAll('.user-initials-display').forEach(el => el.innerText = initials.toUpperCase()); }
             }
-            if(storedId) {
-                document.querySelectorAll('.user-id-display').forEach(el => el.innerText = storedId);
-            }
+            if(storedId) { document.querySelectorAll('.user-id-display').forEach(el => el.innerText = storedId); }
             if(storedAvatar) {
-                document.querySelectorAll('.user-initials-display').forEach(el => {
-                    el.style.backgroundImage = `url(${storedAvatar})`;
-                    el.innerText = '';
-                });
+                document.querySelectorAll('.user-initials-display').forEach(el => { el.style.backgroundImage = `url(${storedAvatar})`; el.innerText = ''; });
                 document.getElementById('profileImagePreview').style.backgroundImage = `url(${storedAvatar})`;
                 document.getElementById('profileImagePreview').innerHTML = '';
             }
@@ -415,14 +474,10 @@
 
             if(tempImg) {
                 localStorage.setItem('hedef100_teacherAvatar', tempImg);
-                document.querySelectorAll('.user-initials-display').forEach(el => {
-                    el.style.backgroundImage = `url(${tempImg})`;
-                    el.innerText = '';
-                });
+                document.querySelectorAll('.user-initials-display').forEach(el => { el.style.backgroundImage = `url(${tempImg})`; el.innerText = ''; });
             }
             localStorage.setItem('hedef100_teacherExpertise', exp);
             localStorage.setItem('hedef100_teacherAbout', about);
-
             closeModal('teacherProfileModal');
             showToast('Profiliniz başarıyla güncellendi!');
         }
