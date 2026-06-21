@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Platforma Katıl | Hedef100 Academia</title>
+    <title>Sisteme Kayıt | Hedef100 Academia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
     <style>
@@ -12,15 +12,17 @@
             background-image: linear-gradient(to right, #f8fafc 1px, transparent 1px), linear-gradient(to bottom, #f8fafc 1px, transparent 1px);
             background-size: 40px 40px;
         }
-        .glow-text { text-shadow: 0 0 20px rgba(249, 115, 22, 0.5); }
+        .tab-active { background-color: #f97316; color: white; }
+        .tab-inactive { background-color: transparent; color: #475569; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col relative selection:bg-orange-500 selection:text-white">
 
     <div class="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none"></div>
 
+    <!-- Üst Menü -->
     <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 shadow-sm py-4">
-        <div class="container mx-auto px-6 text-center md:text-left flex justify-between items-center">
+        <div class="container mx-auto px-6 flex justify-between items-center">
             <a href="index.html" class="text-2xl font-extrabold tracking-tighter text-slate-900">
                 HEDEF100<span class="text-orange-500">.ACADEMIA</span>
             </a>
@@ -29,101 +31,71 @@
     </nav>
 
     <div class="container mx-auto px-4 py-12 z-10 flex-1 flex justify-center items-center">
-        <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl border border-orange-100 w-full max-w-2xl relative overflow-hidden">
+        <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl border border-slate-100 w-full max-w-lg relative overflow-hidden transition-all duration-300">
             
-            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 via-emerald-400 to-blue-500"></div>
+            <div id="topDecoBar" class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-rose-500 transition-colors duration-500"></div>
 
             <div class="text-center mb-8 mt-2">
                 <h1 class="text-3xl font-black text-slate-900 tracking-tight">Eğitim Ekosistemine Katıl</h1>
                 <p class="text-sm text-slate-500 mt-2">Sana özel Hedef ID'ni oluşturmak için hesap türünü seç.</p>
             </div>
 
-            <div class="flex p-1 mb-8 space-x-1 bg-slate-100 rounded-xl">
-                <button id="student-btn" onclick="switchTab('student')" class="w-full py-2.5 text-sm font-bold rounded-lg bg-orange-500 text-white shadow-sm transition-all focus:outline-none">Öğrenci Kayıt</button>
-                <button id="teacher-btn" onclick="switchTab('teacher')" class="w-full py-2.5 text-sm font-bold rounded-lg bg-transparent text-slate-600 hover:text-slate-800 transition-all focus:outline-none">Eğitmen Kayıt</button>
-                <button id="school-btn" onclick="switchTab('school')" class="w-full py-2.5 text-sm font-bold rounded-lg bg-transparent text-slate-600 hover:text-slate-800 transition-all focus:outline-none">Kurum Başvurusu</button>
+            <!-- Rol Seçim Sekmeleri -->
+            <div class="flex p-1 mb-8 bg-slate-100 rounded-xl">
+                <button id="tab-student" onclick="switchRole('student')" class="w-1/3 py-2.5 text-sm font-bold rounded-lg tab-active shadow-sm transition-all focus:outline-none">Öğrenci</button>
+                <button id="tab-teacher" onclick="switchRole('teacher')" class="w-1/3 py-2.5 text-sm font-bold rounded-lg tab-inactive hover:text-slate-800 transition-all focus:outline-none">Eğitmen</button>
+                <button id="tab-kurum" onclick="switchRole('kurum')" class="w-1/3 py-2.5 text-sm font-bold rounded-lg tab-inactive hover:text-slate-800 transition-all focus:outline-none">Kurum</button>
             </div>
 
-            <form id="student-form" onsubmit="handleRegistration(event, 'student')" class="space-y-5 transition-opacity duration-300">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- ÖĞRENCİ VE EĞİTMEN FORMU (Dinamik Değişir) -->
+            <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-5">
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Ad Soyad</label>
-                        <input type="text" id="studentName" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Örn: Can Yılmaz" required>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Adınız</label>
+                        <input type="text" id="firstName" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none text-sm" placeholder="Örn: Can" required>
                     </div>
                     <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Telefon Numarası</label>
-                        <input type="tel" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="05XX XXX XX XX" required>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Sınıf / Düzey</label>
-                        <select class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none text-slate-700" required>
-                            <option value="" disabled selected>Seçiniz...</option>
-                            <option value="yks">YKS (12. Sınıf & Mezun)</option>
-                            <option value="lgs">LGS (8. Sınıf)</option>
-                            <option value="kpss">KPSS / DGS / ALES</option>
-                            <option value="ara">Ara Sınıf (9, 10, 11)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Şifre Belirleyin</label>
-                        <input type="password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none" placeholder="••••••••" required>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Soyadınız</label>
+                        <input type="text" id="lastName" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none text-sm" placeholder="Örn: Yılmaz" required>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-extrabold py-4 px-4 rounded-xl transition-all shadow-lg shadow-orange-500/30 transform hover:-translate-y-0.5">
-                    Öğrenci Hesabımı Oluştur
+                <div>
+                    <label id="dynamicLabel" class="block text-sm font-bold text-slate-700 mb-2">Hedef Sınavınız</label>
+                    <select id="dynamicSelect" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none text-sm text-slate-600" required>
+                        <option value="">Seçiniz...</option>
+                        <option value="YKS">YKS (TYT/AYT)</option>
+                        <option value="LGS">LGS</option>
+                        <option value="KPSS">KPSS</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">E-posta Adresi</label>
+                    <input type="email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none text-sm" placeholder="ornek@email.com" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Şifre</label>
+                    <input type="password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none text-sm" placeholder="••••••••" required minlength="6">
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-lg shadow-orange-500/30 transform hover:-translate-y-0.5 mt-2 text-sm">
+                    Ücretsiz Kayıt Ol & Hedef ID Al
                 </button>
             </form>
 
-            <form id="teacher-form" onsubmit="handleRegistration(event, 'teacher')" class="space-y-5 hidden transition-opacity duration-300">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Eğitmen Adı Soyadı</label>
-                        <input type="text" id="teacherName" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none" placeholder="Örn: Ahmet Kula" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Uzmanlık Branşı</label>
-                        <select class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none text-slate-700" required>
-                            <option value="" disabled selected>Branş Seçiniz...</option>
-                            <option value="matematik">Matematik & Geometri</option>
-                            <option value="fizik">Fizik</option>
-                            <option value="rehberlik">Rehberlik & Koçluk</option>
-                            <option value="diger">Diğer Branşlar</option>
-                        </select>
-                    </div>
+            <!-- KURUMSAL YÖNLENDİRME ALANI (Sadece Kurum sekmesinde görünür) -->
+            <div id="kurumArea" class="hidden text-center bg-indigo-50 border border-indigo-100 p-8 rounded-2xl">
+                <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">E-posta Adresi</label>
-                        <input type="email" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none" placeholder="ornek@email.com" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Şifre Belirleyin</label>
-                        <input type="password" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-slate-800 outline-none" placeholder="••••••••" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full mt-4 bg-slate-800 hover:bg-slate-900 text-white font-extrabold py-4 px-4 rounded-xl transition-all shadow-lg transform hover:-translate-y-0.5">
-                    Eğitmen Panelimi Kur
+                <h3 class="text-xl font-bold text-indigo-900 mb-2">Okullar ve Dershaneler İçin B2B</h3>
+                <p class="text-sm text-indigo-700 mb-6">Kurumunuza özel "Super Admin" paneli ile tüm öğretmen ve öğrencilerinizi tek bir ekrandan, yapay zeka destekli yönetin.</p>
+                <button onclick="window.location.href='kurum-basvurusu.html'" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-lg shadow-indigo-500/30 transform hover:-translate-y-0.5 text-sm">
+                    Bize Ulaşın & Demo Talep Edin
                 </button>
-            </form>
-
-            <form id="school-form" onsubmit="event.preventDefault(); alert('Kurum başvuru modülü yakında aktif edilecektir! Bizimle iletişime geçin.');" class="space-y-5 hidden transition-opacity duration-300">
-                <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
-                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                    </div>
-                    <h3 class="font-bold text-lg text-blue-900 mb-2">Okullar ve Dershaneler İçin Hedef100</h3>
-                    <p class="text-sm text-blue-700 mb-6">Kurumunuza özel "Super Admin" paneli ile tüm öğretmen ve öğrencilerinizi tek bir ekrandan, yapay zeka destekli yönetin.</p>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-md">
-                        Bize Ulaşın & Demo Talep Edin
-                    </button>
-                </div>
-            </form>
+            </div>
 
             <div class="mt-8 text-center text-sm text-slate-500">
                 <p>Zaten sistemde hesabınız var mı?</p>
@@ -133,110 +105,98 @@
         </div>
     </div>
 
-    <div id="successModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-500">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden transform scale-90 transition-transform duration-500 text-center relative" id="successModalContent">
-            
-            <div class="h-32 bg-gradient-to-r from-orange-400 to-indigo-500 flex items-center justify-center relative overflow-hidden">
-                <svg class="w-20 h-20 text-white opacity-20 absolute" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    <!-- Başarılı Animasyonu (Gizli Başlar) -->
+    <div id="successOverlay" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm hidden z-50 flex items-center justify-center opacity-0 transition-opacity duration-500">
+        <div class="text-center transform scale-90 transition-transform duration-500" id="successContent">
+            <div class="w-24 h-24 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-green-500/50">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
             </div>
-
-            <div class="p-8 -mt-12">
-                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border-4 border-slate-50 relative z-10">
-                    <svg class="w-12 h-12 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                </div>
-                
-                <h3 class="font-black text-2xl text-slate-900 mb-2">Kayıt Başarılı!</h3>
-                <p class="text-sm text-slate-500 mb-6">Sisteme hoş geldin, <span id="modalUserName" class="font-bold text-slate-800"></span>. İşte kurumlara ve öğretmenlerine vereceğin dijital kimliğin:</p>
-                
-                <div class="bg-slate-900 rounded-2xl p-6 border border-slate-700 shadow-inner mb-8 transform hover:scale-105 transition-transform cursor-pointer" onclick="copyId()">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Benzersiz Hedef ID</p>
-                    <p class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300 tracking-widest glow-text" id="generatedIdDisplay">H100-XXXX</p>
-                    <p class="text-[10px] text-slate-500 mt-3">(Kopyalamak için tıkla)</p>
-                </div>
-                
-                <button id="goToPanelBtn" class="w-full bg-slate-900 text-white font-extrabold py-4 rounded-xl hover:bg-slate-800 transition-colors shadow-lg">
-                    Sistem Paneline Geçiş Yap ➔
-                </button>
+            <h2 class="text-3xl font-black text-white mb-2">Kayıt Başarılı!</h2>
+            <p class="text-slate-300 mb-4">Sisteme yönlendiriliyorsunuz...</p>
+            <div class="inline-block bg-white/20 backdrop-blur-md px-6 py-3 rounded-xl border border-white/30">
+                <p class="text-xs text-slate-300 uppercase tracking-widest mb-1">HEDEF ID'NİZ</p>
+                <p id="generatedId" class="text-2xl font-mono font-bold text-white tracking-widest"></p>
             </div>
         </div>
     </div>
 
-    <div id="toast" class="fixed bottom-5 right-5 bg-emerald-500 text-white px-6 py-4 rounded-xl shadow-2xl z-[100] transform transition-all duration-300 translate-y-20 opacity-0 flex items-center gap-3 font-bold text-sm">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-        <span>Hedef ID Kopyalandı!</span>
-    </div>
-
     <script>
-        // Sekme Değiştirme
-        function switchTab(tab) {
-            const tabs = ['student', 'teacher', 'school'];
+        let currentRole = 'student';
+
+        function switchRole(role) {
+            currentRole = role;
+            const tabs = ['student', 'teacher', 'kurum'];
+            
+            // Renkleri sıfırla
             tabs.forEach(t => {
-                document.getElementById(t + '-form').classList.add('hidden');
-                
-                const btn = document.getElementById(t + '-btn');
-                btn.className = "w-full py-2.5 text-sm font-bold rounded-lg bg-transparent text-slate-600 hover:text-slate-800 transition-all focus:outline-none";
+                const el = document.getElementById('tab-' + t);
+                el.className = "w-1/3 py-2.5 text-sm font-bold rounded-lg tab-inactive hover:text-slate-800 transition-all focus:outline-none";
             });
 
-            document.getElementById(tab + '-form').classList.remove('hidden');
-            
-            const activeBtn = document.getElementById(tab + '-btn');
-            // Role göre buton rengini ayarla (Öğrenci turuncu, öğretmen lacivert, okul mavi)
-            if(tab === 'student') activeBtn.classList.add('bg-orange-500', 'text-white', 'shadow-sm');
-            else if(tab === 'teacher') activeBtn.classList.add('bg-slate-800', 'text-white', 'shadow-sm');
-            else if(tab === 'school') activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
-            
-            activeBtn.classList.remove('bg-transparent', 'text-slate-600', 'hover:text-slate-800');
+            const form = document.getElementById('registerForm');
+            const kurumArea = document.getElementById('kurumArea');
+            const decoBar = document.getElementById('topDecoBar');
+            const dynamicLabel = document.getElementById('dynamicLabel');
+            const dynamicSelect = document.getElementById('dynamicSelect');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if(role === 'student') {
+                document.getElementById('tab-student').className = "w-1/3 py-2.5 text-sm font-bold rounded-lg tab-active shadow-sm transition-all focus:outline-none";
+                form.classList.remove('hidden');
+                kurumArea.classList.add('hidden');
+                decoBar.className = "absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-400 to-rose-500 transition-colors duration-500";
+                dynamicLabel.innerText = "Hedef Sınavınız";
+                dynamicSelect.innerHTML = '<option value="">Seçiniz...</option><option value="YKS">YKS (TYT/AYT)</option><option value="LGS">LGS</option><option value="KPSS">KPSS</option>';
+                submitBtn.className = "w-full bg-orange-500 hover:bg-orange-600 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-lg shadow-orange-500/30 transform hover:-translate-y-0.5 mt-2 text-sm";
+            } 
+            else if(role === 'teacher') {
+                document.getElementById('tab-teacher').className = "w-1/3 py-2.5 text-sm font-bold rounded-lg bg-slate-800 text-white shadow-sm transition-all focus:outline-none";
+                form.classList.remove('hidden');
+                kurumArea.classList.add('hidden');
+                decoBar.className = "absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-slate-700 to-slate-900 transition-colors duration-500";
+                dynamicLabel.innerText = "Uzmanlık Branşınız";
+                dynamicSelect.innerHTML = '<option value="">Branş Seçiniz...</option><option value="Matematik">Matematik</option><option value="Fizik">Fizik</option><option value="Kimya">Kimya</option><option value="Biyoloji">Biyoloji</option><option value="Türkçe">Türkçe / Edebiyat</option><option value="Diger">Diğer</option>';
+                submitBtn.className = "w-full bg-slate-800 hover:bg-slate-900 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-lg transform hover:-translate-y-0.5 mt-2 text-sm";
+            }
+            else if(role === 'kurum') {
+                document.getElementById('tab-kurum').className = "w-1/3 py-2.5 text-sm font-bold rounded-lg bg-indigo-600 text-white shadow-sm transition-all focus:outline-none";
+                form.classList.add('hidden');
+                kurumArea.classList.remove('hidden');
+                decoBar.className = "absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-purple-600 transition-colors duration-500";
+            }
         }
 
-        // Kayıt ve Hedef ID Üretim Motoru
-        function handleRegistration(event, role) {
-            event.preventDefault(); // Sayfanın yenilenmesini engelle
+        function handleRegister(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const fullName = firstName + ' ' + lastName;
+            
+            // Rastgele Hedef ID Üret
+            const randomCode = Math.random().toString(36).substring(2,6).toUpperCase();
+            const hedefId = 'H100-' + randomCode;
 
-            // 1. İsim bilgisini al
-            let nameInputId = role === 'student' ? 'studentName' : 'teacherName';
-            let userName = document.getElementById(nameInputId).value;
-
-            // 2. Rastgele ve Benzersiz "Hedef ID" Üret (Örn: H100-A7K9)
-            const randomChars = Math.random().toString(36).substring(2, 6).toUpperCase();
-            const hedefId = `H100-${randomChars}`;
-
-            // 3. Verileri Tarayıcı Hafızasına (LocalStorage) Kaydet
-            localStorage.setItem('hedef100_userName', userName);
-            localStorage.setItem('hedef100_userRole', role);
+            // Verileri Tarayıcı Hafızasına (Local Storage) Kaydet
+            localStorage.setItem('hedef100_userName', fullName);
             localStorage.setItem('hedef100_userId', hedefId);
 
-            // Eski kodlardan kalan uyumluluk için
-            localStorage.setItem('hedef100_studentName', userName); 
-
-            // 4. Modalı Doldur ve Aç
-            document.getElementById('modalUserName').innerText = userName;
-            document.getElementById('generatedIdDisplay').innerText = hedefId;
+            // Başarı Ekranını Göster
+            const overlay = document.getElementById('successOverlay');
+            const content = document.getElementById('successContent');
+            document.getElementById('generatedId').innerText = hedefId;
             
-            // Yönlendirme butonunu role göre ayarla
-            const targetPage = role === 'student' ? 'dashboard.html' : 'teacher-dashboard.html';
-            const btn = document.getElementById('goToPanelBtn');
-            btn.onclick = () => window.location.href = targetPage;
-
-            // Animasyonlu Modal Açılışı
-            const modal = document.getElementById('successModal');
-            const content = document.getElementById('successModalContent');
-            modal.classList.remove('hidden');
+            overlay.classList.remove('hidden');
             setTimeout(() => {
-                modal.classList.remove('opacity-0');
+                overlay.classList.remove('opacity-0');
                 content.classList.remove('scale-90');
             }, 50);
-        }
 
-        // ID Kopyalama Fonksiyonu
-        function copyId() {
-            const idText = document.getElementById('generatedIdDisplay').innerText;
-            navigator.clipboard.writeText(idText).then(() => {
-                const toast = document.getElementById('toast');
-                toast.classList.remove('translate-y-20', 'opacity-0');
-                setTimeout(() => {
-                    toast.classList.add('translate-y-20', 'opacity-0');
-                }, 3000);
-            });
+            // 3 Saniye Sonra İlgili Panele Yönlendir
+            setTimeout(() => {
+                if(currentRole === 'student') window.location.href = 'dashboard.html';
+                else window.location.href = 'teacher-dashboard.html';
+            }, 3000);
         }
     </script>
 </body>
