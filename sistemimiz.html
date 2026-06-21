@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemimiz & Vizyonumuz | Hedef100 Academia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #f1f5f9 1px, transparent 1px), linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-800 min-h-screen flex flex-col relative selection:bg-orange-500 selection:text-white">
+
+    <div class="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none z-0"></div>
+
+    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-100 shadow-sm py-4">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black">H</div>
+                <span class="text-xl md:text-2xl font-black tracking-tighter text-slate-900">
+                    HEDEF100<span class="text-orange-500">.ACADEMIA</span>
+                </span>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="sistemimiz.html" class="text-sm font-black text-orange-500 border-b-2 border-orange-500 pb-1">Sistemimiz</a>
+                <a href="index.html" class="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors">Ana Sayfa</a>
+                <a href="login.html" class="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors">VIP Koçluk</a>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <a href="login.html" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-6 py-2.5 rounded-lg shadow-md transition-transform transform hover:-translate-y-0.5">
+                    Sisteme Giriş
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1 flex flex-col relative z-10">
+        
+        <section class="container mx-auto px-6 py-16 md:py-24 text-center">
+            <div class="inline-block bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-extrabold px-4 py-1.5 rounded-full mb-6 tracking-wider">
+                GELECEĞİN EĞİTİM EKOSİSTEMİ
+            </div>
+            <h1 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-6">
+                Eğitimi Tesadüflere Değil, <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-rose-500">Matematiksel Verilere</span> Bırakıyoruz.
+            </h1>
+            <p class="text-lg text-slate-500 max-w-3xl mx-auto leading-relaxed">
+                Hedef100 Academia olarak, sadece bir koçluk platformu değil; yapay zeka ile öğrencinin genetiğine inen, eksiklerini nokta atışı bulan ve onu hedeflediği üniversiteye ulaştıran bir teknoloji üssüyüz.
+            </p>
+        </section>
+
+        <section class="bg-slate-50 py-20 border-y border-slate-200">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-black text-slate-900">Şimdiki Hizmetlerimiz</h2>
+                    <p class="text-slate-500 mt-2">Öğrencilerimizi başarıya taşıyan devrimsel modüllerimiz.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-lg transition-shadow">
+                        <div class="w-14 h-14 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">AI Destekli Eksik Tespiti</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Girdiğiniz deneme sınavlarının sonuçları sistemimiz tarafından analiz edilir. "Fizik netin düşük" demek yerine, "Fotoelektrik olayda hatan var" diyerek mikroskobik tespit yaparız.</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-lg transition-shadow">
+                        <div class="w-14 h-14 bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Akıllı Kaynak Kütüphanesi</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Tespit edilen eksikliklerinize göre sistem size anında o konuyu kapatacak kısa çözüm videoları ve PDF testler atar. Kaynak arama derdine son veriyoruz.</p>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-lg transition-shadow">
+                        <div class="w-14 h-14 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mb-6">
+                            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Oyunlaştırma ve Sosyal Lig</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">Ödev yapmak artık sıkıcı değil. Görevleri tamamladıkça XP kazanır, "Elmas Lig", "Şampiyonluk Ligi" gibi seviyelere çıkarak Türkiye genelindeki rakiplerinizle yarışırsınız.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container mx-auto px-6 py-20">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-black text-slate-900">Vizyonumuz & Gelecek Planlarımız</h2>
+                <p class="text-slate-500 mt-2">Hedef100 Academia'nın sınırlarını genişletiyoruz.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto relative">
+                <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 bg-indigo-100 transform md:-translate-x-1/2"></div>
+
+                <div class="relative flex flex-col md:flex-row items-center mb-12">
+                    <div class="hidden md:flex justify-end w-1/2 pr-8 text-right">
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">SaaS Kurum Entegrasyonu</h4>
+                            <p class="text-sm text-slate-500 mt-2">Dershaneler ve okullar için "Super Admin" panellerini yayına alarak, tüm öğretmen ve öğrencilerin tek bir yapay zeka merkezinden yönetilmesini sağlayacağız.</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-4 md:left-1/2 w-8 h-8 bg-indigo-500 rounded-full border-4 border-white shadow-md transform -translate-x-1/2 flex items-center justify-center"></div>
+                    <div class="ml-12 md:ml-0 md:w-1/2 md:pl-8">
+                        <div class="md:hidden mb-2">
+                            <h4 class="text-xl font-bold text-slate-900">SaaS Kurum Entegrasyonu</h4>
+                            <p class="text-sm text-slate-500 mt-1">Dershaneler ve okullar için yönetim panelleri.</p>
+                        </div>
+                        <span class="inline-block bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full">Faz 1 - Çok Yakında</span>
+                    </div>
+                </div>
+
+                <div class="relative flex flex-col md:flex-row items-center mb-12">
+                    <div class="hidden md:flex justify-end w-1/2 pr-8 text-right">
+                        <span class="inline-block bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full">Faz 2 - 2027 Q1</span>
+                    </div>
+                    <div class="absolute left-4 md:left-1/2 w-8 h-8 bg-orange-500 rounded-full border-4 border-white shadow-md transform -translate-x-1/2 flex items-center justify-center"></div>
+                    <div class="ml-12 md:ml-0 md:w-1/2 md:pl-8">
+                        <div class="mb-2">
+                            <h4 class="text-xl font-bold text-slate-900">Fotoğraf ile Anında AI Soru Çözümü</h4>
+                            <p class="text-sm text-slate-500 mt-1">Öğrenci çözemediği sorunun fotoğrafını sisteme yükleyecek, "Hedef100 Yapay Zeka Çözücüsü" saniyeler içinde o soruyu kendi hocası gibi adım adım sesli ve yazılı anlatacak.</p>
+                        </div>
+                        <span class="md:hidden inline-block bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full">Faz 2 - 2027 Q1</span>
+                    </div>
+                </div>
+
+                <div class="relative flex flex-col md:flex-row items-center">
+                    <div class="hidden md:flex justify-end w-1/2 pr-8 text-right">
+                        <div>
+                            <h4 class="text-xl font-bold text-slate-900">Global Başarı Simülatörü</h4>
+                            <p class="text-sm text-slate-500 mt-2">Öğrencilerin günlük biyolojik ritmini, çalışma verilerini ve uyku düzenini analiz ederek hangi saatlerde test çözmesi gerektiğini söyleyen devasa bir makine öğrenmesi modeli kurmak asıl hedefimiz.</p>
+                        </div>
+                    </div>
+                    <div class="absolute left-4 md:left-1/2 w-8 h-8 bg-emerald-500 rounded-full border-4 border-white shadow-md transform -translate-x-1/2 flex items-center justify-center"></div>
+                    <div class="ml-12 md:ml-0 md:w-1/2 md:pl-8">
+                        <div class="md:hidden mb-2">
+                            <h4 class="text-xl font-bold text-slate-900">Global Başarı Simülatörü</h4>
+                            <p class="text-sm text-slate-500 mt-1">Biyolojik ritim ve veri analizi destekli modelleme.</p>
+                        </div>
+                        <span class="inline-block bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full">Büyük Vizyonumuz</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-gradient-to-r from-slate-900 to-slate-800 py-16">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl font-black text-white mb-6">Bu Eğitim Devriminin Bir Parçası Olun</h2>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="register.html" class="bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-lg py-4 px-8 rounded-xl shadow-lg transition-transform transform hover:scale-105">
+                        Öğrenci Olarak Katıl
+                    </a>
+                    <a href="register.html" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-lg py-4 px-8 rounded-xl transition-colors backdrop-blur-md">
+                        Kurum / Eğitmen Olarak Katıl
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-8">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 text-sm font-semibold">© 2026 Hedef100 Academia. Tüm Hakları Saklıdır.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
