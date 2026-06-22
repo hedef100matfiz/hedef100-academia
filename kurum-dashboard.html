@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kurum Sınıf Yönetimi | hedef.100academia</title>
+    <title>Kurum Yönetim Paneli | hedef.100academia</title>
     <style>
         /* CSS Değişkenleri */
         :root {
@@ -19,11 +19,8 @@
         }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--bg-color); color: var(--text-main);
         }
 
         /* Ana Düzen */
@@ -31,12 +28,9 @@
 
         /* Sol Menü */
         .sidebar {
-            width: 260px;
-            background-color: var(--primary-dark);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            width: 260px; background-color: var(--primary-dark); color: white;
+            display: flex; flex-direction: column; box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            position: sticky; top: 0; height: 100vh;
         }
 
         .sidebar-header { padding: 25px 20px; text-align: center; background-color: #0f172a; border-bottom: 1px solid #334155; }
@@ -47,7 +41,7 @@
         .sidebar-menu li a {
             display: block; padding: 16px 25px; color: #cbd5e1;
             text-decoration: none; font-size: 15px; transition: all 0.3s ease;
-            border-left: 4px solid transparent;
+            border-left: 4px solid transparent; cursor: pointer;
         }
         .sidebar-menu li a:hover, .sidebar-menu li a.active {
             background-color: var(--primary-light); color: #fff; border-left-color: var(--accent-color);
@@ -64,20 +58,25 @@
         .top-header {
             background-color: var(--card-bg); padding: 15px 35px;
             display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 10;
         }
         .search-container input { padding: 10px 15px; border-radius: 6px; border: 1px solid #e2e8f0; width: 300px; outline: none; }
         .user-profile { display: flex; align-items: center; gap: 15px; font-weight: 600; color: var(--primary-dark); }
         .avatar { width: 40px; height: 40px; background-color: var(--accent-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
-        /* Sayfa İçeriği */
+        /* Sayfa İçeriği & Bölüm (Section) Yönetimi */
         .page-content { padding: 35px; }
+        .content-section { display: none; animation: fadeIn 0.4s ease; }
+        .content-section.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .page-header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .page-title { margin: 0; font-size: 24px; color: var(--primary-dark); }
 
         .btn-primary {
             background-color: #f97316; color: white; border: none; padding: 10px 20px; border-radius: 8px;
-            font-weight: 600; cursor: pointer; transition: background 0.3s; box-shadow: 0 4px 6px rgba(249, 115, 22, 0.2);
+            font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 6px rgba(249, 115, 22, 0.2);
         }
         .btn-primary:hover { background-color: #ea580c; transform: translateY(-1px); }
 
@@ -94,9 +93,9 @@
         .class-card .teacher-name { color: var(--text-muted); font-size: 14px; margin-bottom: 15px; }
         .class-card .stats { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: var(--primary-light); background: var(--bg-color); padding: 10px; border-radius: 6px;}
         
-        /* Gruptaki Kişiler Tablosu */
-        .section-title { font-size: 18px; color: var(--primary-dark); margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; transition: 0.3s; }
-        .table-container { background-color: var(--card-bg); border-radius: 12px; padding: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        /* Genel Tablo Tasarımı */
+        .section-title { font-size: 18px; color: var(--primary-dark); margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .table-container { background-color: var(--card-bg); border-radius: 12px; padding: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 25px;}
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
         th { background-color: #f8fafc; color: var(--text-muted); font-weight: 600; font-size: 13px; text-transform: uppercase;}
@@ -112,33 +111,32 @@
         .btn-msg { background-color: transparent; border: 1px solid #cbd5e1; color: var(--text-main); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s;}
         .btn-msg:hover { background-color: #e2e8f0; border-color: #94a3b8; }
 
-        /* --- MODAL (POP-UP) TASARIMLARI --- */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px);
-            z-index: 1000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s;
-        }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-content {
-            background: #fff; padding: 30px; border-radius: 16px; width: 90%; max-width: 500px;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); position: relative;
-            transform: translateY(20px); transition: transform 0.3s;
-        }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
-        .modal-close {
-            position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px;
-            color: #94a3b8; cursor: pointer; transition: 0.2s;
-        }
-        .modal-close:hover { color: #ef4444; }
-        .modal-header { font-size: 20px; font-weight: 700; color: var(--primary-dark); margin-bottom: 20px; }
-        
+        /* Mesajlar Bölümü Özel Tasarım */
+        .chat-container { display: flex; height: 500px; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; }
+        .chat-sidebar { width: 30%; background: #f8fafc; border-right: 1px solid #e2e8f0; overflow-y: auto; }
+        .chat-item { padding: 15px; border-bottom: 1px solid #e2e8f0; cursor: pointer; transition: 0.2s; }
+        .chat-item:hover { background: #e2e8f0; }
+        .chat-item h4 { margin: 0 0 5px 0; font-size: 14px; color: var(--primary-dark); }
+        .chat-item p { margin: 0; font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .chat-main { flex: 1; background: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; color: var(--text-muted); }
+
+        /* Ayarlar Formu */
+        .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 5px; }
         .form-control { width: 100%; padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; box-sizing: border-box; font-family: inherit;}
         .form-control:focus { border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        
+        /* Modallar (Önceki koddan) */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content { background: #fff; padding: 30px; border-radius: 16px; width: 90%; max-width: 500px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); position: relative; transform: translateY(20px); transition: transform 0.3s; }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 24px; color: #94a3b8; cursor: pointer; transition: 0.2s; }
+        .modal-close:hover { color: #ef4444; }
+        .modal-header { font-size: 20px; font-weight: 700; color: var(--primary-dark); margin-bottom: 20px; }
         .modal-btn { width: 100%; padding: 12px; background: var(--accent-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.2s;}
         .modal-btn:hover { background: #2563eb; }
-
-        /* Rapor Çubuğu Tasarımı */
         .progress-container { background: #e2e8f0; height: 12px; border-radius: 10px; overflow: hidden; margin-top: 10px; }
         .progress-bar { background: var(--success-color); height: 100%; width: 0%; transition: width 1s ease-in-out; }
     </style>
@@ -154,11 +152,11 @@
             </div>
             <ul class="sidebar-menu">
                 <li><a href="index.html">← Site Ana Sayfası</a></li>
-                <li><a href="#" class="active">Sınıf & Grup Yönetimi</a></li>
-                <li><a href="#">Kurumsal Raporlar</a></li>
-                <li><a href="#">Tüm Mesajlar</a></li>
-                <li><a href="#">Öğrenci / Eğitmen Havuzu</a></li>
-                <li><a href="#">Kurum Ayarları</a></li>
+                <li><a onclick="switchSection('section-siniflar', this)" class="active">Sınıf & Grup Yönetimi</a></li>
+                <li><a onclick="switchSection('section-raporlar', this)">Kurumsal Raporlar</a></li>
+                <li><a onclick="switchSection('section-mesajlar', this)">Tüm Mesajlar</a></li>
+                <li><a onclick="switchSection('section-havuz', this)">Öğrenci / Eğitmen Havuzu</a></li>
+                <li><a onclick="switchSection('section-ayarlar', this)">Kurum Ayarları</a></li>
             </ul>
             <div class="sidebar-footer">
                 <a href="login.html">🚪 Güvenli Çıkış Yap</a>
@@ -168,7 +166,7 @@
         <main class="main-content">
             <header class="top-header">
                 <div class="search-container">
-                    <input type="text" placeholder="Sınıf, eğitmen veya öğrenci ara...">
+                    <input type="text" placeholder="Sistemde ara...">
                 </div>
                 <div class="user-profile">
                     <span>Yönetici Paneli</span>
@@ -178,239 +176,208 @@
 
             <div class="page-content">
                 
-                <div class="page-header-flex">
-                    <h1 class="page-title">Sınıf ve Grup Yönetimi</h1>
-                    <button class="btn-primary" onclick="openModal('createClassModal')">+ Yeni Sınıf / Grup Oluştur</button>
+                <div id="section-siniflar" class="content-section active">
+                    <div class="page-header-flex">
+                        <h1 class="page-title">Sınıf ve Grup Yönetimi</h1>
+                        <button class="btn-primary" onclick="openModal('createClassModal')">+ Yeni Sınıf / Grup Oluştur</button>
+                    </div>
+                    
+                    <div class="class-grid">
+                        <div class="class-card active-card" onclick="selectClass(this, '12-A Sayısal Sınıfı')">
+                            <h3>12-A Sayısal Sınıfı</h3>
+                            <div class="teacher-name">Sorumlu Eğitmen: <strong>Ahmet Kula</strong></div>
+                            <div class="stats"><span>👥 24 Öğrenci</span><span style="color: var(--success-color);">📈 Hedef: %85</span></div>
+                        </div>
+                        <div class="class-card" onclick="selectClass(this, '11-B Eşit Ağırlık')">
+                            <h3>11-B Eşit Ağırlık</h3>
+                            <div class="teacher-name">Sorumlu Eğitmen: <strong>Ayşe Yılmaz</strong></div>
+                            <div class="stats"><span>👥 18 Öğrenci</span><span style="color: var(--warning-color);">📈 Hedef: %62</span></div>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+                        <div class="page-header-flex" style="margin-bottom: 10px;">
+                            <h2 id="active-class-title" class="section-title" style="border: none; margin: 0;">12-A Sayısal Sınıfı - Gruptaki Kişiler</h2>
+                            <button class="btn-msg" onclick="openMsgModal('Tüm Sınıf (Toplu Mesaj)')">✉️ Gruba Toplu Mesaj Gönder</button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr><th>Ad Soyad</th><th>Rol</th><th>Son Giriş</th><th>Çalışma ve Raporlar</th><th>İletişim</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="font-weight: 600;">Ahmet Kula</td>
+                                    <td><span class="role-badge role-teacher">Eğitmen</span></td>
+                                    <td>Bugün, 09:15</td>
+                                    <td><button class="btn-report" onclick="openReportModal('Ahmet Kula', 'Eğitmen Özeti', 95)">Sınıf Analizi Gör</button></td>
+                                    <td><button class="btn-msg" onclick="openMsgModal('Ahmet Kula')">Mesaj Yaz</button></td>
+                                </tr>
+                                <tr>
+                                    <td>Can Yılmaz</td>
+                                    <td><span class="role-badge role-student">Öğrenci</span></td>
+                                    <td>Dün, 21:40</td>
+                                    <td><button class="btn-report" onclick="openReportModal('Can Yılmaz', 'Aylık Gelişim', 78)">Raporları Gör</button></td>
+                                    <td><button class="btn-msg" onclick="openMsgModal('Can Yılmaz')">Mesaj Yaz</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                
-                <div class="class-grid">
-                    <div class="class-card active-card" onclick="selectClass(this, '12-A Sayısal Sınıfı')">
-                        <h3>12-A Sayısal Sınıfı</h3>
-                        <div class="teacher-name">Sorumlu Eğitmen: <strong>Ahmet Kula</strong></div>
-                        <div class="stats">
-                            <span>👥 24 Öğrenci</span>
-                            <span style="color: var(--success-color);">📈 Hedef: %85</span>
+
+                <div id="section-raporlar" class="content-section">
+                    <h1 class="page-title" style="margin-bottom: 25px;">Kurumsal Performans Raporları</h1>
+                    <div class="class-grid">
+                        <div class="class-card" style="border-top-color: var(--success-color);">
+                            <h3>Kurum Genel Başarı Oranı</h3>
+                            <p style="font-size: 36px; font-weight: bold; margin: 10px 0; color: var(--primary-dark);">%76.4</p>
+                            <span style="font-size: 13px; color: var(--text-muted);">Geçen aya göre %4 artış</span>
+                        </div>
+                        <div class="class-card" style="border-top-color: var(--accent-color);">
+                            <h3>Toplam Çözülen Soru</h3>
+                            <p style="font-size: 36px; font-weight: bold; margin: 10px 0; color: var(--primary-dark);">142.500</p>
+                            <span style="font-size: 13px; color: var(--text-muted);">Tüm öğrencilerin toplamı</span>
+                        </div>
+                        <div class="class-card" style="border-top-color: var(--warning-color);">
+                            <h3>Tamamlanan Koçluk Görüşmesi</h3>
+                            <p style="font-size: 36px; font-weight: bold; margin: 10px 0; color: var(--primary-dark);">128</p>
+                            <span style="font-size: 13px; color: var(--text-muted);">Bu ay içerisinde</span>
                         </div>
                     </div>
-                    <div class="class-card" onclick="selectClass(this, '11-B Eşit Ağırlık')">
-                        <h3>11-B Eşit Ağırlık</h3>
-                        <div class="teacher-name">Sorumlu Eğitmen: <strong>Ayşe Yılmaz</strong></div>
-                        <div class="stats">
-                            <span>👥 18 Öğrenci</span>
-                            <span style="color: var(--warning-color);">📈 Hedef: %62</span>
-                        </div>
-                    </div>
-                    <div class="class-card" onclick="selectClass(this, 'Mezun VIP Grup 1')">
-                        <h3>Mezun VIP Grup 1</h3>
-                        <div class="teacher-name">Sorumlu Eğitmen: <strong>Mehmet Demir</strong></div>
-                        <div class="stats">
-                            <span>👥 8 Öğrenci</span>
-                            <span style="color: var(--success-color);">📈 Hedef: %92</span>
+                    <div class="table-container">
+                        <h2 class="section-title">Sınıflar Arası Net Karşılaştırması (Son Deneme)</h2>
+                        <div style="height: 200px; background: #f1f5f9; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+                            *Buraya Chart.js veya ApexCharts ile bir grafik eklenecek*
                         </div>
                     </div>
                 </div>
 
-                <div class="table-container">
-                    <div class="page-header-flex" style="margin-bottom: 10px;">
-                        <h2 id="active-class-title" class="section-title" style="border: none; margin: 0;">12-A Sayısal Sınıfı - Gruptaki Kişiler</h2>
-                        <button class="btn-msg" onclick="openMsgModal('Tüm Sınıf (Toplu Mesaj)')">✉️ Gruba Toplu Mesaj Gönder</button>
+                <div id="section-mesajlar" class="content-section">
+                    <h1 class="page-title" style="margin-bottom: 25px;">Mesaj Merkezi</h1>
+                    <div class="chat-container">
+                        <div class="chat-sidebar">
+                            <div class="chat-item">
+                                <h4>12-A Sayısal Sınıfı (Grup)</h4>
+                                <p>Ahmet Kula: Yarınki deneme sınavı saati...</p>
+                            </div>
+                            <div class="chat-item">
+                                <h4>Veli: Mehmet Yılmaz</h4>
+                                <p>Can'ın dünkü raporunu inceledim, teşekkürler.</p>
+                            </div>
+                            <div class="chat-item">
+                                <h4>Ayşe Yılmaz (Eğitmen)</h4>
+                                <p>Sisteme yeni PDF kaynakları yükledim.</p>
+                            </div>
+                        </div>
+                        <div class="chat-main">
+                            <span style="font-size: 40px;">💬</span>
+                            <h3 style="margin: 10px 0;">Mesajlaşmayı Başlat</h3>
+                            <p>Detayları görmek için sol menüden bir sohbet seçin.</p>
+                            <button class="btn-primary" style="margin-top: 15px;" onclick="openMsgModal('Yeni Kişi')">Yeni Mesaj Oluştur</button>
+                        </div>
                     </div>
-                    
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Ad Soyad</th>
-                                <th>Rol</th>
-                                <th>Son Giriş</th>
-                                <th>Çalışma ve Raporlar</th>
-                                <th>İletişim</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="font-weight: 600;">Ahmet Kula</td>
-                                <td><span class="role-badge role-teacher">Eğitmen (Moderatör)</span></td>
-                                <td>Bugün, 09:15</td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-report" onclick="openReportModal('Ahmet Kula', 'Haftalık Eğitmen Özeti', 95)">Haftalık Özeti Gör</button>
-                                        <button class="btn-report" onclick="openReportModal('Ahmet Kula', 'Sınıf Genel Analizi', 85)">Sınıf Analizi Gör</button>
-                                    </div>
-                                </td>
-                                <td><button class="btn-msg" onclick="openMsgModal('Ahmet Kula (Eğitmen)')">Mesaj Yaz</button></td>
-                            </tr>
-                            <tr>
-                                <td>Can Yılmaz</td>
-                                <td><span class="role-badge role-student">Öğrenci</span></td>
-                                <td>Dün, 21:40</td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-report" onclick="openReportModal('Can Yılmaz', 'Haftalık Çalışma Raporu', 78)">Haftalık Rapor</button>
-                                        <button class="btn-report" onclick="openReportModal('Can Yılmaz', 'Aylık Gelişim Analizi', 82)">Aylık Gelişim</button>
-                                    </div>
-                                </td>
-                                <td><button class="btn-msg" onclick="openMsgModal('Can Yılmaz')">Mesaj Yaz</button></td>
-                            </tr>
-                            <tr>
-                                <td>Elif Şahin</td>
-                                <td><span class="role-badge role-student">Öğrenci</span></td>
-                                <td>Bugün, 10:05</td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-report" onclick="openReportModal('Elif Şahin', 'Haftalık Çalışma Raporu', 92)">Haftalık Rapor</button>
-                                        <button class="btn-report" onclick="openReportModal('Elif Şahin', 'Aylık Gelişim Analizi', 88)">Aylık Gelişim</button>
-                                    </div>
-                                </td>
-                                <td><button class="btn-msg" onclick="openMsgModal('Elif Şahin')">Mesaj Yaz</button></td>
-                            </tr>
-                            <tr>
-                                <td>Burak Çelik</td>
-                                <td><span class="role-badge role-student">Öğrenci</span></td>
-                                <td>2 Gün Önce</td>
-                                <td>
-                                    <div class="action-btns">
-                                        <button class="btn-report" onclick="openReportModal('Burak Çelik', 'Haftalık Çalışma Raporu', 45)">Haftalık Rapor</button>
-                                        <button class="btn-report" onclick="openReportModal('Burak Çelik', 'Aylık Gelişim Analizi', 50)">Aylık Gelişim</button>
-                                    </div>
-                                </td>
-                                <td><button class="btn-msg" onclick="openMsgModal('Burak Çelik')">Mesaj Yaz</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                </div>
+
+                <div id="section-havuz" class="content-section">
+                    <div class="page-header-flex">
+                        <h1 class="page-title">Sistemdeki Tüm Kullanıcılar</h1>
+                        <button class="btn-primary">+ Yeni Kullanıcı Ekle</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr><th>Hedef ID</th><th>Ad Soyad</th><th>Rol</th><th>Bağlı Olduğu Sınıf</th><th>Durum</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>#H100-245</td><td>Ahmet Kula</td><td><span class="role-badge role-teacher">Eğitmen</span></td><td>12-A Sayısal</td><td><span style="color:green;font-weight:bold;">Aktif</span></td></tr>
+                                <tr><td>#H100-891</td><td>Can Yılmaz</td><td><span class="role-badge role-student">Öğrenci</span></td><td>12-A Sayısal</td><td><span style="color:green;font-weight:bold;">Aktif</span></td></tr>
+                                <tr><td>#H100-902</td><td>Zeynep Çelik</td><td><span class="role-badge role-student">Öğrenci</span></td><td>11-B Eşit Ağırlık</td><td><span style="color:red;font-weight:bold;">Pasif</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="section-ayarlar" class="content-section">
+                    <h1 class="page-title" style="margin-bottom: 25px;">Sistem ve Kurum Tercihleri</h1>
+                    <div class="table-container">
+                        <form onsubmit="event.preventDefault(); alert('Ayarlar güncellendi!');">
+                            <h2 class="section-title">Temel Kurum Bilgileri</h2>
+                            <div class="settings-grid">
+                                <div class="form-group">
+                                    <label>Kurum Resmi Adı</label>
+                                    <input type="text" class="form-control" value="Hedef100 Çorum Merkez Şubesi">
+                                </div>
+                                <div class="form-group">
+                                    <label>Kurum Yöneticisi / Yetkili</label>
+                                    <input type="text" class="form-control" value="Yönetici Paneli">
+                                </div>
+                                <div class="form-group">
+                                    <label>İletişim E-Posta</label>
+                                    <input type="email" class="form-control" value="iletisim@hedef100.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Telefon Numarası</label>
+                                    <input type="text" class="form-control" value="0364 222 11 00">
+                                </div>
+                            </div>
+                            
+                            <h2 class="section-title" style="margin-top: 20px;">Sistem Modülleri</h2>
+                            <div class="form-group" style="display: flex; gap: 10px; align-items: center;">
+                                <input type="checkbox" id="smsNotif" checked>
+                                <label for="smsNotif" style="margin: 0; cursor:pointer;">Velilere SMS Bildirimi Gönder (Haftalık Raporlar)</label>
+                            </div>
+                            <div class="form-group" style="display: flex; gap: 10px; align-items: center;">
+                                <input type="checkbox" id="aiCoach" checked>
+                                <label for="aiCoach" style="margin: 0; cursor:pointer;">Öğrenciler için Yapay Zeka Koçluk Asistanını Aktifleştir</label>
+                            </div>
+
+                            <button type="submit" class="btn-primary" style="margin-top: 20px; width: 200px;">Ayarları Kaydet</button>
+                        </form>
+                    </div>
                 </div>
 
             </div>
         </main>
     </div>
 
-    <div class="modal-overlay" id="createClassModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('createClassModal')">&times;</button>
-            <div class="modal-header">Yeni Sınıf / Grup Oluştur</div>
-            <form onsubmit="event.preventDefault(); alert('Sınıf başarıyla oluşturuldu!'); closeModal('createClassModal');">
-                <div class="form-group">
-                    <label>Sınıf veya Grup Adı</label>
-                    <input type="text" class="form-control" placeholder="Örn: 12-C Yabancı Dil" required>
-                </div>
-                <div class="form-group">
-                    <label>Sorumlu Eğitmen Ata</label>
-                    <select class="form-control" required>
-                        <option value="">Eğitmen Seçiniz...</option>
-                        <option>Ahmet Kula (Fizik/Matematik)</option>
-                        <option>Ayşe Yılmaz (Edebiyat)</option>
-                        <option>Mehmet Demir (Tarih)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Öğrenci Kapasitesi (Opsiyonel)</label>
-                    <input type="number" class="form-control" placeholder="Örn: 20">
-                </div>
-                <button type="submit" class="modal-btn" style="background-color: #f97316;">Sınıfı Kaydet</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="msgModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('msgModal')">&times;</button>
-            <div class="modal-header" id="msg-title">Mesaj Gönder</div>
-            <form onsubmit="event.preventDefault(); alert('Mesajınız başarıyla iletildi!'); closeModal('msgModal'); document.getElementById('msgText').value='';">
-                <div class="form-group">
-                    <label>Alıcı: <span id="msg-recipient" style="color: var(--accent-color);"></span></label>
-                </div>
-                <div class="form-group">
-                    <textarea id="msgText" class="form-control" rows="4" placeholder="Mesajınızı buraya yazın..." required></textarea>
-                </div>
-                <button type="submit" class="modal-btn">Gönder</button>
-            </form>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="reportModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('reportModal')">&times;</button>
-            <div class="modal-header" id="report-title">Öğrenci Raporu</div>
-            
-            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
-                <h4 style="margin: 0 0 10px 0; color: var(--text-main);">Hedefe Ulaşma Oranı</h4>
-                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
-                    <span id="report-status-text">Durum Analizi Yapılıyor...</span>
-                    <span id="report-percentage" style="color: var(--accent-color);">%0</span>
-                </div>
-                <div class="progress-container">
-                    <div class="progress-bar" id="report-progress"></div>
-                </div>
-            </div>
-
-            <p style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">
-                * Bu ekranda seçili kişinin/sınıfın sistemdeki detaylı analitik verileri listelenir. Öğrencinin sisteme girdiği denemeler, koçluk hedefleri ve bitirdiği konular yapay zeka destekli olarak değerlendirilir.
-            </p>
-            
-            <button class="modal-btn" onclick="closeModal('reportModal')" style="background-color: var(--primary-dark);">Kapat</button>
-        </div>
-    </div>
+    <div class="modal-overlay" id="createClassModal"><div class="modal-content"><button class="modal-close" onclick="closeModal('createClassModal')">&times;</button><div class="modal-header">Yeni Sınıf / Grup Oluştur</div><form onsubmit="event.preventDefault(); alert('Sınıf başarıyla oluşturuldu!'); closeModal('createClassModal');"><div class="form-group"><label>Sınıf Adı</label><input type="text" class="form-control" required></div><button type="submit" class="modal-btn">Sınıfı Kaydet</button></form></div></div>
+    
+    <div class="modal-overlay" id="msgModal"><div class="modal-content"><button class="modal-close" onclick="closeModal('msgModal')">&times;</button><div class="modal-header" id="msg-title">Mesaj Gönder</div><form onsubmit="event.preventDefault(); alert('Mesaj iletildi!'); closeModal('msgModal');"><div class="form-group"><label>Alıcı: <span id="msg-recipient" style="color: var(--accent-color);"></span></label></div><div class="form-group"><textarea class="form-control" rows="4" required></textarea></div><button type="submit" class="modal-btn">Gönder</button></form></div></div>
+    
+    <div class="modal-overlay" id="reportModal"><div class="modal-content"><button class="modal-close" onclick="closeModal('reportModal')">&times;</button><div class="modal-header" id="report-title">Öğrenci Raporu</div><div style="background: #f8fafc; padding: 15px; border-radius: 8px;"><div style="display: flex; justify-content: space-between; font-weight: bold;"><span id="report-status-text">Analiz...</span><span id="report-percentage">%0</span></div><div class="progress-container"><div class="progress-bar" id="report-progress"></div></div></div><button class="modal-btn" onclick="closeModal('reportModal')">Kapat</button></div></div>
 
     <script>
-        // Modal Açma / Kapama İşlemleri
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
+        // SPA (Menü Değiştirme) Motoru
+        function switchSection(sectionId, element) {
+            // Tüm menülerden active sınıfını kaldır, tıklanana ekle
+            document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            // Tüm içerikleri gizle, seçileni göster
+            document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+        // Önceki fonksiyonlar (Modallar)
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function selectClass(el, name) {
+            document.querySelectorAll('.class-card').forEach(c => c.classList.remove('active-card'));
+            el.classList.add('active-card');
+            document.getElementById('active-class-title').innerText = name + " - Gruptaki Kişiler";
         }
-
-        // Sınıf Seçme ve Başlık Değiştirme
-        function selectClass(element, className) {
-            // Aktif kart rengini güncelle
-            let cards = document.querySelectorAll('.class-card');
-            cards.forEach(card => card.classList.remove('active-card'));
-            element.classList.add('active-card');
-
-            // Tablo başlığını güncelle
-            document.getElementById('active-class-title').innerText = className + " - Gruptaki Kişiler";
-        }
-
-        // Mesaj Modalı İçeriğini Ayarlama
-        function openMsgModal(recipientName) {
-            document.getElementById('msg-recipient').innerText = recipientName;
-            openModal('msgModal');
-        }
-
-        // Rapor Modalı İçeriğini Ayarlama (Dinamik Yüzde ve Renkler)
-        function openReportModal(personName, reportType, score) {
-            document.getElementById('report-title').innerText = personName + " - " + reportType;
-            
-            let progressBar = document.getElementById('report-progress');
-            let percentageText = document.getElementById('report-percentage');
-            let statusText = document.getElementById('report-status-text');
-
-            // Barı önce sıfırla (Animasyon hissi için)
-            progressBar.style.width = '0%';
-            
-            // Renk ve mesaj mantığı
-            let color = "var(--success-color)";
-            let msg = "Hedeflerin İlerisinde 🚀";
-            
-            if(score < 50) {
-                color = "#ef4444"; // Kırmızı
-                msg = "Riskli Durum / Hedefin Gerisinde ⚠️";
-            } else if (score < 75) {
-                color = "var(--warning-color)"; // Sarı
-                msg = "Gelişim Gösteriyor 📈";
-            }
-
-            percentageText.innerText = "%" + score;
-            percentageText.style.color = color;
-            statusText.innerText = msg;
-            progressBar.style.backgroundColor = color;
-
+        function openMsgModal(name) { document.getElementById('msg-recipient').innerText = name; openModal('msgModal'); }
+        function openReportModal(name, type, score) {
+            document.getElementById('report-title').innerText = name + " - " + type;
+            let bar = document.getElementById('report-progress');
+            let pct = document.getElementById('report-percentage');
+            let txt = document.getElementById('report-status-text');
+            bar.style.width = '0%';
+            let color = score < 50 ? "#ef4444" : score < 75 ? "var(--warning-color)" : "var(--success-color)";
+            pct.innerText = "%" + score; pct.style.color = color;
+            txt.innerText = score < 50 ? "Riskli Durum" : score < 75 ? "Gelişim Gösteriyor" : "Hedefte";
+            bar.style.backgroundColor = color;
             openModal('reportModal');
-
-            // Küçük bir gecikme ile barın dolma animasyonunu tetikle
-            setTimeout(() => {
-                progressBar.style.width = score + '%';
-            }, 100);
+            setTimeout(() => { bar.style.width = score + '%'; }, 100);
         }
     </script>
 </body>
