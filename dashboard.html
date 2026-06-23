@@ -52,12 +52,22 @@
             
             <button onclick="switchSection('program')" id="nav-program" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                <span class="sidebar-text whitespace-nowrap text-sm">Çalışma Programım</span>
+                <span class="sidebar-text whitespace-nowrap text-sm">Haftalık Program Hazırla</span>
+            </button>
+
+            <button onclick="switchSection('deneme-gir')" id="nav-deneme-gir" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                <span class="sidebar-text whitespace-nowrap text-sm">Deneme Veri Girişi</span>
             </button>
 
             <button onclick="switchSection('analytics')" id="nav-analytics" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 <span class="sidebar-text whitespace-nowrap text-sm">Deneme Analizleri</span>
+            </button>
+
+            <button onclick="switchSection('koc-bul')" id="nav-koc-bul" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <span class="sidebar-text whitespace-nowrap text-sm">Akademik Koç Bul</span>
             </button>
         </nav>
 
@@ -94,76 +104,183 @@
                     <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
                     <div class="relative z-10">
                         <h1 class="text-3xl md:text-4xl font-black mb-2 tracking-tight">Merhaba, <span id="welcomeName" class="text-orange-400">Ahmet</span>! 👋</h1>
-                        <p class="text-slate-300 max-w-2xl text-sm md:text-base leading-relaxed">Hedef100 Yapay Zeka koçun devrede. Hedefindeki <strong id="welcomeExam" class="text-white">YKS</strong> için bugün çözmen gereken soru paketleri ve zümre ödevleri hazırlandı. Bugün tempoyu artırıyoruz!</p>
-                        <button onclick="switchSection('program')" class="mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg transition-colors text-sm">Günün Programını Görüntüle</button>
+                        <p class="text-slate-300 max-w-2xl text-sm md:text-base leading-relaxed">Hedef100 Yapay Zeka koçluk motoru devrede. Hedefindeki <strong id="welcomeExam" class="text-white">YKS</strong> sınav grubu için bugün yapılması gereken konu tekrarları ve soru bankası analizleri hazırlandı.</p>
+                        <button onclick="switchSection('program')" class="mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg transition-colors text-sm">Haftalık Programını Düzenle</button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Haftalık Çözülen Soru</p>
-                            <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Haftalık Çözülen Soru</p>
                         <p class="text-3xl font-black text-slate-900">1,245</p>
-                        <p class="text-xs text-emerald-500 font-bold mt-1">▲ Geçen haftaya göre %12 fazla</p>
+                        <p class="text-xs text-emerald-500 font-bold mt-1">▲ %12 Artış</p>
                     </div>
-                    
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Güncel Net Ortalaması</p>
-                            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                        </div>
-                        <p class="text-3xl font-black text-slate-900">74.5 <span class="text-sm text-slate-400 font-medium">Net</span></p>
-                        <p class="text-xs text-emerald-500 font-bold mt-1">▲ Hedef çizgisinin yukarısında</p>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Güncel Net Ortalaması</p>
+                        <p id="globalNetDisplay" class="text-3xl font-black text-slate-900">74.5 <span class="text-sm text-slate-400 font-medium">Net</span></p>
+                        <p class="text-xs text-emerald-500 font-bold mt-1">▲ Hedef Limitlerinde</p>
                     </div>
-
                     <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <div class="flex items-center justify-between mb-2">
-                            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Haftalık Çalışma Süresi</p>
-                            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Haftalık Çalışma Süresi</p>
                         <p class="text-3xl font-black text-slate-900">28 <span class="text-sm text-slate-400 font-medium">Saat</span></p>
-                        <p class="text-xs text-slate-400 font-semibold mt-1">● Programla tam uyumlu</p>
+                        <p class="text-xs text-slate-400 font-semibold mt-1">● Planla Tam Uyumlu</p>
                     </div>
                 </div>
             </div>
 
             <div id="section-program" class="section-hidden space-y-6">
-                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Haftalık Ders ve Çalışma Programı</h3>
-                    <p class="text-sm text-slate-500 mb-6">Yapay zeka koçunuz tarafından net kayıplarınıza göre her pazartesi yeniden optimize edilir.</p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="p-4 border border-slate-100 bg-slate-50 rounded-xl">
-                            <h4 class="font-bold text-sm text-orange-600 mb-2">Pazartesi / Çarşamba</h4>
-                            <p class="text-xs text-slate-700 font-medium">● İleri Düzey Matematik (2 Saat)</p>
-                            <p class="text-xs text-slate-700 font-medium mt-1">● Paragraf & Hız Rutini (30 Dk)</p>
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900">Haftalık Dinamik Program Sihirbazı</h3>
+                            <p class="text-xs text-slate-500">Yapay zeka zayıf olduğun derslere göre her hafta bu çizelgeyi otomatik olarak dengeler.</p>
                         </div>
-                        <div class="p-4 border border-slate-100 bg-slate-50 rounded-xl">
-                            <h4 class="font-bold text-sm text-indigo-600 mb-2">Salı / Perşembe</h4>
-                            <p class="text-xs text-slate-700 font-medium">● Modern Fizik Analizleri (1.5 Saat)</p>
-                            <p class="text-xs text-slate-700 font-medium mt-1">● Kimyasal Bağlar Soru Avı (1 Saat)</p>
+                        <button onclick="alert('Mevcut programınız yapay zeka koçunuz tarafından yeniden optimize edildi!')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs py-2 px-4 rounded-xl transition shadow-md">Yapay Zekaya Göre Yenile</button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <h4 class="font-extrabold text-sm text-orange-600 mb-3 border-b pb-1">Pazartesi / Salı</h4>
+                            <ul class="space-y-2 text-xs">
+                                <li class="bg-white p-2.5 rounded border border-slate-200 shadow-sm font-medium">📐 Matematik: Limit-Türev Soru Çözümü (90 Dk)</li>
+                                <li class="bg-white p-2.5 rounded border border-slate-200 shadow-sm font-medium">⚛️ Fizik: Çembersel Hareket Tekrarı (60 Dk)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <h4 class="font-extrabold text-sm text-indigo-600 mb-3 border-b pb-1">Çarşamba / Perşembe</h4>
+                            <ul class="space-y-2 text-xs">
+                                <li class="bg-white p-2.5 rounded border border-slate-200 shadow-sm font-medium">📐 Matematik: İntegral Giriş & Analiz (120 Dk)</li>
+                                <li class="bg-white p-2.5 rounded border border-slate-200 shadow-sm font-medium">🧪 Kimya: Organik Kimyaya Giriş (60 Dk)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <h4 class="font-extrabold text-sm text-emerald-600 mb-3 border-b pb-1">Cuma / Cumartesi</h4>
+                            <ul class="space-y-2 text-xs">
+                                <li class="bg-white p-2.5 rounded border border-slate-200 shadow-sm font-medium">📝 Kurum Geneli TYT Deneme Sınavı (165 Dk)</li>
+                                <li class="bg-white p-2.5 rounded border border-slate-200 shadow-sm font-medium">🔍 Hata Raporu Kazanım Analiz Seansı</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="section-analytics" class="section-hidden space-y-6">
-                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">Yapay Zeka Destekli Karne Analiz Motoru</h3>
-                    <div class="space-y-4">
+            <div id="section-deneme-gir" class="section-hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-2xl mx-auto">
+                    <h3 class="text-xl font-black text-slate-900 mb-2">Canlı Deneme Veri Girişi</h3>
+                    <p class="text-xs text-slate-500 mb-6">Evde çözdüğünüz veya katıldığınız deneme sınavlarının sayısal verilerini girin.</p>
+                    
+                    <form id="denemeForm" class="space-y-4" onsubmit="calculateAndSaveNet(event)">
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
-                                <span>Matematik - Trigonometri Kazanım Başarısı</span>
-                                <span>%85</span>
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Sınav / Yayın Adı</label>
+                            <input type="text" id="examTitle" placeholder="Örn: 3D Türkiye Geneli TYT-4" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-orange-500" required>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <h4 class="text-xs font-black text-slate-700 mb-2 border-b pb-1">Matematik</h4>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" id="matD" placeholder="D" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="40" required>
+                                    <input type="number" id="matY" placeholder="Y" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="40" required>
+                                        </div>
                             </div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-emerald-500 h-full w-[85%]"></div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <h4 class="text-xs font-black text-slate-700 mb-2 border-b pb-1">Fen Bilimleri (Fizik vb.)</h4>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" id="fenD" placeholder="D" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="20" required>
+                                    <input type="number" id="fenY" placeholder="Y" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="20" required>
+                                </div>
                             </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <h4 class="text-xs font-black text-slate-700 mb-2 border-b pb-1">Türkçe</h4>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" id="turD" placeholder="D" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="40" required>
+                                    <input type="number" id="turY" placeholder="Y" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="40" required>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
+                                <h4 class="text-xs font-black text-slate-700 mb-2 border-b pb-1">Sosyal Bilimler</h4>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" id="sosD" placeholder="D" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="20" required>
+                                    <input type="number" id="sosY" placeholder="Y" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="20" required>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs py-3 rounded-xl shadow-md transition-all">Net Hesapla ve Analiz Merkezine Gönder</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="section-analytics" class="section-hidden space-y-6">
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-xl font-bold text-slate-900 mb-1">Ders Bazlı Akıllı Kazanım Grafiği</h3>
+                    <p class="text-xs text-slate-400 mb-6">Deneme sınavlarından gelen verilere göre anlık başarı oranların.</p>
+                    
+                    <div class="space-y-4 max-w-xl">
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-700 mb-1"><span>📐 Matematik (Geometri Dahil)</span><span id="progressTextMat">%80</span></div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden shadow-inner"><div id="progressBarMat" class="bg-gradient-to-r from-orange-400 to-orange-600 h-full transition-all duration-500 w-[80%]"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-bold text-slate-700 mb-1"><span>⚛️ Fizik & Fen Bilimleri</span><span id="progressTextFen">%65</span></div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden shadow-inner"><div id="progressBarFen" class="bg-gradient-to-r from-indigo-400 to-indigo-600 h-full transition-all duration-500 w-[65%]"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-4 bg-slate-50 border-b border-slate-100 font-bold text-slate-800 text-sm">Geçmiş Sınav Karneleri</div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100/80 text-slate-500 uppercase font-bold border-b">
+                                <tr>
+                                    <th class="p-3">Sınav Başlığı</th>
+                                    <th class="p-3 text-center">Matematik</th>
+                                    <th class="p-3 text-center">Fen</th>
+                                    <th class="p-3 text-center">Toplam Net</th>
+                                </tr>
+                            </thead>
+                            <tbody id="archiveTableBody" class="divide-y divide-slate-100 font-medium text-slate-700">
+                                <tr>
+                                    <td class="p-3 font-bold text-slate-900">Kurum Geneli TYT Denemesi #1</td>
+                                    <td class="p-3 text-center text-orange-600 font-bold">32.5 Net</td>
+                                    <td class="p-3 text-center text-indigo-600 font-bold">14.0 Net</td>
+                                    <td class="p-3 text-center font-black text-slate-900">74.5 Net</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-koc-bul" class="section-hidden space-y-6">
+                <div>
+                    <h3 class="text-xl font-black text-slate-900 mb-1">Akademik Rehber & Koç Kadrosu</h3>
+                    <p class="text-xs text-slate-500">Çalışma programlarını denetleyecek ve haftalık takibini yapacak derece koçları.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-start hover:border-orange-200 transition-all">
+                        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl font-black text-base flex items-center justify-center flex-shrink-0">AK</div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Ahmet Kula</h4>
+                            <p class="text-[10px] text-orange-600 font-bold tracking-widest uppercase mb-2">Matematik & Fizik Kıdemli Koçu</p>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-4">Özellikle YKS Sayısal ve KPSS gruplarında derece odaklı taktik çalışma kampları kurgular, haftalık program takibi yapar.</p>
+                            <button onclick="alert('Ahmet Kula ile koçluk bağlantı talebiniz alınmıştır!')" class="bg-slate-900 hover:bg-orange-500 text-white font-bold text-[10px] uppercase py-2 px-4 rounded-lg shadow transition-all">Bağlantı İsteği Gönder</button>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-start hover:border-orange-200 transition-all">
+                        <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl font-black text-base flex items-center justify-center flex-shrink-0">SD</div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-sm">Selin Demir</h4>
+                            <p class="text-[10px] text-indigo-600 font-bold tracking-widest uppercase mb-2">Derece Planlama Mentorü</p>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-4">Eşit Ağırlık ve Sözel sınav gruplarında, zaman yönetimi ve stres kontrolü odaklı birebir takip çizelgeleri hazırlar.</p>
+                            <button onclick="alert('Selin Demir ile koçluk bağlantı talebiniz alınmıştır!')" class="bg-slate-900 hover:bg-orange-500 text-white font-bold text-[10px] uppercase py-2 px-4 rounded-lg shadow transition-all">Bağlantı İsteği Gönder</button>
                         </div>
                     </div>
                 </div>
             </div>
+
         </main>
     </div>
 
@@ -176,10 +293,10 @@
                     loader.classList.add('opacity-0');
                     setTimeout(function() { loader.classList.add('hidden'); }, 500);
                 }
-            }, 2000); // 2 saniye sonra kesin kapatır.
+            }, 2000); 
         });
 
-        // Standart Menü Geçiş Fonksiyonları
+        // SEKME GEÇİŞ MOTORU
         window.switchSection = function(sectionId) {
             document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.replace('section-active', 'section-hidden'));
             document.getElementById('section-' + sectionId).classList.replace('section-hidden', 'section-active');
@@ -188,6 +305,54 @@
                 el.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent";
             });
             document.getElementById('nav-' + sectionId).className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/20 text-orange-400 rounded-xl font-bold transition-colors group border-l-4 border-orange-500";
+        };
+
+        // DİNAMİK NET HESAPLAMA VE ANALİZ MERKEZİ ENTEGRASYONU
+        window.calculateAndSaveNet = function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('examTitle').value;
+            const matD = parseFloat(document.getElementById('matD').value) || 0;
+            const matY = parseFloat(document.getElementById('matY').value) || 0;
+            const fenD = parseFloat(document.getElementById('fenD').value) || 0;
+            const fenY = parseFloat(document.getElementById('fenY').value) || 0;
+            const turD = parseFloat(document.getElementById('turD').value) || 0;
+            const turY = parseFloat(document.getElementById('turY').value) || 0;
+            const sosD = parseFloat(document.getElementById('sosD').value) || 0;
+            const sosY = parseFloat(document.getElementById('sosY').value) || 0;
+
+            // 4 Yanlış 1 Doğruyu Götürür Hesabı
+            const matNet = Math.max(0, matD - (matY / 4));
+            const fenNet = Math.max(0, fenD - (fenY / 4));
+            const turNet = Math.max(0, turD - (turY / 4));
+            const sosNet = Math.max(0, sosD - (sosY / 4));
+            const totalNet = matNet + fenNet + turNet + sosNet;
+
+            // Global Göstergeleri ve Başarı Çubuklarını Güncelle
+            document.getElementById('globalNetDisplay').innerHTML = `${totalNet.toFixed(2)} <span class="text-sm text-slate-400 font-medium">Net</span>`;
+            
+            // Yüzdesel Başarı Hesaplama Simülasyonu (40 Soru Üzerinden Matematik, 20 Üzerinden Fen)
+            const matPercent = Math.min(100, Math.floor((matNet / 40) * 100));
+            const fenPercent = Math.min(100, Math.floor((fenNet / 20) * 100));
+
+            document.getElementById('progressTextMat').innerText = `%${matPercent}`;
+            document.getElementById('progressBarMat').style.width = `${matPercent}%`;
+            document.getElementById('progressTextFen').innerText = `%${fenPercent}`;
+            document.getElementById('progressBarFen').style.width = `${fenPercent}%`;
+
+            // Tabloya Yeni Sınav Satırını Ekle
+            const archiveTable = document.getElementById('archiveTableBody');
+            const newRow = `<tr class="bg-orange-50/30 font-bold transition-colors">
+                <td class="p-3 text-slate-900">${title}</td>
+                <td class="p-3 text-center text-orange-600">${matNet.toFixed(2)} Net</td>
+                <td class="p-3 text-center text-indigo-600">${fenNet.toFixed(2)} Net</td>
+                <td class="p-3 text-center font-black text-slate-950">${totalNet.toFixed(2)} Net</td>
+            </tr>`;
+            archiveTable.insertAdjacentHTML('afterbegin', newRow);
+
+            alert(`Sınav verileriniz işlendi!\nToplam Net: ${totalNet.toFixed(2)}\nVeriler analiz modüllerine dağıtıldı.`);
+            document.getElementById('denemeForm').reset();
+            switchSection('analytics'); // Otomatik grafik sekmesine atar
         };
     </script>
 
@@ -225,8 +390,10 @@
                     document.getElementById('avatarInitials').innerText = (userData.firstName.charAt(0) + userData.lastName.charAt(0)).toUpperCase();
                     
                     var loader = document.getElementById('pageLoader');
-                    loader.classList.add('opacity-0');
-                    setTimeout(() => loader.classList.add('hidden'), 500);
+                    if(loader) {
+                        loader.classList.add('opacity-0');
+                        setTimeout(() => loader.classList.add('hidden'), 500);
+                    }
                 }
             }
         });
