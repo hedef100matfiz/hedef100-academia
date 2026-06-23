@@ -140,24 +140,83 @@
                 </div>
             </div>
 
-            <div id="section-yeni-sinif" class="section-hidden space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
-                        <h2 class="text-2xl font-black text-slate-900 mb-6 border-b pb-4">Yeni Sınıf / Grup Oluştur</h2>
-                        <form id="createClassForm" class="space-y-5">
+           <div id="section-yeni-sinif" class="section-hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-1 bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm self-start">
+                        <h2 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-2">
+                            <span class="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center text-sm">1</span>
+                            Yeni Sınıf Kur
+                        </h2>
+                        <form id="createClassForm" class="space-y-4">
                             <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-2">Sınıf Adı</label>
-                                <input type="text" id="className" placeholder="Örn: 2026 AYT Derece Grubu" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm" required>
+                                <label class="block text-[11px] font-bold text-slate-500 mb-1">Sınıf Adı</label>
+                                <input type="text" id="className" placeholder="Örn: 2026 Sayısal A" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-400" required>
                             </div>
                             <div>
-                                <label class="block text-sm font-bold text-slate-700 mb-2">Hedef Sınav</label>
-                                <select id="classExam" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm" required>
-                                    <option value="YKS">YKS (TYT/AYT)</option><option value="LGS">LGS</option><option value="KPSS">KPSS</option>
+                                <label class="block text-[11px] font-bold text-slate-500 mb-1">Sınav / Seviye</label>
+                                <select id="classExam" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none" required>
+                                    <option value="YKS">YKS (TYT-AYT)</option>
+                                    <option value="LGS">LGS</option>
+                                    <option value="KPSS">KPSS</option>
+                                    <option value="ARA">Ara Sınıf</option>
                                 </select>
                             </div>
-                            <button type="submit" id="createClassBtn" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-extrabold py-3.5 rounded-xl transition-all text-sm">Sınıfı Oluştur ve Veritabanına Kaydet</button>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-500 mb-1">Sınıf Hedefi / Notu</label>
+                                <textarea id="classNote" rows="2" placeholder="Sınıfın genel hedefi..." class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none focus:border-indigo-400"></textarea>
+                            </div>
+                            <button type="submit" id="createClassBtn" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-3 rounded-xl transition-all text-xs shadow-lg uppercase tracking-widest">Grubu Oluştur</button>
                         </form>
                     </div>
+
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm">
+                            <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m4 0h1m-5 10h5m-5 4h5m2-18v18"></path></svg>
+                                Mevcut Gruplarım & Sınıf Yönetimi
+                            </h3>
+                            <div id="classListGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <p class="text-xs text-slate-400 italic px-2">Henüz bir sınıf kurmadınız...</p>
+                            </div>
+                        </div>
+
+                        <div id="classDetailView" class="hidden bg-white rounded-[2rem] border border-indigo-100 shadow-xl overflow-hidden animate-fadeIn">
+                            <div class="bg-indigo-600 p-5 text-white flex justify-between items-center">
+                                <div>
+                                    <h4 id="activeClassName" class="font-black text-lg">Sınıf Detayı</h4>
+                                    <p id="activeClassSub" class="text-xs text-indigo-100">Öğrenci Yönetimi ve Analiz</p>
+                                </div>
+                                <button onclick="closeClassDetail()" class="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                            </div>
+
+                            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="space-y-4 border-r border-slate-100 pr-4">
+                                    <h5 class="text-sm font-black text-slate-800 uppercase tracking-wider">Sınıf Listesi & Atama</h5>
+                                    <div class="flex gap-2">
+                                        <select id="availableStudentsSelect" class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none focus:border-indigo-400">
+                                            <option value="">Öğrenci Seçiniz...</option>
+                                        </select>
+                                        <button onclick="addStudentToActiveClass()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold text-[10px] hover:bg-indigo-700 transition">EKLE</button>
+                                    </div>
+                                    <div id="activeClassStudentsList" class="space-y-2 max-h-48 overflow-y-auto">
+                                        </div>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <h5 class="text-sm font-black text-slate-800 uppercase tracking-wider">Sınıf Panosu & Mesaj</h5>
+                                    <div class="bg-slate-50 rounded-xl p-4 h-40 overflow-y-auto text-xs space-y-3" id="classMessageBoard">
+                                        <div class="bg-white p-2.5 rounded-lg shadow-sm border border-slate-100"><p class="text-slate-600">Sınıf panosuna ilk mesajınızı yazın.</p></div>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <input type="text" id="classMessageInput" placeholder="Tüm sınıfa mesaj yaz..." class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs outline-none">
+                                        <button onclick="sendMessageToClass()" class="bg-slate-900 text-white px-4 py-2 rounded-lg font-bold text-[10px]">GÖNDER</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                     
                     <div class="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
                         <h2 class="text-xl font-black text-slate-900 mb-6 border-b pb-4">Mevcut Sınıflarım</h2>
@@ -526,7 +585,85 @@
                 document.getElementById('dashboardStudentCount').innerText = count;
             } catch(e) { console.error(e); }
         }
+        // SINIF YÖNETİMİ EKSTRA FONKSİYONLAR
+        let activeClassId = null;
+// 1. Sınıf Kartlarını Listeleme (Daha Gelişmiş)
+        async function fetchMyClasses(teacherUid) {
+            const container = document.getElementById('classListGrid');
+            const dashboardCounter = document.getElementById('dashboardClassCount');
+            const classSelect = document.getElementById('programClassSelectOptions');
 
+            try {
+                const q = query(collection(db, "classes"), where("teacherUid", "==", teacherUid));
+                const querySnapshot = await getDocs(q);
+                let count = 0; let html = ""; let optionsHtml = "";
+
+                querySnapshot.forEach((doc) => {
+                    count++; const data = doc.data();
+                    html += `
+                        <div class="bg-white border border-slate-200 p-4 rounded-2xl hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer group" onclick="manageClass('${doc.id}', '${data.name}', '${data.exam}')">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center font-black text-xs group-hover:bg-indigo-600 group-hover:text-white transition-colors">C${count}</div>
+                                <span class="bg-emerald-50 text-emerald-600 text-[9px] font-black px-2 py-0.5 rounded-full uppercase border border-emerald-100">Aktif</span>
+                            </div>
+                            <h4 class="font-black text-slate-800 text-sm truncate">${data.name}</h4>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter mt-0.5">${data.exam} Grubu</p>
+                            <div class="mt-4 pt-3 border-t border-slate-50 flex justify-between items-center">
+                                <span class="text-[10px] font-bold text-slate-500">Yönetmek İçin Tıkla</span>
+                                <svg class="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            </div>
+                        </div>
+                    `;
+                    optionsHtml += `<option value="${doc.id}">${data.name}</option>`;
+                });
+
+                if(count > 0) {
+                    container.innerHTML = html;
+                    classSelect.innerHTML = optionsHtml;
+                } else {
+                    container.innerHTML = `<p class="text-[11px] text-slate-400 italic">Henüz bir grup kurgulamadınız.</p>`;
+                }
+                dashboardCounter.innerText = count;
+            } catch(e) { console.error(e); }
+        }
+        // 4. Sınıftaki Öğrencileri Listele
+        async function fetchClassStudents(classId) {
+            const list = document.getElementById('activeClassStudentsList');
+            try {
+                const q = query(collection(db, "users"), where("classId", "==", classId));
+                const querySnapshot = await getDocs(q);
+                let html = "";
+                
+                querySnapshot.forEach(doc => {
+                    const d = doc.data();
+                    html += `
+                        <div class="flex items-center justify-between p-2.5 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-slate-900 text-white rounded text-[8px] flex items-center justify-center font-bold uppercase">${d.firstName[0]}</div>
+                                <span class="text-xs font-bold text-slate-700">${d.firstName} ${d.lastName}</span>
+                            </div>
+                            <button onclick="alert('Öğrenci çalışma detayları modülü çok yakında!')" class="text-[9px] font-black text-indigo-600 hover:underline">DETAY</button>
+                        </div>
+                    `;
+                });
+                list.innerHTML = html || `<p class="text-[10px] text-slate-400 italic">Sınıfta henüz öğrenci yok.</p>`;
+            } catch(e) { console.error(e); }
+        }
+
+        // 5. Hocaya Bağlı (Boştaki) Öğrencileri Seçeneklere Doldur
+        async function updateAvailableStudents() {
+            const select = document.getElementById('availableStudentsSelect');
+            try {
+                const q = query(collection(db, "users"), where("coachUid", "==", auth.currentUser.uid));
+                const querySnapshot = await getDocs(q);
+                let options = `<option value="">Öğrenci Seçiniz...</option>`;
+                querySnapshot.forEach(doc => {
+                    const d = doc.data();
+                    options += `<option value="${doc.id}">${d.firstName} ${d.lastName} (${d.hedefId})</option>`;
+                });
+                select.innerHTML = options;
+            } catch(e) { console.error(e); }
+        }
         // Veritabanından Sınıfları Listele
         async function fetchMyClasses(teacherUid) {
             const container = document.getElementById('classListContainer');
@@ -591,6 +728,35 @@
                 }
             } catch(err) { alert(err.message); }
             finally { btn.innerText = "Sisteme Bağla"; btn.disabled = false; }
+        };
+        // 2. Bir Sınıfı Yönetme Ekranını Aç
+        window.manageClass = async function(id, name, exam) {
+            activeClassId = id;
+            document.getElementById('activeClassName').innerText = name;
+            document.getElementById('activeClassSub').innerText = exam + " Alanı / Öğrenci Koordinasyonu";
+            document.getElementById('classDetailView').classList.remove('hidden');
+            
+            // Mevcut öğrencileri ve bu hocaya bağlı boştaki öğrencileri çek
+            await updateAvailableStudents();
+            await fetchClassStudents(id);
+        };
+
+        window.closeClassDetail = function() {
+            document.getElementById('classDetailView').classList.add('hidden');
+            activeClassId = null;
+        };
+
+        // 3. Sınıfa Öğrenci Ekle (Veritabanı İlişkisi)
+        window.addStudentToActiveClass = async function() {
+            const studentUid = document.getElementById('availableStudentsSelect').value;
+            if(!studentUid || !activeClassId) return alert("Lütfen bir öğrenci seçin.");
+
+            try {
+                // Öğrencinin profilindeki classId alanını güncelle
+                await updateDoc(doc(db, "users", studentUid), { classId: activeClassId });
+                alert("Öğrenci sınıfa başarıyla atandı!");
+                await fetchClassStudents(activeClassId);
+            } catch(e) { alert("Hata: " + e.message); }
         };
 
         window.logoutUser = function() { signOut(auth).then(() => { window.location.href = 'login.html'; }); };
