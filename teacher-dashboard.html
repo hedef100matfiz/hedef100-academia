@@ -433,11 +433,14 @@
             }
         };
 
-        window.switchSettingsTab = function(tabId) {
+       window.switchSettingsTab = function(tabId) {
             document.querySelectorAll('[id^="settings-"]').forEach(el => el.classList.replace('block', 'hidden'));
             document.getElementById('settings-' + tabId).classList.replace('hidden', 'block');
-            document.querySelectorAll('[id^="tab-"]').forEach(el => el.className = "w-full text-left px-4 py-3 rounded-xl font-bold text-sm text-slate-500 hover:bg-slate-50 transition-colors");
-            document.getElementById('tab-' + tabId).className = "w-full text-left px-4 py-3 rounded-xl font-bold text-sm bg-indigo-50 text-indigo-600 transition-colors";
+            
+            document.querySelectorAll('[id^="tab-"]').forEach(el => {
+                el.className = "w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm text-slate-500 hover:bg-white hover:border-slate-200 hover:shadow-sm border border-transparent transition-all flex items-center gap-2";
+            });
+            document.getElementById('tab-' + tabId).className = "w-full text-left px-4 py-2.5 rounded-xl font-bold text-sm bg-white border border-slate-200 shadow-sm text-indigo-600 transition-all flex items-center gap-2";
         };
     </script>
 
