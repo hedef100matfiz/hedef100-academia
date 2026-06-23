@@ -90,10 +90,10 @@
             
             <div class="flex items-center space-x-4">
                 <div class="text-right hidden sm:block">
-                    <p id="studentNameDisplay" class="text-sm font-bold text-slate-900">Ahmet Kula</p>
+                    <p id="studentNameDisplay" class="text-sm font-bold text-slate-900">Öğrenci</p>
                     <p id="targetExamBadge" class="text-[10px] text-orange-600 font-bold bg-orange-50 px-1.5 py-0.5 rounded mt-0.5 inline-block border border-orange-100 uppercase tracking-widest">YKS ADAYI</p>
                 </div>
-                <div id="avatarInitials" class="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-md">AK</div>
+                <div id="avatarInitials" class="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-md">?</div>
             </div>
         </header>
 
@@ -103,7 +103,7 @@
                 <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 md:p-10 text-white shadow-xl relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
                     <div class="relative z-10">
-                        <h1 class="text-3xl md:text-4xl font-black mb-2 tracking-tight">Merhaba, <span id="welcomeName" class="text-orange-400">Ahmet</span>! 👋</h1>
+                        <h1 class="text-3xl md:text-4xl font-black mb-2 tracking-tight">Merhaba, <span id="welcomeName" class="text-orange-400">Öğrenci</span>! 👋</h1>
                         <p class="text-slate-300 max-w-2xl text-sm md:text-base leading-relaxed">Hedef100 Yapay Zeka koçluk motoru devrede. Hedefindeki <strong id="welcomeExam" class="text-white">YKS</strong> sınav grubu için bugün yapılması gereken konu tekrarları ve soru bankası analizleri hazırlandı.</p>
                         <button onclick="switchSection('program')" class="mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg transition-colors text-sm">Haftalık Programını Düzenle</button>
                     </div>
@@ -253,35 +253,41 @@
                 </div>
             </div>
 
+            <!-- ================= YENİ: DİNAMİK KOÇ BUL SEKME ================= -->
             <div id="section-koc-bul" class="section-hidden space-y-6">
                 <div>
                     <h3 class="text-xl font-black text-slate-900 mb-1">Akademik Rehber & Koç Kadrosu</h3>
-                    <p class="text-xs text-slate-500">Çalışma programlarını denetleyecek ve haftalık takibini yapacak derece koçları.</p>
+                    <p class="text-xs text-slate-500">Sistemdeki tüm onaylı eğitmenlerimiz. Tıklayarak inceleyebilir ve kendinize koç olarak seçebilirsiniz.</p>
                 </div>
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-start hover:border-orange-200 transition-all">
-                        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl font-black text-base flex items-center justify-center flex-shrink-0">AK</div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 text-sm">Ahmet Kula</h4>
-                            <p class="text-[10px] text-orange-600 font-bold tracking-widest uppercase mb-2">Matematik & Fizik Kıdemli Koçu</p>
-                            <p class="text-xs text-slate-500 leading-relaxed mb-4">Özellikle YKS Sayısal ve KPSS gruplarında derece odaklı taktik çalışma kampları kurgular, haftalık program takibi yapar.</p>
-                            <button onclick="alert('Ahmet Kula ile koçluk bağlantı talebiniz alınmıştır!')" class="bg-slate-900 hover:bg-orange-500 text-white font-bold text-[10px] uppercase py-2 px-4 rounded-lg shadow transition-all">Bağlantı İsteği Gönder</button>
-                        </div>
-                    </div>
-                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-start hover:border-orange-200 transition-all">
-                        <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl font-black text-base flex items-center justify-center flex-shrink-0">SD</div>
-                        <div>
-                            <h4 class="font-bold text-slate-900 text-sm">Selin Demir</h4>
-                            <p class="text-[10px] text-indigo-600 font-bold tracking-widest uppercase mb-2">Derece Planlama Mentorü</p>
-                            <p class="text-xs text-slate-500 leading-relaxed mb-4">Eşit Ağırlık ve Sözel sınav gruplarında, zaman yönetimi ve stres kontrolü odaklı birebir takip çizelgeleri hazırlar.</p>
-                            <button onclick="alert('Selin Demir ile koçluk bağlantı talebiniz alınmıştır!')" class="bg-slate-900 hover:bg-orange-500 text-white font-bold text-[10px] uppercase py-2 px-4 rounded-lg shadow transition-all">Bağlantı İsteği Gönder</button>
-                        </div>
-                    </div>
+                <!-- Veritabanından gelen hocalar buraya dizilecek -->
+                <div id="coachContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <p class="text-slate-400 text-sm font-semibold">Eğitmen kadrosu taranıyor...</p>
                 </div>
             </div>
 
         </main>
+    </div>
+
+    <!-- ================= YENİ: KOÇ DETAY VE SEÇİM MODALI ================= -->
+    <div id="coachModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden z-[999] flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 transform scale-95 transition-transform duration-300" id="coachModalContent">
+            <div class="flex items-center gap-3 border-b pb-3 border-slate-100">
+                <div id="modalCoachAvatar" class="w-12 h-12 bg-slate-900 text-white font-bold rounded-xl flex items-center justify-center text-lg shadow-sm">?</div>
+                <div>
+                    <h4 id="modalCoachName" class="font-black text-slate-900 text-lg">...</h4>
+                    <p id="modalCoachBranch" class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100 inline-block mt-0.5 tracking-wider uppercase">Eğitmen</p>
+                </div>
+            </div>
+            <div class="text-sm space-y-2">
+                <p class="text-slate-500 leading-relaxed">Hedef100 Academia bünyesinde haftalık program takibi ve akademik analiz yapar. Öğrencilere hedefleri doğrultusunda birebir rehberlik sağlar.</p>
+                <p class="text-xs text-slate-400 mt-2">İletişim Kanalı: <span id="modalCoachEmail" class="font-semibold text-slate-600">...</span></p>
+            </div>
+            <div class="flex gap-3 pt-4 border-t border-slate-100">
+                <button id="coachSelectBtn" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs py-3 rounded-xl shadow-md transition-all">Bu Eğitmeni Koçum Olarak Ata</button>
+                <button onclick="closeCoachModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs px-4 rounded-xl transition-all">Kapat</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -321,17 +327,14 @@
             const sosD = parseFloat(document.getElementById('sosD').value) || 0;
             const sosY = parseFloat(document.getElementById('sosY').value) || 0;
 
-            // 4 Yanlış 1 Doğruyu Götürür Hesabı
             const matNet = Math.max(0, matD - (matY / 4));
             const fenNet = Math.max(0, fenD - (fenY / 4));
             const turNet = Math.max(0, turD - (turY / 4));
             const sosNet = Math.max(0, sosD - (sosY / 4));
             const totalNet = matNet + fenNet + turNet + sosNet;
 
-            // Global Göstergeleri ve Başarı Çubuklarını Güncelle
             document.getElementById('globalNetDisplay').innerHTML = `${totalNet.toFixed(2)} <span class="text-sm text-slate-400 font-medium">Net</span>`;
             
-            // Yüzdesel Başarı Hesaplama Simülasyonu (40 Soru Üzerinden Matematik, 20 Üzerinden Fen)
             const matPercent = Math.min(100, Math.floor((matNet / 40) * 100));
             const fenPercent = Math.min(100, Math.floor((fenNet / 20) * 100));
 
@@ -340,7 +343,6 @@
             document.getElementById('progressTextFen').innerText = `%${fenPercent}`;
             document.getElementById('progressBarFen').style.width = `${fenPercent}%`;
 
-            // Tabloya Yeni Sınav Satırını Ekle
             const archiveTable = document.getElementById('archiveTableBody');
             const newRow = `<tr class="bg-orange-50/30 font-bold transition-colors">
                 <td class="p-3 text-slate-900">${title}</td>
@@ -352,14 +354,15 @@
 
             alert(`Sınav verileriniz işlendi!\nToplam Net: ${totalNet.toFixed(2)}\nVeriler analiz modüllerine dağıtıldı.`);
             document.getElementById('denemeForm').reset();
-            switchSection('analytics'); // Otomatik grafik sekmesine atar
+            switchSection('analytics');
         };
     </script>
 
+    <!-- ================= FIREBASE VERİ MOTORU VE KOÇLUK SİSTEMİ ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
@@ -389,6 +392,9 @@
                     document.getElementById('welcomeExam').innerText = userData.specialtyOrExam;
                     document.getElementById('avatarInitials').innerText = (userData.firstName.charAt(0) + userData.lastName.charAt(0)).toUpperCase();
                     
+                    // Öğrencinin paneli yüklendiğinde tüm HOCALARI veritabanından çek ve "Akademik Koç Bul" sekmesine diz
+                    await fetchAllTeachers();
+
                     var loader = document.getElementById('pageLoader');
                     if(loader) {
                         loader.classList.add('opacity-0');
@@ -398,8 +404,86 @@
             }
         });
 
+        // Veritabanından Rolü "Teacher" Olan Herkesi Getiren Fonksiyon
+        async function fetchAllTeachers() {
+            const container = document.getElementById('coachContainer');
+            try {
+                const q = query(collection(db, "users"), where("role", "==", "teacher"));
+                const querySnapshot = await getDocs(q);
+                
+                let html = "";
+                let count = 0;
+
+                querySnapshot.forEach((doc) => {
+                    count++;
+                    const teacher = doc.data();
+                    const name = teacher.firstName + " " + teacher.lastName;
+                    const initials = (teacher.firstName.charAt(0) + teacher.lastName.charAt(0)).toUpperCase();
+                    const branch = teacher.specialtyOrExam || "Matematik / Fizik";
+                    
+                    html += `
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-start hover:border-orange-300 transition-all cursor-pointer group" onclick="openCoachModal('${name}', '${branch}', '${teacher.email}', '${doc.id}', '${initials}')">
+                            <div class="w-12 h-12 bg-slate-100 text-slate-800 group-hover:bg-orange-500 group-hover:text-white rounded-xl font-black text-base flex items-center justify-center flex-shrink-0 transition-colors">${initials}</div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 text-sm">${name}</h4>
+                                <p class="text-[10px] text-orange-600 font-bold tracking-widest uppercase mb-1">${branch} Eğitmeni</p>
+                                <p class="text-xs text-slate-400">Detayları görmek ve koç olarak atamak için tıkla.</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if(count > 0) container.innerHTML = html;
+                else container.innerHTML = `<p class="text-slate-400 text-xs">Sistemde henüz kayıtlı eğitmen bulunamadı.</p>`;
+
+            } catch (e) {
+                console.error("Eğitmenler yüklenirken hata:", e);
+            }
+        }
+
+        // Koç Modalı Açma ve Atama İşlemi
+        window.openCoachModal = function(name, branch, email, teacherUid, initials) {
+            document.getElementById('modalCoachName').innerText = name;
+            document.getElementById('modalCoachBranch').innerText = branch;
+            document.getElementById('modalCoachEmail').innerText = email;
+            document.getElementById('modalCoachAvatar').innerText = initials;
+            
+            // "Koç Olarak Ata" butonuna işlev ekle
+            document.getElementById('coachSelectBtn').onclick = async function() {
+                const currentUser = auth.currentUser;
+                if(currentUser) {
+                    try {
+                        // Veritabanında öğrencinin "coachUid" alanını bu öğretmenin ID'si ile güncelle
+                        await setDoc(doc(db, "users", currentUser.uid), { coachUid: teacherUid }, { merge: true });
+                        alert(`Tebrikler! ${name} artık akademik koçunuz olarak atandı. Eğitmeniniz profiline giriş yaptığında sizi listesinde görecektir.`);
+                        closeCoachModal();
+                    } catch(error) {
+                        console.error("Atama hatası:", error);
+                        alert("Koç ataması yapılırken bir hata oluştu.");
+                    }
+                }
+            };
+
+            const modal = document.getElementById('coachModal');
+            const content = document.getElementById('coachModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 50);
+        };
+
+        // Koç Modalını Kapatma
+        window.closeCoachModal = function() {
+            const modal = document.getElementById('coachModal');
+            const content = document.getElementById('coachModalContent');
+            content.classList.add('scale-95');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
+
         window.logoutUser = function() {
-            signOut(auth).then(() => { window.location.href = 'register.html'; });
+            signOut(auth).then(() => { window.location.href = 'login.html'; });
         };
     </script>
 </body>
