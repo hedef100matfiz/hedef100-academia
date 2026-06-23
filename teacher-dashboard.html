@@ -87,25 +87,170 @@
         <main class="p-6 md:p-8 flex-1 relative z-10 w-full max-w-7xl mx-auto">
             
             <div id="section-dashboard" class="section-active space-y-6">
-                <div class="bg-white rounded-[2rem] p-8 md:p-10 shadow-sm border border-slate-100">
-                    <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight">Hoş Geldin, <span id="welcomeName" class="text-orange-500">...</span>!</h1>
-                    <p class="text-slate-500 text-sm mt-3 leading-relaxed">Platformdaki tüm operasyonel modüller aktifleştirildi. Sol menüden öğrencilerinizi ID ile ekleyebilir ve sınıflarınızı yönetebilirsiniz.</p>
+                
+                <div class="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Hoş Geldin, <span id="welcomeName" class="text-orange-500">...</span>!</h1>
+                        <p class="text-slate-500 text-xs md:text-sm mt-1 leading-relaxed">Akademik komuta merkezindesiniz. Öğrencilerinizin anlık gelişim seyri, ödev uyumları ve kritik verileri derlendi.</p>
+                    </div>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <button onclick="switchSection('yeni-sinif')" class="flex-1 md:flex-none px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition shadow-md whitespace-nowrap">Sınıfları Yönet</button>
+                        <button onclick="switchSection('toplu-program')" class="flex-1 md:flex-none px-4 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold text-xs rounded-xl transition whitespace-nowrap">Hızlı Ödev Tanımla</button>
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border-l-4 border-orange-500 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Bana Bağlı Öğrenci</p>
-                        <p id="dashboardStudentCount" class="text-4xl font-black text-slate-900">0</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden flex flex-col justify-between h-32">
+                        <div class="flex justify-between items-start">
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Aktif Portföy</p>
+                            <span class="w-7 h-7 bg-orange-50 text-orange-500 rounded-lg flex items-center justify-center text-xs font-bold">👤</span>
+                        </div>
+                        <div>
+                            <p id="dashboardStudentCount" class="text-3xl font-black text-slate-900">0</p>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Sorumlu Olduğunuz Öğrenci</p>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border-l-4 border-blue-500 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Aktif Sınıf Sayısı</p>
-                        <p id="dashboardClassCount" class="text-4xl font-black text-slate-900">0</p>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden flex flex-col justify-between h-32">
+                        <div class="flex justify-between items-start">
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Mevcut Gruplar</p>
+                            <span class="w-7 h-7 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center text-xs font-bold">🏫</span>
+                        </div>
+                        <div>
+                            <p id="dashboardClassCount" class="text-3xl font-black text-slate-900">0</p>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Kurulan Aktif Kamp/Sınıf</p>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border-l-4 border-emerald-500 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Sistem Durumu</p>
-                        <p class="text-4xl font-black text-emerald-500">Aktif</p>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden flex flex-col justify-between h-32">
+                        <div class="flex justify-between items-start">
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Ödev Tamamlama</p>
+                            <span class="w-7 h-7 bg-emerald-50 text-emerald-500 rounded-lg flex items-center justify-center text-xs font-bold">✓</span>
+                        </div>
+                        <div>
+                            <div class="flex items-baseline gap-1">
+                                <p class="text-3xl font-black text-slate-900">%84</p>
+                                <span class="text-[10px] text-emerald-500 font-bold">▲ %3</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Verilen görevlerin bitme oranı</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm relative overflow-hidden flex flex-col justify-between h-32">
+                        <div class="flex justify-between items-start">
+                            <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Haftalık Çözüm</p>
+                            <span class="w-7 h-7 bg-purple-50 text-purple-500 rounded-lg flex items-center justify-center text-xs font-bold">⚡</span>
+                        </div>
+                        <div>
+                            <p class="text-3xl font-black text-slate-900">4,820 <span class="text-xs text-slate-400 font-medium">Soru</span></p>
+                            <p class="text-[10px] text-slate-400 font-semibold mt-1">Öğrencilerin toplam soru havuzu</p>
+                        </div>
                     </div>
                 </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <div class="lg:col-span-2 space-y-6">
+                        
+                        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <h3 class="text-base font-black text-slate-900">⚠️ Riskli / Yakın Takip Grubu</h3>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Son denemede net kaybı yaşayan veya programın gerisinde kalan öğrenciler.</p>
+                                </div>
+                                <span class="text-[10px] bg-amber-50 text-orange-600 border border-amber-100 font-bold px-2 py-0.5 rounded-full">3 Öğrenci Limit Dışı</span>
+                            </div>
+
+                            <div class="divide-y divide-slate-50">
+                                <div class="py-3 flex items-center justify-between text-xs">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-7 h-7 bg-rose-50 text-rose-600 font-black rounded-lg flex items-center justify-center text-[10px]">MD</div>
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">Murat Demir (H100-YKS3)</h4>
+                                            <p class="text-[10px] text-slate-400">2026 AYT Sayısal Grubu</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-rose-600">▼ 6.5 Net Azalma</p>
+                                        <p class="text-[9px] text-slate-400 font-medium">Fizik / Optik Kazanım Kaybı</p>
+                                    </div>
+                                </div>
+                                <div class="py-3 flex items-center justify-between text-xs">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-7 h-7 bg-amber-50 text-amber-600 font-black rounded-lg flex items-center justify-center text-[10px]">EC</div>
+                                        <div>
+                                            <h4 class="font-bold text-slate-800">Elif Çelik (H100-YKS7)</h4>
+                                            <p class="text-[10px] text-slate-400">2026 TYT Hız Grubu</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-amber-500">%42 Program Uyumu</p>
+                                        <p class="text-[9px] text-slate-400 font-medium">Son 3 ödev eksik bırakıldı</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-indigo-950 text-indigo-100 p-6 rounded-3xl shadow-md relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-48 h-48 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2"></div>
+                            <h3 class="text-sm font-black uppercase tracking-wider mb-4 flex items-center gap-2 text-white">
+                                <span>🧠</span> Yapay Zeka Zümre Rapor Özeti
+                            </h3>
+                            <p class="text-xs leading-relaxed text-indigo-200">
+                                Sayısal kamp gruplarınızdaki öğrencilerin genel algoritma taramasına göre, bu hafta <strong class="text-white">Matematik / Trigonometri-2</strong> ve <strong class="text-white">Fizik / Modern Fizik Analizleri</strong> konularında yanlış yapma eğilimi %18 arttı. Sınıflarınıza toplu telafi ödevlendirmesi yapmanız tavsiye edilir.
+                            </p>
+                            <div class="mt-4 pt-4 border-t border-indigo-900/60 flex flex-wrap gap-2">
+                                <button onclick="switchSection('toplu-program')" class="bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] uppercase py-2 px-4 rounded-xl transition">Telafi Görevi Kurgula</button>
+                                <button onclick="switchSection('iletisim')" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] uppercase py-2 px-4 rounded-xl transition shadow">Sınıfa Duyuru Geç</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="lg:col-span-1 space-y-6">
+                        
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
+                            <h3 class="text-sm font-black text-slate-900 mb-4 flex items-center gap-2">
+                                <span class="text-xs">📅</span> Bugünün Eğitim Ajandası
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="p-3 border-l-4 border-orange-500 bg-orange-50/30 rounded-r-xl text-xs">
+                                    <div class="flex justify-between font-bold text-slate-800">
+                                        <span>Limit-Türev Canlı Kampı</span>
+                                        <span class="text-orange-600">17:00</span>
+                                    </div>
+                                    <p class="text-[10px] text-slate-500 font-medium mt-0.5">2026 AYT Sayısal Sınıfı • Online Seans</p>
+                                </div>
+                                <div class="p-3 border-l-4 border-indigo-500 bg-indigo-50/30 rounded-r-xl text-xs">
+                                    <div class="flex justify-between font-bold text-slate-800">
+                                        <span>Birebir Program Denetimi</span>
+                                        <span class="text-indigo-600">19:30</span>
+                                    </div>
+                                    <p class="text-[10px] text-slate-500 font-medium mt-0.5">Ahmet Kula (Derece Grubu Takibi)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm flex flex-col h-64 justify-between">
+                            <div class="border-b pb-2 mb-2 flex justify-between items-center">
+                                <h3 class="text-sm font-black text-slate-900 flex items-center gap-1">✨ Canlı Aktivite Akışı</h3>
+                                <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                            </div>
+                            <div class="flex-1 overflow-y-auto space-y-3 pr-1 text-[11px] font-medium text-slate-600">
+                                <div class="bg-slate-50/80 p-2 rounded-xl border border-slate-100">
+                                    <strong class="text-slate-900">Arda G. (H100-YKS5)</strong> deneme girişi yaptı: <span class="text-indigo-600 font-bold">78.25 Net</span>
+                                    <span class="text-[9px] text-slate-400 block mt-0.5">2 dakika önce</span>
+                                </div>
+                                <div class="bg-slate-50/80 p-2 rounded-xl border border-slate-100">
+                                    <strong class="text-slate-900">Zeynep K.</strong> haftalık çalışma programını %100 tamamladı.
+                                    <span class="text-[9px] text-slate-400 block mt-0.5">45 dakika önce</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
 
             <div id="section-yeni-sinif" class="section-hidden space-y-6">
