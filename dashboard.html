@@ -31,7 +31,7 @@
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
         <p class="text-white font-bold tracking-widest text-sm uppercase">HEDEF100 Sunucu Bağlantısı Kuruluyor...</p>
-        <p id="loaderFallbackText" class="text-slate-500 text-xs mt-2 hidden">Bağlantı gecikti, güvenli mod devreye giriyor...</p>
+        <p id="loaderFallbackText" class="text-slate-500 text-xs mt-2 hidden">Güvenli Mod Aktif Ediliyor...</p>
     </div>
 
     <aside id="sidebar" class="sidebar-expanded bg-slate-900 border-r border-slate-800 flex flex-col transition-all duration-300 z-50 shadow-xl relative text-slate-300">
@@ -62,10 +62,6 @@
         </nav>
 
         <div class="p-4 border-t border-slate-800 flex flex-col gap-2">
-            <button onclick="toggleSidebar()" class="flex items-center gap-3 px-3 py-2 bg-slate-950 text-slate-400 hover:text-white rounded-xl font-bold text-xs">
-                <svg id="sidebarToggleIcon" class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
-                <span class="sidebar-text whitespace-nowrap">Menüyü Daralt</span>
-            </button>
             <button onclick="logoutUser()" class="w-full flex items-center gap-3 px-3 py-2.5 text-rose-400 hover:bg-rose-500/10 hover:text-rose-500 rounded-xl font-bold transition-colors group">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                 <span class="sidebar-text whitespace-nowrap text-sm">Çıkış Yap</span>
@@ -79,27 +75,26 @@
         <header class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 shadow-sm px-6 py-4 flex justify-between items-center">
             <div class="flex items-center text-sm font-bold text-slate-500">
                 <span>Hedef ID: </span>
-                <span id="hedefIdDisplay" class="ml-2 px-2 py-0.5 bg-slate-100 border border-slate-200 rounded font-mono text-slate-700 tracking-wider">H100-PENDING</span>
+                <span id="hedefIdDisplay" class="ml-2 px-2 py-0.5 bg-slate-100 border border-slate-200 rounded font-mono text-slate-700 tracking-wider">H100-TEST</span>
             </div>
             
             <div class="flex items-center space-x-4">
                 <div class="text-right hidden sm:block">
-                    <p id="studentNameDisplay" class="text-sm font-bold text-slate-900">Öğrenci Profili</p>
+                    <p id="studentNameDisplay" class="text-sm font-bold text-slate-900">Ahmet Kula</p>
                     <p id="targetExamBadge" class="text-[10px] text-orange-600 font-bold bg-orange-50 px-1.5 py-0.5 rounded mt-0.5 inline-block border border-orange-100 uppercase tracking-widest">YKS ADAYI</p>
                 </div>
-                <div id="avatarInitials" class="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-md">AC</div>
+                <div id="avatarInitials" class="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-md">AK</div>
             </div>
         </header>
 
         <main class="p-6 lg:p-8 flex-1 relative z-10 w-full max-w-7xl mx-auto">
             
             <div id="section-dashboard" class="section-active space-y-8">
-                
                 <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 md:p-10 text-white shadow-xl relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
                     <div class="relative z-10">
-                        <h1 class="text-3xl md:text-4xl font-black mb-2 tracking-tight">Merhaba, <span id="welcomeName" class="text-orange-400">Öğrenci</span>! 👋</h1>
-                        <p class="text-slate-300 max-w-2xl text-sm md:text-base leading-relaxed">Hedef100 Yapay Zeka koçun devrede. Hedefindeki <strong id="welcomeExam" class="text-white">Sınav</strong> için bugün çözmen gereken soru paketleri ve zümre ödevleri hazırlandı. Bugün tempoyu artırıyoruz!</p>
+                        <h1 class="text-3xl md:text-4xl font-black mb-2 tracking-tight">Merhaba, <span id="welcomeName" class="text-orange-400">Ahmet</span>! 👋</h1>
+                        <p class="text-slate-300 max-w-2xl text-sm md:text-base leading-relaxed">Hedef100 Yapay Zeka koçun devrede. Hedefindeki <strong id="welcomeExam" class="text-white">YKS</strong> için bugün çözmen gereken soru paketleri ve zümre ödevleri hazırlandı. Bugün tempoyu artırıyoruz!</p>
                         <button onclick="switchSection('program')" class="mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg transition-colors text-sm">Günün Programını Görüntüle</button>
                     </div>
                 </div>
@@ -132,35 +127,6 @@
                         <p class="text-xs text-slate-400 font-semibold mt-1">● Programla tam uyumlu</p>
                     </div>
                 </div>
-
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <h3 class="text-lg font-bold text-slate-900">Yapay Zeka Koçluk Görevleri</h3>
-                        <span class="text-xs font-bold text-orange-600 bg-orange-100 px-3 py-1 rounded-full">2 Görev Tamamlanmayı Bekliyor</span>
-                    </div>
-                    <div class="divide-y divide-slate-100">
-                        <div class="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                            <div class="flex items-center gap-4">
-                                <input type="checkbox" class="w-5 h-5 text-orange-500 rounded focus:ring-orange-500 cursor-pointer">
-                                <div>
-                                    <h4 class="font-bold text-slate-900 text-sm">Matematik - Fonksiyonlar Karma Soru Çözümü</h4>
-                                    <p class="text-xs text-slate-500">Hedef100 Soru Havuzu - Modül 3, Test 1-2</p>
-                                </div>
-                            </div>
-                            <span class="px-2 py-1 bg-rose-50 text-rose-600 text-[10px] font-bold rounded">Bugün Bitecek</span>
-                        </div>
-                        <div class="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                            <div class="flex items-center gap-4">
-                                <input type="checkbox" class="w-5 h-5 text-orange-500 rounded focus:ring-orange-500 cursor-pointer">
-                                <div>
-                                    <h4 class="font-bold text-slate-900 text-sm">Fizik - Vektörler ve Kuvvet Konu Analizi</h4>
-                                    <p class="text-xs text-slate-500">Eğitmen Video Akışı - 1. ve 2. Ders Tamamlama</p>
-                                </div>
-                            </div>
-                            <span class="px-2 py-1 bg-amber-50 text-amber-600 text-[10px] font-bold rounded">Video Ödevi</span>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div id="section-program" class="section-hidden space-y-6">
@@ -178,11 +144,6 @@
                             <p class="text-xs text-slate-700 font-medium">● Modern Fizik Analizleri (1.5 Saat)</p>
                             <p class="text-xs text-slate-700 font-medium mt-1">● Kimyasal Bağlar Soru Avı (1 Saat)</p>
                         </div>
-                        <div class="p-4 border border-slate-100 bg-slate-50 rounded-xl">
-                            <h4 class="font-bold text-sm text-emerald-600 mb-2">Cuma / Cumartesi</h4>
-                            <p class="text-xs text-slate-700 font-medium">● Kurum Geneli TYT Denemesi</p>
-                            <p class="text-xs text-slate-700 font-medium mt-1">● Hata Raporu & Yanlış Analizi</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -190,7 +151,6 @@
             <div id="section-analytics" class="section-hidden space-y-6">
                 <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                     <h3 class="text-xl font-bold text-slate-900 mb-2">Yapay Zeka Destekli Karne Analiz Motoru</h3>
-                    <p class="text-sm text-slate-500 mb-6">Optik okuyucudan gelen veriler doğrultusunda eksik olduğunuz kazanımlar.</p>
                     <div class="space-y-4">
                         <div>
                             <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
@@ -201,29 +161,41 @@
                                 <div class="bg-emerald-500 h-full w-[85%]"></div>
                             </div>
                         </div>
-                        <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
-                                <span>Fizik - Optik ve Dalgalar Başarı Oranı</span>
-                                <span>%42</span>
-                            </div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-rose-500 h-full w-[42%]"></div>
-                            </div>
-                            <p class="text-[10px] text-rose-600 font-bold mt-1">⚠️ Yapay Zeka Uyarısı: Bu konudan acil konu anlatım videosu izlenmeli.</p>
-                        </div>
                     </div>
                 </div>
             </div>
-
         </main>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                var loader = document.getElementById('pageLoader');
+                if (loader && !loader.classList.contains('hidden')) {
+                    document.getElementById('loaderFallbackText').classList.remove('hidden');
+                    loader.classList.add('opacity-0');
+                    setTimeout(function() { loader.classList.add('hidden'); }, 500);
+                }
+            }, 2000); // 2 saniye sonra kesin kapatır.
+        });
+
+        // Standart Menü Geçiş Fonksiyonları
+        window.switchSection = function(sectionId) {
+            document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.replace('section-active', 'section-hidden'));
+            document.getElementById('section-' + sectionId).classList.replace('section-hidden', 'section-active');
+            
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent";
+            });
+            document.getElementById('nav-' + sectionId).className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/20 text-orange-400 rounded-xl font-bold transition-colors group border-l-4 border-orange-500";
+        };
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // Firebase Yapılandırma Bilgileri
         const firebaseConfig = {
             apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
             authDomain: "hedef100-academia.firebaseapp.com",
@@ -237,118 +209,30 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ================= GÜVENLİ KURTARMA ZAMANLAYICISI (FALLBACK TIMEOUT) =================
-        // Eğer Firebase bağlantısı 3 saniye içinde yanıt vermezse, ekranın kilitlenmesini engeller.
-        let isDataLoaded = false;
-        
-        setTimeout(() => {
-            if (!isDataLoaded) {
-                console.warn("Firebase yanıt süresi aşıldı, arayüz simülasyon modunda açılıyor.");
-                document.getElementById('loaderFallbackText').classList.remove('hidden');
-                
-                // Varsayılan Test Verilerini Ekrana Bas
-                document.getElementById('studentNameDisplay').innerText = "Test Kullanıcısı (Canlı Mod)";
-                document.getElementById('welcomeName').innerText = "Giriş Başarılı";
-                document.getElementById('hedefIdDisplay').innerText = "H100-DEMO";
-                document.getElementById('targetExamBadge').innerText = "YKS / KPSS ADAYI";
-                document.getElementById('welcomeExam').innerText = "Sınav Grubu";
-                document.getElementById('avatarInitials').innerText = "H100";
-                
-                // Yükleme ekranını kaldır
-                closeLoader();
-            }
-        }, 3000);
-
-        function closeLoader() {
-            const loader = document.getElementById('pageLoader');
-            if(loader) {
-                loader.classList.add('opacity-0');
-                setTimeout(() => loader.classList.add('hidden'), 500);
-            }
-        }
-
-        // ================= KULLANICI DURUM VE VERİ MOTORU =================
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                try {
-                    const docRef = doc(db, "users", user.uid);
-                    const docSnap = await getDoc(docRef);
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
 
-                    if (docSnap.exists()) {
-                        const userData = docSnap.data();
-                        isDataLoaded = true; // Gerçek veri başarıyla yakalandı
-
-                        // Güvenlik Koruması: Giren kişi öğrenci değilse doğru panele fırlat
-                        if(userData.role !== 'student') {
-                            if(userData.role === 'teacher') window.location.href = 'teacher-dashboard.html';
-                            else if(userData.role === 'kurum') window.location.href = 'kurum-dashboard.html';
-                            return;
-                        }
-
-                        // Verileri DOM Elemanlarına Yerleştir
-                        const fullName = userData.firstName + " " + userData.lastName;
-                        document.getElementById('studentNameDisplay').innerText = fullName;
-                        document.getElementById('welcomeName').innerText = userData.firstName;
-                        document.getElementById('hedefIdDisplay').innerText = userData.hedefId;
-                        document.getElementById('targetExamBadge').innerText = userData.specialtyOrExam + " ADAYI";
-                        document.getElementById('welcomeExam').innerText = userData.specialtyOrExam;
-                        
-                        const initials = userData.firstName.charAt(0) + userData.lastName.charAt(0);
-                        document.getElementById('avatarInitials').innerText = initials.toUpperCase();
-                        
-                        closeLoader();
-                    } else {
-                        console.log("Firestore dokümanı bulunamadı, oturum açılmış fakat profil eksik.");
-                        isDataLoaded = true;
-                        closeLoader();
-                    }
-                } catch (error) {
-                    console.error("Firestore'dan veri çekilirken hata oluştu:", error);
-                    isDataLoaded = true;
-                    closeLoader();
+                if (docSnap.exists()) {
+                    const userData = docSnap.data();
+                    
+                    document.getElementById('studentNameDisplay').innerText = userData.firstName + " " + userData.lastName;
+                    document.getElementById('welcomeName').innerText = userData.firstName;
+                    document.getElementById('hedefIdDisplay').innerText = userData.hedefId;
+                    document.getElementById('targetExamBadge').innerText = userData.specialtyOrExam + " ADAYI";
+                    document.getElementById('welcomeExam').innerText = userData.specialtyOrExam;
+                    document.getElementById('avatarInitials').innerText = (userData.firstName.charAt(0) + userData.lastName.charAt(0)).toUpperCase();
+                    
+                    var loader = document.getElementById('pageLoader');
+                    loader.classList.add('opacity-0');
+                    setTimeout(() => loader.classList.add('hidden'), 500);
                 }
-            } else {
-                console.log("Aktif kullanıcı oturumu bulunamadı.");
-                // Canlı test aşamasında tarayıcı kilitlenmesin diye yönlendirmeyi konsola yazıyoruz, 
-                // Gerçek dağıtımda aktif edebilirsin: window.location.href = 'login.html';
             }
         });
 
-        // ================= SİSTEMDEN ÇIKIŞ FONKSİYONU =================
         window.logoutUser = function() {
-            signOut(auth).then(() => {
-                window.location.href = 'register.html';
-            }).catch((error) => {
-                console.error("Çıkış işlemi başarısız:", error);
-            });
-        };
-
-        // ================= SEKME GEÇİŞ MOTORU =================
-        window.switchSection = function(sectionId) {
-            document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.replace('section-active', 'section-hidden'));
-            document.getElementById('section-' + sectionId).classList.replace('section-hidden', 'section-active');
-            
-            document.querySelectorAll('.nav-item').forEach(el => {
-                el.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent";
-            });
-            document.getElementById('nav-' + sectionId).className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/20 text-orange-400 rounded-xl font-bold transition-colors group border-l-4 border-orange-500";
-        };
-
-        // ================= SIDEBAR DARALTMA FONKSİYONU =================
-        window.toggleSidebar = function() {
-            const sidebar = document.getElementById('sidebar');
-            const texts = document.querySelectorAll('.sidebar-text');
-            const icon = document.getElementById('sidebarToggleIcon');
-            
-            if(sidebar.classList.contains('sidebar-expanded')) {
-                sidebar.classList.replace('sidebar-expanded', 'sidebar-collapsed');
-                texts.forEach(t => t.classList.add('hide-text'));
-                icon.style.transform = "rotate(180deg)";
-            } else {
-                sidebar.classList.replace('sidebar-collapsed', 'sidebar-expanded');
-                texts.forEach(t => t.classList.remove('hide-text'));
-                icon.style.transform = "rotate(0deg)";
-            }
+            signOut(auth).then(() => { window.location.href = 'register.html'; });
         };
     </script>
 </body>
