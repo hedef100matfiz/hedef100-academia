@@ -121,7 +121,7 @@
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
+                                class="bg-slate-50 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200"
                                     <th class="p-4 font-bold">Sınıf / Şube</th>
                                     <th class="p-4 font-bold">Sınav Adı</th>
                                     <th class="p-4 font-bold">Katılım</th>
@@ -144,20 +144,6 @@
                                     <td class="p-4 font-medium text-slate-500">Bekleniyor...</td>
                                     <td class="p-4"><span class="px-2 py-1 bg-amber-100 text-amber-700 text-[10px] font-bold rounded-full">Okunuyor</span></td>
                                 </tr>
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="p-4 font-bold text-slate-900">12-C Sözel</td>
-                                    <td class="p-4 text-slate-600">YKS Genel Deneme #14</td>
-                                    <td class="p-4 font-medium text-slate-700">%92</td>
-                                    <td class="p-4 font-black text-indigo-600">54.2 Net</td>
-                                    <td class="p-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold rounded-full">Analiz Tamamlandı</span></td>
-                                </tr>
-                                <tr class="hover:bg-slate-50 transition-colors">
-                                    <td class="p-4 font-bold text-slate-900">Mezun Grup 1</td>
-                                    <td class="p-4 text-slate-600">Matematik Limit/Türev</td>
-                                    <td class="p-4 font-medium text-slate-700">%100</td>
-                                    <td class="p-4 font-black text-indigo-600">32.1 Net</td>
-                                    <td class="p-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 text-[10px] font-bold rounded-full">Sisteme Yüklendi</span></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -165,18 +151,74 @@
             </div>
 
             <div id="section-students" class="section-hidden space-y-6">
-                <div class="flex justify-between items-center">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">Öğrenci Yönetimi</h1>
-                        <p class="text-slate-500 text-sm">Kurumdaki tüm öğrencilerin detaylı profillerine ulaşın.</p>
+                        <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 mb-1">Gelişmiş Öğrenci Takip Sistemi</h1>
+                        <p class="text-slate-500 text-sm">Yapay zeka verilerine göre öğrencilerin anlık gelişim seviyeleri ve akademik risk durumları.</p>
                     </div>
-                    <button class="bg-indigo-600 text-white font-bold py-2.5 px-5 rounded-xl shadow-md hover:bg-indigo-700 transition">Yeni Öğrenci Ekle</button>
+                    <div class="flex gap-2">
+                        <button onclick="filterStudents('all')" id="btn-filter-all" class="bg-indigo-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition">Tüm Liste</button>
+                        <button onclick="filterStudents('risk')" id="btn-filter-risk" class="bg-white border border-slate-200 text-slate-600 hover:text-red-500 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition">⚠️ Risk Altındakiler</button>
+                        <button onclick="filterStudents('top')" id="btn-filter-top" class="bg-white border border-slate-200 text-slate-600 hover:text-emerald-600 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition">⭐ Derece Adayları</button>
+                    </div>
                 </div>
                 
-                <div class="bg-white p-10 rounded-2xl border border-slate-200 text-center shadow-sm">
-                    <svg class="w-16 h-16 text-slate-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-                    <h3 class="text-lg font-bold text-slate-900">Öğrenci Veritabanı Modülü</h3>
-                    <p class="text-sm text-slate-500 mt-2">Gelişmiş filtreleme ve detaylı karne görüntüleme sistemi yapım aşamasındadır.</p>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50/80 text-slate-500 text-xs uppercase tracking-wider border-b border-slate-200">
+                                    <th class="p-4 font-bold">Öğrenci Bilgisi</th>
+                                    <th class="p-4 font-bold">Hedeflenen Üniversite & Bölüm</th>
+                                    <th class="p-4 font-bold">Mevcut Ort. (Net)</th>
+                                    <th class="p-4 font-bold">Haftalık Odaklanma</th>
+                                    <th class="p-4 font-bold">Akademik Durum</th>
+                                    <th class="p-4 font-bold text-center">Aksiyon</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm divide-y divide-slate-100" id="studentTableBody">
+                                <tr class="student-row hover:bg-slate-50/50 transition-colors" data-status="top">
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-9 h-9 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center font-bold text-sm">CY</div>
+                                            <div><h4 class="font-bold text-slate-900">Can Yılmaz</h4><p class="text-xs text-slate-400 font-mono">H100-ZILD</p></div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4"><p class="font-semibold text-slate-700 text-xs">Hacettepe Üniversitesi</p><p class="text-xs text-slate-400">Tıp Fakültesi (İngilizce)</p></td>
+                                    <td class="p-4 font-black text-slate-900">94.5 <span class="text-xs text-slate-400 font-normal">Net</span></td>
+                                    <td class="p-4"><span class="font-bold text-slate-700">32.5 Saat</span><p class="text-[10px] text-green-500 font-bold">▲ %12 Artış</p></td>
+                                    <td class="p-4"><span class="px-2.5 py-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold rounded-lg shadow-sm">Kusursuz (Yükselişte)</span></td>
+                                    <td class="p-4 text-center"><button onclick="alert('Can Yılmaz adlı öğrencinin yapay zeka gelişim raporu indiriliyor...')" class="bg-slate-100 hover:bg-indigo-600 hover:text-white border border-slate-200 text-slate-700 text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all">Karne</button></td>
+                                </tr>
+                                <tr class="student-row hover:bg-slate-50/50 transition-colors" data-status="risk">
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-9 h-9 bg-rose-100 text-rose-700 rounded-xl flex items-center justify-center font-bold text-sm">MB</div>
+                                            <div><h4 class="font-bold text-slate-900">Mert Başar</h4><p class="text-xs text-slate-400 font-mono">H100-M7B2</p></div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4"><p class="font-semibold text-slate-700 text-xs">ODTÜ</p><p class="text-xs text-slate-400">Bilgisayar Mühendisliği</p></td>
+                                    <td class="p-4 font-black text-red-600">76.2 <span class="text-xs text-slate-400 font-normal">Net</span></td>
+                                    <td class="p-4"><span class="font-bold text-slate-700">14.0 Saat</span><p class="text-[10px] text-red-500 font-bold">▼ %34 Düşüş</p></td>
+                                    <td class="p-4"><span class="px-2.5 py-1 bg-red-50 border border-red-200 text-red-700 text-[10px] font-bold rounded-lg shadow-sm">⚠️ Net & Odaklanma Riski</span></td>
+                                    <td class="p-4 text-center"><button onclick="alert('Mert Başar adlı öğrencinin koçluk koordinatörüne acil uyarı raporu iletildi.')" class="bg-red-600 text-white hover:bg-red-700 text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all">Hocaya Bildir</button></td>
+                                </tr>
+                                <tr class="student-row hover:bg-slate-50/50 transition-colors" data-status="all">
+                                    <td class="p-4">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-9 h-9 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center font-bold text-sm">SD</div>
+                                            <div><h4 class="font-bold text-slate-900">Selin Demir</h4><p class="text-xs text-slate-400 font-mono">H100-S4D1</p></div>
+                                        </div>
+                                    </td>
+                                    <td class="p-4"><p class="font-semibold text-slate-700 text-xs">Ankara Üniversitesi</p><p class="text-xs text-slate-400">Hukuk Fakültesi</p></td>
+                                    <td class="p-4 font-black text-slate-900">81.0 <span class="text-xs text-slate-400 font-normal">Net</span></td>
+                                    <td class="p-4"><span class="font-bold text-slate-700">22.8 Saat</span><p class="text-[10px] text-slate-400 font-semibold">Stabil Akış</p></td>
+                                    <td class="p-4"><span class="px-2.5 py-1 bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-bold rounded-lg shadow-sm">Hedef Çizgisinde</span></td>
+                                    <td class="p-4 text-center"><button onclick="alert('Selin Demir adlı öğrencinin yapay zeka gelişim raporu indiriliyor...')" class="bg-slate-100 hover:bg-indigo-600 hover:text-white border border-slate-200 text-slate-700 text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all">Karne</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -242,21 +284,45 @@
 
         // Sekmeler Arası Geçiş Motoru
         function switchSection(sectionId) {
-            // Tüm içerikleri gizle
             document.querySelectorAll('[id^="section-"]').forEach(el => {
                 el.classList.replace('section-active', 'section-hidden');
             });
-            // Hedef içeriği göster
             document.getElementById('section-' + sectionId).classList.replace('section-hidden', 'section-active');
 
-            // Menü renklerini sıfırla
             document.querySelectorAll('.nav-item').forEach(el => {
                 el.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent";
             });
 
-            // Aktif menü öğesini boya
             const activeNav = document.getElementById('nav-' + sectionId);
             activeNav.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl font-bold transition-colors group border-l-4 border-indigo-500";
+        }
+
+        // Öğrenci Filtreleme Filtresi
+        function filterStudents(status) {
+            // Buton tasarımlarını sıfırla
+            ['all', 'risk', 'top'].forEach(s => {
+                const btn = document.getElementById('btn-filter-' + s);
+                btn.className = "bg-white border border-slate-200 text-slate-600 text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition";
+                if(s === 'risk') btn.classList.add('hover:text-red-500');
+                if(s === 'top') btn.classList.add('hover:text-emerald-500');
+            });
+
+            // Aktif butonu boya
+            const activeBtn = document.getElementById('btn-filter-' + status);
+            if(status === 'all') activeBtn.className = "bg-indigo-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition";
+            if(status === 'risk') activeBtn.className = "bg-red-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition";
+            if(status === 'top') activeBtn.className = "bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm transition";
+
+            // Satırları süz
+            const rows = document.querySelectorAll('.student-row');
+            rows.forEach(row => {
+                const rowStatus = row.getAttribute('data-status');
+                if (status === 'all' || rowStatus === status) {
+                    row.style.display = 'table-row';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
 
         // Modal (Açılır Pencere) Motoru
