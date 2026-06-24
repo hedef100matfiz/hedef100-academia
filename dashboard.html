@@ -10,10 +10,6 @@
         body { font-family: 'Inter', sans-serif; overflow: hidden; }
         .bg-grid-pattern { background-image: linear-gradient(to right, #f1f5f9 1px, transparent 1px), linear-gradient(to bottom, #f1f5f9 1px, transparent 1px); background-size: 30px 30px; }
         
-        .sidebar-expanded { width: 16rem; }
-        .sidebar-collapsed { width: 5rem; }
-        .hide-text { opacity: 0; display: none; }
-        
         .section-hidden { display: none; }
         .section-active { display: block; animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -23,122 +19,138 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 h-screen flex transition-colors duration-300 relative">
+<body class="bg-slate-50 text-slate-800 h-screen flex relative transition-colors duration-300">
+
+    <div id="sidebarBackdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-900/60 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
     <div id="pageLoader" class="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center transition-opacity duration-500 z-[9999]">
         <svg class="w-12 h-12 text-orange-500 animate-spin mb-4" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
-        <p class="text-white font-bold tracking-widest text-sm uppercase">HEDEF100 Sunucu Bağlantısı Kuruluyor...</p>
+        <p class="text-white font-bold tracking-widest text-xs md:text-sm uppercase">Sunucu Bağlantısı Kuruluyor...</p>
         <p id="loaderFallbackText" class="text-slate-500 text-xs mt-2 hidden">Güvenli Mod Aktif Ediliyor...</p>
     </div>
 
-    <aside id="sidebar" class="sidebar-expanded bg-slate-900 border-r border-slate-800 flex flex-col transition-all duration-300 z-50 shadow-xl relative text-slate-300">
-        <div class="h-20 flex items-center justify-center border-b border-slate-800 transition-all px-4 bg-slate-950">
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 flex flex-col flex-shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 md:static md:shadow-[4px_0_24px_rgba(0,0,0,0.02)] transition-transform duration-300 ease-in-out text-slate-300">
+        <div class="h-20 flex items-center justify-between px-4 border-b border-slate-800 bg-slate-950">
             <div class="flex items-center gap-2 overflow-hidden">
                 <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black flex-shrink-0">H</div>
-                <span class="font-black text-xl tracking-tighter text-white sidebar-text whitespace-nowrap">HEDEF100<span class="text-orange-500">.ÖĞRENCİ</span></span>
+                <span class="font-black text-lg md:text-xl tracking-tighter text-white whitespace-nowrap">HEDEF100<span class="text-orange-500">.ÖĞRENCİ</span></span>
             </div>
+            <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-400 hover:text-white focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
         </div>
 
         <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1">
-            <p class="px-3 text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest sidebar-text whitespace-nowrap">Akademik Panel</p>
+            <p class="px-3 text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest whitespace-nowrap">Akademik Panel</p>
             
-            <button onclick="switchSection('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/20 text-orange-400 rounded-xl font-bold transition-colors group border-l-4 border-orange-500">
+            <button onclick="switchSection('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/20 text-orange-400 rounded-xl font-bold transition-colors group border-l-4 border-orange-500 text-left">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span class="sidebar-text whitespace-nowrap text-sm">Özet Ekranı</span>
+                <span class="whitespace-nowrap text-sm">Özet Ekranı</span>
             </button>
             
-            <button onclick="switchSection('program')" id="nav-program" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent">
+            <button onclick="switchSection('program')" id="nav-program" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent text-left">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                <span class="sidebar-text whitespace-nowrap text-sm">Haftalık Program Hazırla</span>
+                <span class="whitespace-nowrap text-sm">Program Hazırla</span>
             </button>
 
-            <button onclick="switchSection('deneme-gir')" id="nav-deneme-gir" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent">
+            <button onclick="switchSection('deneme-gir')" id="nav-deneme-gir" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent text-left">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                <span class="sidebar-text whitespace-nowrap text-sm">Deneme Veri Girişi</span>
+                <span class="whitespace-nowrap text-sm">Deneme Girişi</span>
             </button>
 
-            <button onclick="switchSection('analytics')" id="nav-analytics" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent">
+            <button onclick="switchSection('analytics')" id="nav-analytics" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent text-left">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                <span class="sidebar-text whitespace-nowrap text-sm">Deneme Analizleri</span>
+                <span class="whitespace-nowrap text-sm">Deneme Analizleri</span>
             </button>
 
-            <button onclick="switchSection('koc-bul')" id="nav-koc-bul" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent">
+            <button onclick="switchSection('koc-bul')" id="nav-koc-bul" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent text-left">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                <span class="sidebar-text whitespace-nowrap text-sm">Akademik Koç Bul</span>
+                <span class="whitespace-nowrap text-sm">Akademik Koç Bul</span>
             </button>
         </nav>
 
         <div class="p-4 border-t border-slate-800 flex flex-col gap-2">
-            <button onclick="logoutUser()" class="w-full flex items-center gap-3 px-3 py-2.5 text-rose-400 hover:bg-rose-500/10 hover:text-rose-500 rounded-xl font-bold transition-colors group">
+            <button onclick="logoutUser()" class="w-full flex items-center gap-3 px-3 py-2.5 text-rose-400 hover:bg-rose-500/10 hover:text-rose-500 rounded-xl font-bold transition-colors group text-left">
                 <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                <span class="sidebar-text whitespace-nowrap text-sm">Çıkış Yap</span>
+                <span class="whitespace-nowrap text-sm">Çıkış Yap</span>
             </button>
         </div>
     </aside>
 
-    <div class="flex-1 flex flex-col h-full relative overflow-y-auto">
+    <div class="flex-1 flex flex-col h-full relative overflow-hidden">
         <div class="absolute inset-0 bg-grid-pattern opacity-70 pointer-events-none z-0"></div>
         
-        <header class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 shadow-sm px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center text-sm font-bold text-slate-500">
-                <span>Hedef ID: </span>
-                <span id="hedefIdDisplay" class="ml-2 px-2 py-0.5 bg-slate-100 border border-slate-200 rounded font-mono text-slate-700 tracking-wider">H100-TEST</span>
+        <header class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 shadow-sm px-4 md:px-6 py-4 flex justify-between items-center relative z-10">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMobileSidebar()" class="md:hidden p-2 -ml-2 text-slate-600 hover:text-slate-900 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <div class="flex items-center text-xs md:text-sm font-bold text-slate-500">
+                    <span class="hidden sm:inline">Hedef ID: </span>
+                    <span id="hedefIdDisplay" class="sm:ml-2 px-2 py-0.5 bg-slate-100 border border-slate-200 rounded font-mono text-slate-700 tracking-wider">H100-TEST</span>
+                </div>
             </div>
             
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3 md:space-x-4">
                 <div class="text-right hidden sm:block">
                     <p id="studentNameDisplay" class="text-sm font-bold text-slate-900">Öğrenci</p>
-                    <p id="targetExamBadge" class="text-[10px] text-orange-600 font-bold bg-orange-50 px-1.5 py-0.5 rounded mt-0.5 inline-block border border-orange-100 uppercase tracking-widest">YKS ADAYI</p>
+                    <p id="targetExamBadge" class="text-[10px] text-orange-600 font-bold bg-orange-50 px-1.5 py-0.5 rounded mt-0.5 inline-block border border-orange-100 uppercase tracking-widest">ADAY</p>
                 </div>
-                <div id="avatarInitials" class="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-md">?</div>
+                <div id="avatarInitials" class="w-9 h-9 md:w-10 md:h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold shadow-md text-sm">?</div>
             </div>
         </header>
 
-        <main class="p-6 lg:p-8 flex-1 relative z-10 w-full max-w-7xl mx-auto">
+        <main class="p-4 md:p-6 lg:p-8 flex-1 relative z-10 w-full max-w-7xl mx-auto overflow-y-auto">
             
-            <div id="section-dashboard" class="section-active space-y-8">
-                <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-8 md:p-10 text-white shadow-xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-64 h-64 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+            <div id="section-dashboard" class="section-active space-y-6 md:space-y-8">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-3xl p-6 md:p-10 text-white shadow-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-48 h-48 md:w-64 md:h-64 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
                     <div class="relative z-10">
-                        <h1 class="text-3xl md:text-4xl font-black mb-2 tracking-tight">Merhaba, <span id="welcomeName" class="text-orange-400">Öğrenci</span>! 👋</h1>
-                        <p class="text-slate-300 max-w-2xl text-sm md:text-base leading-relaxed">Hedef100 Yapay Zeka koçluk motoru devrede. Hedefindeki <strong id="welcomeExam" class="text-white">YKS</strong> sınav grubu için bugün yapılması gereken konu tekrarları ve soru bankası analizleri hazırlandı.</p>
-                        <button onclick="switchSection('program')" class="mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 px-6 rounded-xl shadow-lg transition-colors text-sm">Haftalık Programını Düzenle</button>
+                        <h1 class="text-2xl md:text-4xl font-black mb-2 tracking-tight">Merhaba, <span id="welcomeName" class="text-orange-400">Öğrenci</span>! 👋</h1>
+                        <p class="text-slate-300 max-w-2xl text-xs md:text-sm leading-relaxed">Hedef100 Yapay Zeka koçluk motoru devrede. Hedefindeki <strong id="welcomeExam" class="text-white">sınav</strong> grubu için hazırız.</p>
+                        <button onclick="switchSection('program')" class="mt-4 md:mt-6 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 md:py-2.5 px-4 md:px-6 rounded-xl shadow-lg transition-colors text-xs md:text-sm">Haftalık Programını Düzenle</button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Haftalık Çözülen Soru</p>
-                        <p class="text-3xl font-black text-slate-900">1,245</p>
-                        <p class="text-xs text-emerald-500 font-bold mt-1">▲ %12 Artış</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between h-28 md:h-32">
+                        <p class="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Haftalık Çözülen Soru</p>
+                        <div>
+                            <p class="text-2xl md:text-3xl font-black text-slate-900">1,245</p>
+                            <p class="text-[10px] md:text-xs text-emerald-500 font-bold mt-1">▲ %12 Artış</p>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Güncel Net Ortalaması</p>
-                        <p id="globalNetDisplay" class="text-3xl font-black text-slate-900">74.5 <span class="text-sm text-slate-400 font-medium">Net</span></p>
-                        <p class="text-xs text-emerald-500 font-bold mt-1">▲ Hedef Limitlerinde</p>
+                    <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between h-28 md:h-32">
+                        <p class="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Güncel Net Ortalaması</p>
+                        <div>
+                            <p id="globalNetDisplay" class="text-2xl md:text-3xl font-black text-slate-900">74.5 <span class="text-xs md:text-sm text-slate-400 font-medium">Net</span></p>
+                            <p class="text-[10px] md:text-xs text-emerald-500 font-bold mt-1">▲ Hedef Limitlerinde</p>
+                        </div>
                     </div>
-                    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Haftalık Çalışma Süresi</p>
-                        <p class="text-3xl font-black text-slate-900">28 <span class="text-sm text-slate-400 font-medium">Saat</span></p>
-                        <p class="text-xs text-slate-400 font-semibold mt-1">● Planla Tam Uyumlu</p>
+                    <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between h-28 md:h-32 sm:col-span-2 lg:col-span-1">
+                        <p class="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Haftalık Çalışma Süresi</p>
+                        <div>
+                            <p class="text-2xl md:text-3xl font-black text-slate-900">28 <span class="text-xs md:text-sm text-slate-400 font-medium">Saat</span></p>
+                            <p class="text-[10px] md:text-xs text-slate-400 font-semibold mt-1">● Planla Tam Uyumlu</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div id="section-program" class="section-hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <div class="flex justify-between items-center mb-6">
+                <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                         <div>
-                            <h3 class="text-xl font-bold text-slate-900">Haftalık Dinamik Program Sihirbazı</h3>
-                            <p class="text-xs text-slate-500">Yapay zeka zayıf olduğun derslere göre her hafta bu çizelgeyi otomatik olarak dengeler.</p>
+                            <h3 class="text-lg md:text-xl font-bold text-slate-900">Haftalık Dinamik Program Sihirbazı</h3>
+                            <p class="text-xs text-slate-500 mt-1">Yapay zeka zayıf olduğun derslere göre bu çizelgeyi otomatik olarak dengeler.</p>
                         </div>
-                        <button onclick="alert('Mevcut programınız yapay zeka koçunuz tarafından yeniden optimize edildi!')" class="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs py-2 px-4 rounded-xl transition shadow-md">Yapay Zekaya Göre Yenile</button>
+                        <button onclick="alert('Mevcut programınız yapay zeka koçunuz tarafından yeniden optimize edildi!')" class="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs py-2.5 px-4 rounded-xl transition shadow-md whitespace-nowrap">Yapay Zekaya Göre Yenile</button>
                     </div>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
                             <h4 class="font-extrabold text-sm text-orange-600 mb-3 border-b pb-1">Pazartesi / Salı</h4>
                             <ul class="space-y-2 text-xs">
@@ -165,8 +177,8 @@
             </div>
 
             <div id="section-deneme-gir" class="section-hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm max-w-2xl mx-auto">
-                    <h3 class="text-xl font-black text-slate-900 mb-2">Canlı Deneme Veri Girişi</h3>
+                <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm max-w-2xl mx-auto">
+                    <h3 class="text-lg md:text-xl font-black text-slate-900 mb-2">Canlı Deneme Veri Girişi</h3>
                     <p class="text-xs text-slate-500 mb-6">Evde çözdüğünüz veya katıldığınız deneme sınavlarının sayısal verilerini girin.</p>
                     
                     <form id="denemeForm" class="space-y-4" onsubmit="calculateAndSaveNet(event)">
@@ -174,23 +186,21 @@
                             <label class="block text-xs font-bold text-slate-600 mb-1">Sınav / Yayın Adı</label>
                             <input type="text" id="examTitle" placeholder="Örn: 3D Türkiye Geneli TYT-4" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-sm outline-none focus:ring-1 focus:ring-orange-500" required>
                         </div>
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
                                 <h4 class="text-xs font-black text-slate-700 mb-2 border-b pb-1">Matematik</h4>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <input type="number" id="matD" placeholder="D" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="40" required>
-                                    <input type="number" id="matY" placeholder="Y" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="40" required>
-                                        </div>
+                                    <input type="number" id="matD" placeholder="D (Doğru)" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="40" required>
+                                    <input type="number" id="matY" placeholder="Y (Yanlış)" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="40" required>
+                                </div>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                                <h4 class="text-xs font-black text-slate-700 mb-2 border-b pb-1">Fen Bilimleri (Fizik vb.)</h4>
+                                <h4 class="text-xs font-black text-slate-700 mb-2 border-b pb-1">Fen Bilimleri</h4>
                                 <div class="grid grid-cols-2 gap-2">
                                     <input type="number" id="fenD" placeholder="D" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="20" required>
                                     <input type="number" id="fenY" placeholder="Y" class="p-2 border rounded bg-white text-xs text-center font-bold" min="0" max="20" required>
                                 </div>
                             </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
                             <div class="bg-slate-50 p-3 rounded-xl border border-slate-100">
                                 <h4 class="text-xs font-black text-slate-700 mb-2 border-b pb-1">Türkçe</h4>
                                 <div class="grid grid-cols-2 gap-2">
@@ -206,33 +216,33 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs py-3 rounded-xl shadow-md transition-all">Net Hesapla ve Analiz Merkezine Gönder</button>
+                        <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs py-3.5 rounded-xl shadow-md transition-all mt-2 uppercase tracking-widest">Net Hesapla ve Kaydet</button>
                     </form>
                 </div>
             </div>
 
             <div id="section-analytics" class="section-hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 class="text-xl font-bold text-slate-900 mb-1">Ders Bazlı Akıllı Kazanım Grafiği</h3>
+                <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm">
+                    <h3 class="text-lg md:text-xl font-bold text-slate-900 mb-1">Ders Bazlı Akıllı Kazanım Grafiği</h3>
                     <p class="text-xs text-slate-400 mb-6">Deneme sınavlarından gelen verilere göre anlık başarı oranların.</p>
                     
                     <div class="space-y-4 max-w-xl">
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-700 mb-1"><span>📐 Matematik (Geometri Dahil)</span><span id="progressTextMat">%80</span></div>
-                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden shadow-inner"><div id="progressBarMat" class="bg-gradient-to-r from-orange-400 to-orange-600 h-full transition-all duration-500 w-[80%]"></div></div>
+                            <div class="flex justify-between text-[11px] md:text-xs font-bold text-slate-700 mb-1"><span>📐 Matematik (Geometri Dahil)</span><span id="progressTextMat">%80</span></div>
+                            <div class="w-full bg-slate-100 h-2 md:h-2.5 rounded-full overflow-hidden shadow-inner"><div id="progressBarMat" class="bg-gradient-to-r from-orange-400 to-orange-600 h-full transition-all duration-500 w-[80%]"></div></div>
                         </div>
                         <div>
-                            <div class="flex justify-between text-xs font-bold text-slate-700 mb-1"><span>⚛️ Fizik & Fen Bilimleri</span><span id="progressTextFen">%65</span></div>
-                            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden shadow-inner"><div id="progressBarFen" class="bg-gradient-to-r from-indigo-400 to-indigo-600 h-full transition-all duration-500 w-[65%]"></div></div>
+                            <div class="flex justify-between text-[11px] md:text-xs font-bold text-slate-700 mb-1"><span>⚛️ Fizik & Fen Bilimleri</span><span id="progressTextFen">%65</span></div>
+                            <div class="w-full bg-slate-100 h-2 md:h-2.5 rounded-full overflow-hidden shadow-inner"><div id="progressBarFen" class="bg-gradient-to-r from-indigo-400 to-indigo-600 h-full transition-all duration-500 w-[65%]"></div></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-4 bg-slate-50 border-b border-slate-100 font-bold text-slate-800 text-sm">Geçmiş Sınav Karneleri</div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-100/80 text-slate-500 uppercase font-bold border-b">
+                    <div class="p-4 bg-slate-50 border-b border-slate-100 font-bold text-slate-800 text-xs md:text-sm">Geçmiş Sınav Karneleri</div>
+                    <div class="w-full overflow-x-auto">
+                        <table class="w-full text-left text-xs min-w-[500px]">
+                            <thead class="bg-slate-100/80 text-slate-500 uppercase font-bold border-b text-[10px]">
                                 <tr>
                                     <th class="p-3">Sınav Başlığı</th>
                                     <th class="p-3 text-center">Matematik</th>
@@ -253,39 +263,36 @@
                 </div>
             </div>
 
-            <!-- ================= YENİ: DİNAMİK KOÇ BUL SEKME ================= -->
             <div id="section-koc-bul" class="section-hidden space-y-6">
                 <div>
-                    <h3 class="text-xl font-black text-slate-900 mb-1">Akademik Rehber & Koç Kadrosu</h3>
+                    <h3 class="text-lg md:text-xl font-black text-slate-900 mb-1">Akademik Rehber & Koç Kadrosu</h3>
                     <p class="text-xs text-slate-500">Sistemdeki tüm onaylı eğitmenlerimiz. Tıklayarak inceleyebilir ve kendinize koç olarak seçebilirsiniz.</p>
                 </div>
                 
-                <!-- Veritabanından gelen hocalar buraya dizilecek -->
-                <div id="coachContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <p class="text-slate-400 text-sm font-semibold">Eğitmen kadrosu taranıyor...</p>
+                <div id="coachContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                    <p class="text-slate-400 text-xs font-semibold px-2">Eğitmen kadrosu taranıyor...</p>
                 </div>
             </div>
 
         </main>
     </div>
 
-    <!-- ================= YENİ: KOÇ DETAY VE SEÇİM MODALI ================= -->
-    <div id="coachModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden z-[999] flex items-center justify-center opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 transform scale-95 transition-transform duration-300" id="coachModalContent">
+    <div id="coachModal" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm hidden z-[9999] flex items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+        <div class="bg-white rounded-3xl max-w-sm md:max-w-md w-full p-5 md:p-6 shadow-2xl border border-slate-100 space-y-4 transform scale-95 transition-transform duration-300" id="coachModalContent">
             <div class="flex items-center gap-3 border-b pb-3 border-slate-100">
-                <div id="modalCoachAvatar" class="w-12 h-12 bg-slate-900 text-white font-bold rounded-xl flex items-center justify-center text-lg shadow-sm">?</div>
+                <div id="modalCoachAvatar" class="w-10 h-10 md:w-12 md:h-12 bg-slate-900 text-white font-bold rounded-xl flex items-center justify-center text-base md:text-lg shadow-sm">?</div>
                 <div>
-                    <h4 id="modalCoachName" class="font-black text-slate-900 text-lg">...</h4>
-                    <p id="modalCoachBranch" class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100 inline-block mt-0.5 tracking-wider uppercase">Eğitmen</p>
+                    <h4 id="modalCoachName" class="font-black text-slate-900 text-base md:text-lg leading-tight">...</h4>
+                    <p id="modalCoachBranch" class="text-[9px] md:text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded border border-orange-100 inline-block mt-0.5 tracking-wider uppercase">Eğitmen</p>
                 </div>
             </div>
-            <div class="text-sm space-y-2">
+            <div class="text-xs md:text-sm space-y-2">
                 <p class="text-slate-500 leading-relaxed">Hedef100 Academia bünyesinde haftalık program takibi ve akademik analiz yapar. Öğrencilere hedefleri doğrultusunda birebir rehberlik sağlar.</p>
-                <p class="text-xs text-slate-400 mt-2">İletişim Kanalı: <span id="modalCoachEmail" class="font-semibold text-slate-600">...</span></p>
+                <p class="text-[10px] md:text-xs text-slate-400 mt-2">İletişim: <span id="modalCoachEmail" class="font-semibold text-slate-600 truncate block sm:inline">...</span></p>
             </div>
-            <div class="flex gap-3 pt-4 border-t border-slate-100">
-                <button id="coachSelectBtn" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs py-3 rounded-xl shadow-md transition-all">Bu Eğitmeni Koçum Olarak Ata</button>
-                <button onclick="closeCoachModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs px-4 rounded-xl transition-all">Kapat</button>
+            <div class="flex flex-col sm:flex-row gap-2 md:gap-3 pt-4 border-t border-slate-100">
+                <button id="coachSelectBtn" class="w-full sm:flex-1 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs py-3 rounded-xl shadow-md transition-all">Koç Olarak Ata</button>
+                <button onclick="closeCoachModal()" class="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs py-3 px-4 rounded-xl transition-all">Kapat</button>
             </div>
         </div>
     </div>
@@ -302,21 +309,41 @@
             }, 2000); 
         });
 
-        // SEKME GEÇİŞ MOTORU
+        // Mobil Menü (Drawer) Kontrolü
+        window.toggleMobileSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        };
+
+        // Sekme Geçiş Motoru
         window.switchSection = function(sectionId) {
             document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.replace('section-active', 'section-hidden'));
             document.getElementById('section-' + sectionId).classList.replace('section-hidden', 'section-active');
             
             document.querySelectorAll('.nav-item').forEach(el => {
-                el.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent";
+                el.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800 hover:text-white rounded-xl font-bold transition-colors group border-l-4 border-transparent text-left";
             });
-            document.getElementById('nav-' + sectionId).className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/20 text-orange-400 rounded-xl font-bold transition-colors group border-l-4 border-orange-500";
+            document.getElementById('nav-' + sectionId).className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/20 text-orange-400 rounded-xl font-bold transition-colors group border-l-4 border-orange-500 text-left";
+
+            // Mobilde menü tıklandıktan sonra otomatik kapat
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (!sidebar.classList.contains('-translate-x-full') && window.innerWidth < 768) {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
         };
 
-        // DİNAMİK NET HESAPLAMA VE ANALİZ MERKEZİ ENTEGRASYONU
+        // Dinamik Net Hesaplama
         window.calculateAndSaveNet = function(e) {
             e.preventDefault();
-            
             const title = document.getElementById('examTitle').value;
             const matD = parseFloat(document.getElementById('matD').value) || 0;
             const matY = parseFloat(document.getElementById('matY').value) || 0;
@@ -333,7 +360,7 @@
             const sosNet = Math.max(0, sosD - (sosY / 4));
             const totalNet = matNet + fenNet + turNet + sosNet;
 
-            document.getElementById('globalNetDisplay').innerHTML = `${totalNet.toFixed(2)} <span class="text-sm text-slate-400 font-medium">Net</span>`;
+            document.getElementById('globalNetDisplay').innerHTML = `${totalNet.toFixed(2)} <span class="text-xs md:text-sm text-slate-400 font-medium">Net</span>`;
             
             const matPercent = Math.min(100, Math.floor((matNet / 40) * 100));
             const fenPercent = Math.min(100, Math.floor((fenNet / 20) * 100));
@@ -345,10 +372,10 @@
 
             const archiveTable = document.getElementById('archiveTableBody');
             const newRow = `<tr class="bg-orange-50/30 font-bold transition-colors">
-                <td class="p-3 text-slate-900">${title}</td>
-                <td class="p-3 text-center text-orange-600">${matNet.toFixed(2)} Net</td>
-                <td class="p-3 text-center text-indigo-600">${fenNet.toFixed(2)} Net</td>
-                <td class="p-3 text-center font-black text-slate-950">${totalNet.toFixed(2)} Net</td>
+                <td class="p-3 text-slate-900 truncate max-w-[120px]" title="${title}">${title}</td>
+                <td class="p-3 text-center text-orange-600">${matNet.toFixed(2)}</td>
+                <td class="p-3 text-center text-indigo-600">${fenNet.toFixed(2)}</td>
+                <td class="p-3 text-center font-black text-slate-950">${totalNet.toFixed(2)}</td>
             </tr>`;
             archiveTable.insertAdjacentHTML('afterbegin', newRow);
 
@@ -356,9 +383,47 @@
             document.getElementById('denemeForm').reset();
             switchSection('analytics');
         };
+
+        // Koç Modalı Fonksiyonları
+        window.openCoachModal = function(name, branch, email, teacherUid, initials) {
+            document.getElementById('modalCoachName').innerText = name;
+            document.getElementById('modalCoachBranch').innerText = branch;
+            document.getElementById('modalCoachEmail').innerText = email;
+            document.getElementById('modalCoachAvatar').innerText = initials;
+            
+            document.getElementById('coachSelectBtn').onclick = async function() {
+                const currentUser = window.authInstance?.currentUser; // Modülden auth değişkenini okumak için
+                if(currentUser) {
+                    try {
+                        const { getFirestore, doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
+                        const db = getFirestore();
+                        await setDoc(doc(db, "users", currentUser.uid), { coachUid: teacherUid }, { merge: true });
+                        alert(`Tebrikler! ${name} artık koçunuz olarak atandı.`);
+                        closeCoachModal();
+                    } catch(error) {
+                        console.error(error); alert("Koç ataması sırasında bir hata oluştu.");
+                    }
+                } else { alert("Oturum bulunamadı. Lütfen sayfayı yenileyin."); }
+            };
+
+            const modal = document.getElementById('coachModal');
+            const content = document.getElementById('coachModalContent');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 50);
+        };
+
+        window.closeCoachModal = function() {
+            const modal = document.getElementById('coachModal');
+            const content = document.getElementById('coachModalContent');
+            content.classList.add('scale-95');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        };
     </script>
 
-    <!-- ================= FIREBASE VERİ MOTORU VE KOÇLUK SİSTEMİ ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -376,6 +441,8 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        
+        window.authInstance = auth; // Modal butonu erişimi için
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
@@ -388,11 +455,10 @@
                     document.getElementById('studentNameDisplay').innerText = userData.firstName + " " + userData.lastName;
                     document.getElementById('welcomeName').innerText = userData.firstName;
                     document.getElementById('hedefIdDisplay').innerText = userData.hedefId;
-                    document.getElementById('targetExamBadge').innerText = userData.specialtyOrExam + " ADAYI";
-                    document.getElementById('welcomeExam').innerText = userData.specialtyOrExam;
+                    document.getElementById('targetExamBadge').innerText = (userData.specialtyOrExam || "YKS") + " ADAYI";
+                    document.getElementById('welcomeExam').innerText = userData.specialtyOrExam || "YKS";
                     document.getElementById('avatarInitials').innerText = (userData.firstName.charAt(0) + userData.lastName.charAt(0)).toUpperCase();
                     
-                    // Öğrencinin paneli yüklendiğinde tüm HOCALARI veritabanından çek ve "Akademik Koç Bul" sekmesine diz
                     await fetchAllTeachers();
 
                     var loader = document.getElementById('pageLoader');
@@ -401,10 +467,11 @@
                         setTimeout(() => loader.classList.add('hidden'), 500);
                     }
                 }
+            } else {
+                window.location.href = 'login.html';
             }
         });
 
-        // Veritabanından Rolü "Teacher" Olan Herkesi Getiren Fonksiyon
         async function fetchAllTeachers() {
             const container = document.getElementById('coachContainer');
             try {
@@ -422,65 +489,24 @@
                     const branch = teacher.specialtyOrExam || "Matematik / Fizik";
                     
                     html += `
-                        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-4 items-start hover:border-orange-300 transition-all cursor-pointer group" onclick="openCoachModal('${name}', '${branch}', '${teacher.email}', '${doc.id}', '${initials}')">
-                            <div class="w-12 h-12 bg-slate-100 text-slate-800 group-hover:bg-orange-500 group-hover:text-white rounded-xl font-black text-base flex items-center justify-center flex-shrink-0 transition-colors">${initials}</div>
+                        <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm flex gap-3 md:gap-4 items-start hover:border-orange-300 transition-all cursor-pointer group" onclick="openCoachModal('${name}', '${branch}', '${teacher.email}', '${doc.id}', '${initials}')">
+                            <div class="w-10 h-10 md:w-12 md:h-12 bg-slate-100 text-slate-800 group-hover:bg-orange-500 group-hover:text-white rounded-xl font-black text-sm md:text-base flex items-center justify-center flex-shrink-0 transition-colors">${initials}</div>
                             <div>
-                                <h4 class="font-bold text-slate-900 text-sm">${name}</h4>
-                                <p class="text-[10px] text-orange-600 font-bold tracking-widest uppercase mb-1">${branch} Eğitmeni</p>
-                                <p class="text-xs text-slate-400">Detayları görmek ve koç olarak atamak için tıkla.</p>
+                                <h4 class="font-bold text-slate-900 text-xs md:text-sm leading-tight mb-0.5">${name}</h4>
+                                <p class="text-[9px] md:text-[10px] text-orange-600 font-bold tracking-widest uppercase mb-1">${branch} Koçu</p>
+                                <p class="text-[10px] md:text-xs text-slate-400 leading-snug hidden sm:block">Detayları görmek ve atamak için tıkla.</p>
                             </div>
                         </div>
                     `;
                 });
 
                 if(count > 0) container.innerHTML = html;
-                else container.innerHTML = `<p class="text-slate-400 text-xs">Sistemde henüz kayıtlı eğitmen bulunamadı.</p>`;
+                else container.innerHTML = `<p class="text-slate-400 text-xs px-2">Sistemde henüz kayıtlı eğitmen bulunamadı.</p>`;
 
             } catch (e) {
                 console.error("Eğitmenler yüklenirken hata:", e);
             }
         }
-
-        // Koç Modalı Açma ve Atama İşlemi
-        window.openCoachModal = function(name, branch, email, teacherUid, initials) {
-            document.getElementById('modalCoachName').innerText = name;
-            document.getElementById('modalCoachBranch').innerText = branch;
-            document.getElementById('modalCoachEmail').innerText = email;
-            document.getElementById('modalCoachAvatar').innerText = initials;
-            
-            // "Koç Olarak Ata" butonuna işlev ekle
-            document.getElementById('coachSelectBtn').onclick = async function() {
-                const currentUser = auth.currentUser;
-                if(currentUser) {
-                    try {
-                        // Veritabanında öğrencinin "coachUid" alanını bu öğretmenin ID'si ile güncelle
-                        await setDoc(doc(db, "users", currentUser.uid), { coachUid: teacherUid }, { merge: true });
-                        alert(`Tebrikler! ${name} artık akademik koçunuz olarak atandı. Eğitmeniniz profiline giriş yaptığında sizi listesinde görecektir.`);
-                        closeCoachModal();
-                    } catch(error) {
-                        console.error("Atama hatası:", error);
-                        alert("Koç ataması yapılırken bir hata oluştu.");
-                    }
-                }
-            };
-
-            const modal = document.getElementById('coachModal');
-            const content = document.getElementById('coachModalContent');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                content.classList.remove('scale-95');
-            }, 50);
-        };
-
-        // Koç Modalını Kapatma
-        window.closeCoachModal = function() {
-            const modal = document.getElementById('coachModal');
-            const content = document.getElementById('coachModalContent');
-            content.classList.add('scale-95');
-            modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        };
 
         window.logoutUser = function() {
             signOut(auth).then(() => { window.location.href = 'login.html'; });
