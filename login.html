@@ -3,170 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sisteme Giriş | Hedef100 Academia</title>
+    <title>Giriş Portalı | Hedef100 Academia</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .bg-grid-pattern { background-image: linear-gradient(to right, #f8fafc 1px, transparent 1px), linear-gradient(to bottom, #f8fafc 1px, transparent 1px); background-size: 40px 40px; }
+        body { font-family: 'Inter', sans-serif; background-color: #020617; overflow: hidden; }
+        /* Hologram ve Parıltı Efektleri */
+        .neon-glow { text-shadow: 0 0 10px rgba(99, 102, 241, 0.5), 0 0 20px rgba(99, 102, 241, 0.3); }
+        .hologram-card { backdrop-filter: blur(16px); background-color: rgba(15, 23, 42, 0.45); border: 1px solid rgba(99, 102, 241, 0.15); }
+        .hologram-card:hover { border-color: rgba(99, 102, 241, 0.3); box-shadow: 0 0 30px rgba(99, 102, 241, 0.1); transition: all 0.5s ease; }
+        /* Tarama çizgisi (Scanline) efekti */
+        .scanlines {
+            position: fixed; inset: 0; pointer-events: none; z-index: 10;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 4px, 6px 100%;
+        }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col relative selection:bg-indigo-500 selection:text-white">
+<body class="w-screen h-screen flex items-center justify-center relative select-none">
 
-    <div class="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none"></div>
+    <div class="scanlines"></div>
 
-    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 shadow-sm py-4">
-        <div class="container mx-auto px-6 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-extrabold tracking-tighter text-slate-900">
-                HEDEF100<span class="text-indigo-600">.ACADEMIA</span>
-            </a>
-            <span class="text-xs font-bold bg-slate-100 text-slate-500 px-3 py-1 rounded-full border border-slate-200">Giriş Kapısı</span>
+    <canvas id="plexusCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-auto"></canvas>
+
+    <div class="w-full max-w-md mx-4 p-8 rounded-[2.5rem] hologram-card relative z-20 text-center animate-fadeIn">
+        
+        <div class="mb-8">
+            <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-2xl flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-indigo-500/20">H</div>
+            <h1 class="text-2xl font-black text-white mt-4 tracking-tight uppercase">HEDEF100 <span class="text-indigo-400 neon-glow">ACADEMIA</span></h1>
+            <p class="text-slate-400 text-xs mt-1 font-medium tracking-wide">Yapay Zeka Destekli Akıllı Eğitim Üssü</p>
         </div>
-    </nav>
 
-    <div class="container mx-auto px-4 py-12 z-10 flex-1 flex justify-center items-center">
-        <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl border border-slate-100 w-full max-w-md relative overflow-hidden">
-            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-orange-500"></div>
-
-            <div class="text-center mb-8 mt-2">
-                <h1 class="text-3xl font-black text-slate-900 tracking-tight">Tekrar Hoş Geldin</h1>
-                <p class="text-sm text-slate-500 mt-2">Akademik gelişim paneline erişmek için bilgilerini gir.</p>
+        <form onsubmit="event.preventDefault(); alert('Komuta Merkezine Bağlanılıyor...');" class="space-y-4">
+            <div class="text-left">
+                <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1.5 px-1">E-Posta Adresi</label>
+                <input type="email" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium" required>
             </div>
 
-            <form id="loginForm" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">E-posta Adresi</label>
-                    <input type="email" id="email" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm transition-all" required>
-                </div>
-
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <label class="block text-sm font-bold text-slate-700">Şifre</label>
-                        <a href="#" onclick="alert('Şifre sıfırlama bağlantısı için lütfen sistem yöneticinizle iletişime geçin.')" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">Şifremi Unuttum</a>
-                    </div>
-                    <input type="password" id="password" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none text-sm transition-all" required>
-                </div>
-
-                <button type="submit" id="submitBtn" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-extrabold py-3.5 rounded-xl transition-all shadow-lg transform hover:-translate-y-0.5 mt-2 text-sm flex justify-center items-center gap-2">
-                    <span>Hesabına Giriş Yap</span>
-                    <svg id="loadingSpinner" class="animate-spin h-5 w-5 hidden text-white" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                </button>
-                
-                <p id="errorMessage" class="text-red-500 text-xs font-bold text-center hidden mt-2"></p>
-            </form>
-
-            <div class="mt-8 text-center text-sm text-slate-500 border-t border-slate-100 pt-6">
-                <p>Academia ailesine henüz katılmadın mı?</p>
-                <a href="register.html" class="font-bold text-indigo-600 hover:text-orange-500 transition-colors mt-1 inline-block">Hemen Ücretsiz Hesap Aç</a>
+            <div class="text-left">
+                <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1.5 px-1">Giriş Şifresi</label>
+                <input type="password" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium" required>
             </div>
+
+            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1 pt-1">
+                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors">
+                    <input type="checkbox" class="accent-indigo-500 rounded"> Beni Hatırla
+                </label>
+                <a href="#" class="hover:text-indigo-400 transition-colors">Şifremi Unuttum?</a>
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-600/20 transition-all mt-4">
+                Sisteme Güvenli Giriş Yap
+            </button>
+        </form>
+
+        <div class="mt-8 pt-4 border-t border-slate-900 text-[10px] font-medium text-slate-500 uppercase tracking-wider">
+            Quantum Core v2026.1 • Aktif Bağlantı
         </div>
     </div>
 
-    <div id="successOverlay" class="fixed inset-0 bg-slate-900/90 backdrop-blur-sm hidden z-50 flex items-center justify-center opacity-0 transition-opacity duration-500">
-        <div class="text-center transform scale-90 transition-transform duration-500" id="successContent">
-            <div class="w-16 h-16 bg-indigo-500 text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl animate-bounce">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-            </div>
-            <h2 class="text-2xl font-black text-white mb-1">Kimlik Doğrulandı</h2>
-            <p id="routingText" class="text-slate-400 text-xs uppercase tracking-widest">Profil verileri yükleniyor...</p>
-        </div>
-    </div>
+    <script>
+        const canvas = document.getElementById('plexusCanvas');
+        const ctx = canvas.getContext('2d');
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        let particles = [];
+        const mouse = { x: null, y: null, radius: 140 }; // Etki alanı yarıçapı
 
-        // Firebase Yapılandırma Anahtarların
-        const firebaseConfig = {
-            apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
-            authDomain: "hedef100-academia.firebaseapp.com",
-            projectId: "hedef100-academia",
-            storageBucket: "hedef100-academia.firebasestorage.app",
-            messagingSenderId: "886084339971",
-            appId: "1:886084339971:web:ca31ab9d1575344d234136"
-        };
+        // Ekran boyutuna göre dinamik partikül sayısı hesabı
+        function getParticleCount() {
+            if (window.innerWidth < 768) return 40; // Mobilde tarayıcıyı yormamak için az partikül
+            return 100; // Masaüstünde yoğun plexus ağı
+        }
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        }
 
-        // Giriş Tetikleyici Motor
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // Partikül Sınıfı
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                // Rastgele yavaş hızlar (Hologram akıcılığı için)
+                this.vx = (Math.random() - 0.5) * 0.6;
+                this.vy = (Math.random() - 0.5) * 0.6;
+                this.radius = Math.random() * 2 + 1;
+                this.baseX = this.x;
+                this.baseY = this.y;
+            }
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const btn = document.getElementById('submitBtn');
-            const spinner = document.getElementById('loadingSpinner');
-            const errorMsg = document.getElementById('errorMessage');
+            update() {
+                // Standart salınım hareketi
+                this.x += this.vx;
+                this.y += this.vy;
 
-            // Arayüzü kilitle ve yükleniyor moduna geç
-            spinner.classList.remove('hidden');
-            btn.disabled = true;
-            errorMsg.classList.add('hidden');
+                // Ekrandan taşma kontrolü
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
 
-            try {
-                // 1. Adım: Kullanıcıyı e-posta/şifre ile doğrula
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
+                // FARE / DOKUNMATİK ETKİLEŞİMİ (Esnetme Algoritması)
+                if (mouse.x !== null && mouse.y !== null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
 
-                // 2. Adım: Kullanıcının rolünü Firestore veritabanından sorgula
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const userData = docSnap.data();
-                    const role = userData.role;
-
-                    // Başarı perdesini aç
-                    const overlay = document.getElementById('successOverlay');
-                    const content = document.getElementById('successContent');
-                    const routingText = document.getElementById('routingText');
-                    
-                    overlay.classList.remove('hidden');
-                    setTimeout(() => {
-                        overlay.classList.remove('opacity-0');
-                        content.classList.remove('scale-90');
-                    }, 50);
-
-                    // Rol tabanlı akıllı yönlendirme süzgeci
-                    if (role === 'student') {
-                        routingText.innerText = "Öğrenci Akademik Paneline Aktarılıyorsunuz...";
-                        setTimeout(() => { window.location.href = 'dashboard.html'; }, 2000);
-                    } else if (role === 'teacher') {
-                        routingText.innerText = "Eğitmen Koordinasyon Paneline Aktarılıyorsunuz...";
-                        setTimeout(() => { window.location.href = 'teacher-dashboard.html'; }, 2000);
-                    } else if (role === 'kurum') {
-                        routingText.innerText = "Kurumsal Yönetim Paneline Aktarılıyorsunuz...";
-                        setTimeout(() => { window.location.href = 'kurum-dashboard.html'; }, 2000);
-                    } else {
-                        routingText.innerText = "Sistem Arayüzüne Yönlendiriliyorsunuz...";
-                        setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+                    if (distance < mouse.radius) {
+                        // Fareye doğru çekilme kuvveti (Esnek bağ hissiyatı)
+                        let force = (mouse.radius - distance) / mouse.radius;
+                        this.x += (dx / distance) * force * 1.5;
+                        this.y += (dy / distance) * force * 1.5;
                     }
-                } else {
-                    throw new Error("Kimlik doğrulandı fakat kullanıcı veritabanı profili eksik!");
-                }
-
-            } catch (error) {
-                // Hataları yakala ve Türkçeleştirerek ekrana bas
-                spinner.classList.add('hidden');
-                btn.disabled = false;
-                errorMsg.classList.remove('hidden');
-
-                console.error("Giriş Hatası detayları:", error.code);
-                if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
-                    errorMsg.innerText = "Hatalı e-posta adresi veya şifre girdiniz!";
-                } else if (error.code === 'auth/too-many-requests') {
-                    errorMsg.innerText = "Çok fazla hatalı deneme yaptınız. Hesabınız geçici olarak kilitlendi!";
-                } else {
-                    errorMsg.innerText = "Giriş yapılamadı: " + error.message;
                 }
             }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(129, 140, 248, 0.7)'; // Neon indigo rengi
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = getParticleCount();
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        // Çizgisel Bağları Hesaplayan ve Çizen Ana Döngü
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Arka plana çok hafif fütüristik bir derinlik rengi veriyoruz
+            ctx.fillStyle = 'rgba(2, 6, 23, 1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Tüm partikülleri güncelle ve çiz
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Akıllı Plexus Çizgi Bağlantıları (N noktanın birbiriyle olan mesafesi)
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+
+                    // Eğer iki partikül birbirine yakınsa aralarına ince bir ışık çizgisi çek
+                    let maxDist = window.innerWidth < 768 ? 90 : 130;
+                    if (dist < maxDist) {
+                        // Yakınlığa göre çizginin opaklığını ayarla (Uzaklaştıkça kaybolur)
+                        let alpha = (maxDist - dist) / maxDist * 0.25;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // DİNLEYİCİLER (MOUSE & TOUCH EVENTS)
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
         });
+
+        window.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        // Telefonlar için parmak dokunma desteği
+        window.addEventListener('touchmove', (e) => {
+            if(e.touches.length > 0) {
+                mouse.x = e.touches[0].clientX;
+                mouse.y = e.touches[0].clientY;
+            }
+        });
+
+        window.addEventListener('touchend', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Motoru Ateşle
+        resizeCanvas();
+        animate();
     </script>
 </body>
 </html>
