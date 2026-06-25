@@ -182,6 +182,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        // Diğer modüllerdeki onAuthStateChanged kasten çıkarıldı. Bu sayfa yönlendirme yapmaz.
         import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
@@ -231,6 +232,8 @@
 
                 btn.innerText = "Kayıt Başarılı! Aktarılıyorsunuz...";
                 btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+                
+                // Başarılı kayıttan sonra login paneline geçiş
                 setTimeout(() => { window.location.href = 'login.html'; }, 1500);
 
             } catch (error) {
