@@ -182,8 +182,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
@@ -197,22 +197,6 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-
-        // --- DÜZELTME KATMANI: AKILLI OTURUM FİLTRESİ ---
-        // Bu sayfa LANDING/REGISTER sayfasıdır. Ziyaretçi giriş yapmamışsa (null ise) SAYFADA KALMALIDIR, tetikleme yapılmaz.
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                // Eğer tarayıcıda zaten aktif açık bir oturum varsa, ana sayfada bekletme direkt paneline uçur.
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    const role = docSnap.data().role;
-                    if (role === 'teacher') window.location.href = 'teacher-dashboard.html';
-                    else if (role === 'student') window.location.href = 'student-dashboard.html';
-                    else if (role === 'kurum') window.location.href = 'kurum-dashboard.html';
-                }
-            }
-        });
 
         function generateHedefId() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
