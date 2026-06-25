@@ -20,7 +20,6 @@
         .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Kaydırma çubuğunu gizle ama kaydırmaya izin ver (Kısa ekranlar için) */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -39,7 +38,6 @@
             </div>
 
             <form id="registerForm" class="space-y-4">
-                
                 <div class="grid grid-cols-2 gap-4 text-left">
                     <div>
                         <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Adınız</label>
@@ -60,9 +58,11 @@
                     </select>
                 </div>
 
-                <div class="text-left">
-                    <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">E-Posta Adresi</label>
-                    <input type="email" id="regEmail" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
+                <div>
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">E-Posta Adresi</label>
+                        <input type="email" id="regEmail" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
+                    </div>
                 </div>
 
                 <div class="text-left">
@@ -72,7 +72,7 @@
 
                 <div class="text-left">
                     <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hedef Sınav / Branşınız</label>
-                    <input type="text" id="regSpecialty" placeholder="Örn: YKS veya Matematik" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
+                    <input type="text" id="regSpecialty" placeholder="Örn: YKS veya Matematik" class="w-full px-4 py-3 bg-slate-500/10 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
                 </div>
 
                 <button type="submit" id="registerBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-600/20 transition-all mt-6">
@@ -92,13 +92,9 @@
         const ctx = canvas.getContext('2d');
         let width, height;
         let particles = [];
-        const particleCount = 180; // Küredeki yoğunluk
+        const particleCount = 180;
         let rotationX = 0;
         let rotationY = 0;
-
-        // Fare ile dönüşü hafifçe etkilemek için
-        let mouseX = 0;
-        let mouseY = 0;
         let targetRotationX = 0;
         let targetRotationY = 0;
 
@@ -106,7 +102,6 @@
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             particles = [];
-            // Partikülleri 3 boyutlu uzayda rastgele dağıt
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
                     x: (Math.random() - 0.5) * 600,
@@ -117,11 +112,9 @@
         }
 
         function draw() {
-            // Arka planı temizle
             ctx.fillStyle = '#020617';
             ctx.fillRect(0, 0, width, height);
             
-            // Sabit dönüş + fare etkileşimi
             targetRotationY += 0.003; 
             rotationX += (targetRotationX - rotationX) * 0.05;
             rotationY += (targetRotationY - rotationY) * 0.05;
@@ -131,27 +124,20 @@
             const cosY = Math.cos(rotationY);
             const sinY = Math.sin(rotationY);
 
-            // 3D Dönüşüm ve Perspektif
             let transformed = particles.map(p => {
-                // Y ekseni etrafında dönüş
                 let x1 = p.x * cosY - p.z * sinY;
                 let z1 = p.x * sinY + p.z * cosY;
-                
-                // X ekseni etrafında dönüş
                 let y2 = p.y * cosX - z1 * sinX;
                 let z2 = p.y * sinX + z1 * cosX;
-
                 return { x: x1, y: y2, z: z2 };
             });
 
-            // Perspektife göre boyutlandırma ve çizim
             transformed.forEach((p) => {
                 let perspective = 1000 / (1000 - p.z);
                 let x = p.x * perspective + width / 2;
                 let y = p.y * perspective + height / 2;
-                
                 let size = Math.max(0.5, 2.5 * perspective);
-                let alpha = Math.min(1, Math.max(0.1, (p.z + 300) / 600)); // Arkadakiler soluk
+                let alpha = Math.min(1, Math.max(0.1, (p.z + 300) / 600));
 
                 ctx.beginPath();
                 ctx.arc(x, y, size, 0, Math.PI * 2);
@@ -159,15 +145,11 @@
                 ctx.fill();
             });
 
-            // Zeki Bağlantı Çizgileri
             ctx.lineWidth = 0.5;
             for (let i = 0; i < transformed.length; i++) {
                 for (let j = i + 1; j < transformed.length; j++) {
                     let d = Math.hypot(transformed[i].x - transformed[j].x, transformed[i].y - transformed[j].y, transformed[i].z - transformed[j].z);
-                    
-                    // Mesafe yakınsa çizgi çek
                     if (d < 110) {
-                        // Çizgi kalınlığı ve opaklığı mesafeye ve Z derinliğine göre değişsin
                         let alphaLine = (110 - d) / 110 * 0.4;
                         let perspectiveI = 1000 / (1000 - transformed[i].z);
                         let perspectiveJ = 1000 / (1000 - transformed[j].z);
@@ -188,10 +170,8 @@
             requestAnimationFrame(draw);
         }
 
-        // Fare ile hafif perspektif değişimi
         window.addEventListener('mousemove', (e) => {
-            mouseX = (e.clientX / window.innerWidth) - 0.5;
-            mouseY = (e.clientY / window.innerHeight) - 0.5;
+            let mouseY = (e.clientY / window.innerHeight) - 0.5;
             targetRotationX = mouseY * 0.5;
         });
 
@@ -202,8 +182,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
@@ -218,19 +198,31 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Rastgele Hedef ID Üretici (Örn: H100-X7V2)
+        // --- DÜZELTME KATMANI: AKILLI OTURUM FİLTRESİ ---
+        // Bu sayfa LANDING/REGISTER sayfasıdır. Ziyaretçi giriş yapmamışsa (null ise) SAYFADA KALMALIDIR, tetikleme yapılmaz.
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                // Eğer tarayıcıda zaten aktif açık bir oturum varsa, ana sayfada bekletme direkt paneline uçur.
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const role = docSnap.data().role;
+                    if (role === 'teacher') window.location.href = 'teacher-dashboard.html';
+                    else if (role === 'student') window.location.href = 'student-dashboard.html';
+                    else if (role === 'kurum') window.location.href = 'kurum-dashboard.html';
+                }
+            }
+        });
+
         function generateHedefId() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let id = 'H100-';
-            for(let i=0; i<4; i++) {
-                id += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
+            for(let i=0; i<4; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
             return id;
         }
 
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
             const firstName = document.getElementById('regFirstName').value.trim();
             const lastName = document.getElementById('regLastName').value.trim();
             const role = document.getElementById('regRole').value;
@@ -239,53 +231,30 @@
             const specialty = document.getElementById('regSpecialty').value.trim();
             const btn = document.getElementById('registerBtn');
 
-            btn.innerText = "Kimlik Oluşturuluyor...";
-            btn.disabled = true;
+            btn.innerText = "Kimlik Oluşturuluyor..."; btn.disabled = true;
             btn.classList.add('opacity-75', 'cursor-not-allowed');
 
             try {
-                // 1. Firebase Auth ile Kullanıcı Oluştur
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-
-                // 2. Özel Hedef ID Üret
                 const newHedefId = generateHedefId();
 
-                // 3. Kullanıcı Verilerini Firestore'a (users koleksiyonuna) Kaydet
                 await setDoc(doc(db, "users", user.uid), {
-                    uid: user.uid,
-                    firstName: firstName,
-                    lastName: lastName,
-                    email: email,
-                    role: role,
-                    specialtyOrExam: specialty,
-                    hedefId: newHedefId,
-                    createdAt: new Date().toISOString()
+                    uid: user.uid, firstName, lastName, email, role, specialtyOrExam: specialty, hedefId: newHedefId, createdAt: new Date().toISOString()
                 });
 
-                // Kurum kayıt oluyorsa LocalStorage'a ismini de kaydedelim (Kurum panelinde görünsün diye)
-                if(role === 'kurum') {
-                    localStorage.setItem('hedef100_userName', firstName + " " + lastName);
-                }
+                if(role === 'kurum') localStorage.setItem('hedef100_userName', firstName + " " + lastName);
 
-                btn.innerText = "Kayıt Başarılı! Yönlendiriliyorsunuz...";
+                btn.innerText = "Kayıt Başarılı! Aktarılıyorsunuz...";
                 btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
-
-                // 4. Kayıt başarılıysa login sayfasına yolla
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 1500);
+                setTimeout(() => { window.location.href = 'login.html'; }, 1500);
 
             } catch (error) {
-                console.error("Kayıt Hatası:", error);
-                // Firebase Türkçe Hata Mesajları
-                let errorMsg = "Kayıt olurken bir hata oluştu.";
-                if(error.code === 'auth/email-already-in-use') errorMsg = "Bu e-posta adresi zaten kullanılıyor.";
-                if(error.code === 'auth/weak-password') errorMsg = "Şifreniz çok zayıf. En az 6 karakter girin.";
-                
+                console.error(error);
+                let errorMsg = "Kayıt sırasında hata meydana geldi.";
+                if(error.code === 'auth/email-already-in-use') errorMsg = "Bu e-posta adresi sistemde zaten mevcut.";
                 alert(errorMsg);
-                btn.innerText = "Ağa Katıl ve Kaydı Tamamla";
-                btn.disabled = false;
+                btn.innerText = "Ağa Katıl ve Kaydı Tamamla"; btn.disabled = false;
                 btn.classList.remove('opacity-75', 'cursor-not-allowed');
             }
         });
