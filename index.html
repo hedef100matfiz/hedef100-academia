@@ -3,184 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hedef100 Academia | Sınav Stratejini Yönet</title>
+    <title>Kayıt Portalı | Hedef100 Academia</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .bg-grid-pattern {
-            background-image: linear-gradient(to right, #f1f5f9 1px, transparent 1px), linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
-            background-size: 40px 40px;
+        body { margin: 0; background-color: #020617; overflow: hidden; font-family: 'Inter', sans-serif; }
+        canvas { display: block; position: absolute; inset: 0; z-index: 0; }
+        
+        .neon-glow { text-shadow: 0 0 10px rgba(99, 102, 241, 0.5), 0 0 20px rgba(99, 102, 241, 0.3); }
+        .hologram-card { 
+            backdrop-filter: blur(16px); 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9)); 
+            border: 1px solid rgba(99, 102, 241, 0.2); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.1);
         }
-        .modal-bg { backdrop-filter: blur(8px); }
+        .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Kaydırma çubuğunu gizle ama kaydırmaya izin ver (Kısa ekranlar için) */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-white text-slate-800 min-h-screen flex flex-col relative selection:bg-orange-500 selection:text-white">
+<body class="w-screen h-screen flex items-center justify-center relative select-none">
 
-    <div class="absolute inset-0 bg-grid-pattern opacity-60 pointer-events-none z-0"></div>
+    <canvas id="sphereCanvas"></canvas>
 
-    <nav class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-100 shadow-sm py-4">
-        <div class="container mx-auto px-6 flex justify-between items-center">
-            <a href="index.html" class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white font-black">H</div>
-                <span class="text-xl md:text-2xl font-black tracking-tighter text-slate-900">
-                    HEDEF100<span class="text-orange-500">.ACADEMIA</span>
-                </span>
-            </a>
-
-           <!-- Ortadaki Linkler -->
-<div class="hidden lg:flex items-center space-x-6">
-    <a href="sistemimiz.html" class="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors">Sistemimiz</a>
-    <a href="online-deneme.html" class="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors">Online Deneme</a>
-    <a href="vip-kocluk.html" class="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors">VIP Koçluk</a>
-    <a href="kurumsal.html" class="text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors">Kurumsal</a>
-</div>
-
-            <div class="flex items-center gap-4">
-                <a href="login.html" class="bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold px-6 py-2.5 rounded-lg shadow-md transition-transform transform hover:-translate-y-0.5">
-                    Sisteme Giriş
-                </a>
+    <div class="w-full max-w-lg mx-4 z-20 h-[90vh] md:h-auto overflow-y-auto no-scrollbar animate-fadeIn py-8">
+        <div class="p-8 rounded-[2.5rem] hologram-card relative text-center">
+            
+            <div class="mb-6">
+                <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-2xl flex items-center justify-center font-black text-xl mx-auto shadow-lg shadow-indigo-500/20">H</div>
+                <h1 class="text-2xl font-black text-white mt-4 tracking-tight uppercase">HEDEF100 <span class="text-indigo-400 neon-glow">CORE</span></h1>
+                <p class="text-slate-400 text-[11px] mt-1 font-medium tracking-widest uppercase">Yeni Nesil Eğitim Ağına Katıl</p>
             </div>
-        </div>
-    </nav>
 
-    <main class="flex-1 flex flex-col items-center justify-center relative z-10 px-6 py-12 md:py-24 text-center">
-        
-        <div class="max-w-3xl mx-auto mb-12 relative">
-            <span class="absolute -top-4 -left-6 text-6xl text-orange-200 font-serif">"</span>
-            <span class="absolute -bottom-8 -right-6 text-6xl text-orange-200 font-serif">"</span>
-            <div class="bg-white border-l-4 border-r-4 border-orange-500 p-8 rounded-2xl shadow-sm relative z-10">
-                <p class="text-lg md:text-xl font-medium text-slate-600 italic leading-relaxed">
-                    Eğitimdir ki bir milleti ya özgür, bağımsız, şanlı, yüksek bir topluluk halinde yaşatır; ya da esaret ve sefalete terk eder.
-                </p>
-                <p class="text-xs font-bold text-slate-400 mt-4 tracking-widest uppercase">— MUSTAFA KEMAL ATATÜRK —</p>
-            </div>
-        </div>
-
-        <div class="inline-block bg-orange-50 border border-orange-200 text-orange-600 text-xs font-extrabold px-4 py-1.5 rounded-full mb-6 tracking-wider">
-            2026-2027 SEZONU KAYITLARI BAŞLADI
-        </div>
-        
-        <h1 class="text-5xl md:text-7xl font-black text-slate-900 tracking-tight leading-tight mb-6">
-            Sınav Stratejini <br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Matematiksel Kesinlikle</span> Yönet.
-        </h1>
-        
-        <p class="text-lg text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Sıradan çalışma programlarını unutun. LGS, YKS ve KPSS süreçlerinde veriye dayalı, analitik takip sağlayan ve yapay zeka ile desteklenen profesyonel öğrenci koçluğu platformu.
-        </p>
-
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-            <a href="register.html" class="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-lg py-4 px-8 rounded-xl shadow-lg shadow-orange-500/30 transition-transform transform hover:scale-105">
-                Koçluk Başvurusu Yap
-            </a>
-            <a href="sistemimiz.html" class="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 font-bold text-lg py-4 px-8 rounded-xl transition-colors shadow-sm text-center block">
-    Platformu İncele
-</a>
-        </div>
-
-    </main>
-
-    <div id="systemModal" class="fixed inset-0 bg-slate-900/60 modal-bg hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="systemModalContent">
-            <div class="relative h-32 bg-gradient-to-r from-orange-400 to-rose-500 flex items-center px-8">
-                <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white mr-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                </div>
-                <div>
-                    <h3 class="font-black text-2xl text-white">Yapay Zeka Destekli Sistemimiz</h3>
-                    <p class="text-orange-100 font-medium text-sm">Geleceğin eğitim teknolojisi ile tanışın.</p>
-                </div>
-                <button onclick="closeModal('systemModal')" class="absolute top-4 right-4 text-white hover:text-rose-200 bg-black/20 rounded-full p-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <div class="p-8 space-y-6 bg-slate-50">
-                <div class="flex gap-4 items-start">
-                    <div class="w-10 h-10 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center flex-shrink-0"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.381z" clip-rule="evenodd"></path></svg></div>
+            <form id="registerForm" class="space-y-4">
+                
+                <div class="grid grid-cols-2 gap-4 text-left">
                     <div>
-                        <h4 class="font-bold text-slate-900 text-lg">Oyunlaştırılmış (Gamification) Deneyim</h4>
-                        <p class="text-sm text-slate-600 mt-1">Öğrencilerimiz sadece ders çalışmaz, görevleri tamamladıkça XP kazanır, seviye atlar ve "Hedef100 Sosyal Ligi"nde rekabet ederler.</p>
+                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Adınız</label>
+                        <input type="text" id="regFirstName" placeholder="Örn: Ahmet" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
                     </div>
-                </div>
-                <div class="flex gap-4 items-start">
-                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center flex-shrink-0"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                     <div>
-                        <h4 class="font-bold text-slate-900 text-lg">Akıllı Odaklanma (Pomodoro)</h4>
-                        <p class="text-sm text-slate-600 mt-1">Sisteme entegre tam ekran odaklanma modülü sayesinde öğrenciler, dış dünyadan koparak verimli ders çalışma seansları oluştururlar.</p>
+                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Soyadınız</label>
+                        <input type="text" id="regLastName" placeholder="Örn: Kula" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
                     </div>
                 </div>
-                <button onclick="closeModal('systemModal'); window.location.href='register.html'" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition shadow-lg mt-4">Sisteme Kayıt Ol ➔</button>
-            </div>
-        </div>
-    </div>
 
-    
-                <div>
-                    <h3 class="font-black text-2xl text-white">Gelişmiş Deneme Analizi</h3>
-                    <p class="text-blue-100 font-medium text-sm">Zayıf noktalarını yapay zeka ile tespit et.</p>
+                <div class="text-left">
+                    <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hesap Türü Seçin</label>
+                    <select id="regRole" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500 transition-all font-bold appearance-none cursor-pointer" required>
+                        <option value="student" class="text-slate-900">Öğrenci Adayı</option>
+                        <option value="teacher" class="text-slate-900">Eğitmen / Koç</option>
+                        <option value="kurum" class="text-slate-900">Kurum / Yönetici</option>
+                    </select>
                 </div>
-                <button onclick="closeModal('analysisModal')" class="absolute top-4 right-4 text-white hover:text-blue-200 bg-black/20 rounded-full p-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <div class="p-8 space-y-6 bg-slate-50">
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <h4 class="font-bold text-slate-900 mb-2 flex items-center gap-2"><svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> Mikroskobik Eksik Tespiti</h4>
-                    <p class="text-sm text-slate-600">Öğrencilerin girdiği deneme verileri toplanır. Yapay zeka, "Fizik netin düşük" demek yerine "Modern Fizik - Fotoelektrik Olay" kazanımında eksik olduğunu tespit eder.</p>
-                </div>
-                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-                    <h4 class="font-bold text-slate-900 mb-2 flex items-center gap-2"><svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Otomatik Kaynak Ataması</h4>
-                    <p class="text-sm text-slate-600">Tespit edilen eksikliklere göre <strong>AI Kütüphanesi</strong> devreye girer. Öğrencinin ekranına eksik olduğu konunun 15 dakikalık çözüm videosunu ve PDF testini otomatik atar.</p>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div id="vipModal" class="fixed inset-0 bg-slate-900/60 modal-bg hidden z-50 flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="vipModalContent">
-            <div class="relative h-32 bg-gradient-to-r from-emerald-500 to-teal-600 flex items-center px-8">
-                <div class="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white mr-4">
-                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                <div class="text-left">
+                    <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">E-Posta Adresi</label>
+                    <input type="email" id="regEmail" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
                 </div>
-                <div>
-                    <h3 class="font-black text-2xl text-white">VIP Koçluk Hizmeti</h3>
-                    <p class="text-emerald-100 font-medium text-sm">Türkiye'nin en donanımlı eğitmenleriyle 1-e-1 temas.</p>
+
+                <div class="text-left">
+                    <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hesap Şifresi</label>
+                    <input type="password" id="regPassword" placeholder="En az 6 karakter" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" minlength="6" required>
                 </div>
-                <button onclick="closeModal('vipModal')" class="absolute top-4 right-4 text-white hover:text-emerald-200 bg-black/20 rounded-full p-2 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-            </div>
-            <div class="p-8 space-y-6 bg-slate-50">
-                <p class="text-slate-600 text-sm leading-relaxed border-l-4 border-emerald-500 pl-4">
-                    Hedef100 Academia'da öğrenci yalnız bırakılmaz. Uzman eğitmen kadromuz ve "Gelişmiş İletişim Merkezi" ile kesintisiz destek sağlanır.
-                </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white p-4 rounded-xl border border-slate-200">
-                        <div class="text-emerald-500 font-bold mb-1">✓ Bireysel Program</div>
-                        <p class="text-xs text-slate-500">Her öğrencinin eksiklerine ve hedefine (Örn: Tıp Fakültesi) göre özel haftalık çalışma takvimi atanır.</p>
-                    </div>
-                    <div class="bg-white p-4 rounded-xl border border-slate-200">
-                        <div class="text-emerald-500 font-bold mb-1">✓ Anlık Mesajlaşma</div>
-                        <p class="text-xs text-slate-500">Öğrenciler takıldıkları soruları veya stres anlarını sistem üzerinden direkt olarak koçlarına iletebilirler.</p>
-                    </div>
+
+                <div class="text-left">
+                    <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hedef Sınav / Branşınız</label>
+                    <input type="text" id="regSpecialty" placeholder="Örn: YKS veya Matematik" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
                 </div>
-                <button onclick="closeModal('vipModal'); window.location.href='register.html'" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition shadow-lg mt-2">Hemen Başvur ➔</button>
+
+                <button type="submit" id="registerBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-600/20 transition-all mt-6">
+                    Ağa Katıl ve Kaydı Tamamla
+                </button>
+            </form>
+
+            <div class="mt-6 pt-4 border-t border-slate-800 text-xs font-medium text-slate-400">
+                Zaten sistemde kaydınız var mı? 
+                <a href="login.html" class="text-indigo-400 font-bold hover:text-indigo-300 transition-colors ml-1">Giriş Portalı ↗</a>
             </div>
         </div>
     </div>
 
     <script>
-        function openModal(modalId) {
-            const modal = document.getElementById(modalId);
-            const content = document.getElementById(modalId + 'Content');
-            if(!modal) return;
-            modal.classList.remove('hidden');
-            setTimeout(() => { modal.classList.remove('opacity-0'); if(content) content.classList.remove('scale-95'); }, 10);
+        const canvas = document.getElementById('sphereCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        const particleCount = 180; // Küredeki yoğunluk
+        let rotationX = 0;
+        let rotationY = 0;
+
+        // Fare ile dönüşü hafifçe etkilemek için
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetRotationX = 0;
+        let targetRotationY = 0;
+
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            // Partikülleri 3 boyutlu uzayda rastgele dağıt
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: (Math.random() - 0.5) * 600,
+                    y: (Math.random() - 0.5) * 600,
+                    z: (Math.random() - 0.5) * 600
+                });
+            }
         }
 
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            const content = document.getElementById(modalId + 'Content');
-            if(!modal) return;
-            modal.classList.add('opacity-0');
-            if(content) content.classList.add('scale-95');
-            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        function draw() {
+            // Arka planı temizle
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Sabit dönüş + fare etkileşimi
+            targetRotationY += 0.003; 
+            rotationX += (targetRotationX - rotationX) * 0.05;
+            rotationY += (targetRotationY - rotationY) * 0.05;
+
+            const cosX = Math.cos(rotationX);
+            const sinX = Math.sin(rotationX);
+            const cosY = Math.cos(rotationY);
+            const sinY = Math.sin(rotationY);
+
+            // 3D Dönüşüm ve Perspektif
+            let transformed = particles.map(p => {
+                // Y ekseni etrafında dönüş
+                let x1 = p.x * cosY - p.z * sinY;
+                let z1 = p.x * sinY + p.z * cosY;
+                
+                // X ekseni etrafında dönüş
+                let y2 = p.y * cosX - z1 * sinX;
+                let z2 = p.y * sinX + z1 * cosX;
+
+                return { x: x1, y: y2, z: z2 };
+            });
+
+            // Perspektife göre boyutlandırma ve çizim
+            transformed.forEach((p) => {
+                let perspective = 1000 / (1000 - p.z);
+                let x = p.x * perspective + width / 2;
+                let y = p.y * perspective + height / 2;
+                
+                let size = Math.max(0.5, 2.5 * perspective);
+                let alpha = Math.min(1, Math.max(0.1, (p.z + 300) / 600)); // Arkadakiler soluk
+
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(99, 102, 241, ${alpha})`;
+                ctx.fill();
+            });
+
+            // Zeki Bağlantı Çizgileri
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < transformed.length; i++) {
+                for (let j = i + 1; j < transformed.length; j++) {
+                    let d = Math.hypot(transformed[i].x - transformed[j].x, transformed[i].y - transformed[j].y, transformed[i].z - transformed[j].z);
+                    
+                    // Mesafe yakınsa çizgi çek
+                    if (d < 110) {
+                        // Çizgi kalınlığı ve opaklığı mesafeye ve Z derinliğine göre değişsin
+                        let alphaLine = (110 - d) / 110 * 0.4;
+                        let perspectiveI = 1000 / (1000 - transformed[i].z);
+                        let perspectiveJ = 1000 / (1000 - transformed[j].z);
+                        
+                        let xi = transformed[i].x * perspectiveI + width / 2;
+                        let yi = transformed[i].y * perspectiveI + height / 2;
+                        let xj = transformed[j].x * perspectiveJ + width / 2;
+                        let yj = transformed[j].y * perspectiveJ + height / 2;
+
+                        ctx.beginPath();
+                        ctx.moveTo(xi, yi);
+                        ctx.lineTo(xj, yj);
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${alphaLine})`;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(draw);
         }
+
+        // Fare ile hafif perspektif değişimi
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) - 0.5;
+            mouseY = (e.clientY / window.innerHeight) - 0.5;
+            targetRotationX = mouseY * 0.5;
+        });
+
+        window.addEventListener('resize', init);
+        init();
+        draw();
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
+            authDomain: "hedef100-academia.firebaseapp.com",
+            projectId: "hedef100-academia",
+            storageBucket: "hedef100-academia.firebasestorage.app",
+            messagingSenderId: "886084339971",
+            appId: "1:886084339971:web:ca31ab9d1575344d234136"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Rastgele Hedef ID Üretici (Örn: H100-X7V2)
+        function generateHedefId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let id = 'H100-';
+            for(let i=0; i<4; i++) {
+                id += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return id;
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('regFirstName').value.trim();
+            const lastName = document.getElementById('regLastName').value.trim();
+            const role = document.getElementById('regRole').value;
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const specialty = document.getElementById('regSpecialty').value.trim();
+            const btn = document.getElementById('registerBtn');
+
+            btn.innerText = "Kimlik Oluşturuluyor...";
+            btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            try {
+                // 1. Firebase Auth ile Kullanıcı Oluştur
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+
+                // 2. Özel Hedef ID Üret
+                const newHedefId = generateHedefId();
+
+                // 3. Kullanıcı Verilerini Firestore'a (users koleksiyonuna) Kaydet
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    role: role,
+                    specialtyOrExam: specialty,
+                    hedefId: newHedefId,
+                    createdAt: new Date().toISOString()
+                });
+
+                // Kurum kayıt oluyorsa LocalStorage'a ismini de kaydedelim (Kurum panelinde görünsün diye)
+                if(role === 'kurum') {
+                    localStorage.setItem('hedef100_userName', firstName + " " + lastName);
+                }
+
+                btn.innerText = "Kayıt Başarılı! Yönlendiriliyorsunuz...";
+                btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+
+                // 4. Kayıt başarılıysa login sayfasına yolla
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error("Kayıt Hatası:", error);
+                // Firebase Türkçe Hata Mesajları
+                let errorMsg = "Kayıt olurken bir hata oluştu.";
+                if(error.code === 'auth/email-already-in-use') errorMsg = "Bu e-posta adresi zaten kullanılıyor.";
+                if(error.code === 'auth/weak-password') errorMsg = "Şifreniz çok zayıf. En az 6 karakter girin.";
+                
+                alert(errorMsg);
+                btn.innerText = "Ağa Katıl ve Kaydı Tamamla";
+                btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        });
     </script>
 </body>
 </html>
