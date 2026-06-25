@@ -3,170 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giriş Portalı | Hedef100 Academia</title>
+    <title>Sistem Girişi & Kayıt | Hedef100 Academia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #020617; overflow: hidden; }
+        body { margin: 0; background-color: #020617; overflow: hidden; font-family: 'Inter', sans-serif; }
+        canvas { display: block; position: absolute; inset: 0; z-index: 0; }
+        
         .neon-glow { text-shadow: 0 0 10px rgba(99, 102, 241, 0.5), 0 0 20px rgba(99, 102, 241, 0.3); }
-        .hologram-card { backdrop-filter: blur(16px); background-color: rgba(15, 23, 42, 0.45); border: 1px solid rgba(99, 102, 241, 0.15); }
-        .hologram-card:hover { border-color: rgba(99, 102, 241, 0.3); box-shadow: 0 0 30px rgba(99, 102, 241, 0.1); transition: all 0.5s ease; }
-        .scanlines {
-            position: fixed; inset: 0; pointer-events: none; z-index: 10;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-            background-size: 100% 4px, 6px 100%;
+        .hologram-card { 
+            backdrop-filter: blur(16px); 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9)); 
+            border: 1px solid rgba(99, 102, 241, 0.2); 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.1);
         }
+        
+        /* Kaydırma çubuğu gizleme */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Form Geçiş Animasyonları */
+        .form-section { transition: all 0.3s ease-in-out; }
+        .hidden-form { opacity: 0; pointer-events: none; position: absolute; transform: translateX(20px); visibility: hidden; }
+        .active-form { opacity: 1; pointer-events: auto; position: relative; transform: translateX(0); visibility: visible; }
     </style>
 </head>
 <body class="w-screen h-screen flex items-center justify-center relative select-none">
 
-    <div class="scanlines"></div>
-    <canvas id="plexusCanvas" class="absolute inset-0 w-full h-full z-0 pointer-events-auto"></canvas>
+    <canvas id="sphereCanvas"></canvas>
 
-    <div class="w-full max-w-md mx-4 p-8 rounded-[2.5rem] hologram-card relative z-20 text-center animate-fadeIn">
-        
-        <div class="mb-8">
-            <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-2xl flex items-center justify-center font-black text-2xl mx-auto shadow-lg shadow-indigo-500/20">H</div>
-            <h1 class="text-2xl font-black text-white mt-4 tracking-tight uppercase">HEDEF100 <span class="text-indigo-400 neon-glow">ACADEMIA</span></h1>
-            <p class="text-slate-400 text-xs mt-1 font-medium tracking-wide">Yapay Zeka Destekli Akıllı Eğitim Üssü</p>
-        </div>
-
-        <form id="loginForm" class="space-y-4">
-            <div class="text-left">
-                <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1.5 px-1">E-Posta Adresi</label>
-                <input type="email" id="emailInput" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium" required>
+    <div class="w-full max-w-md mx-4 z-20 h-[90vh] md:h-auto overflow-y-auto no-scrollbar py-8">
+        <div class="p-8 rounded-[2.5rem] hologram-card relative text-center">
+            
+            <div class="mb-6">
+                <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-2xl flex items-center justify-center font-black text-xl mx-auto shadow-lg shadow-indigo-500/20">H</div>
+                <h1 class="text-2xl font-black text-white mt-3 tracking-tight uppercase">HEDEF100 <span class="text-indigo-400 neon-glow">CORE</span></h1>
             </div>
 
-            <div class="text-left">
-                <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1.5 px-1">Giriş Şifresi</label>
-                <input type="password" id="passwordInput" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all font-medium" required>
+            <div class="flex bg-slate-900/60 rounded-xl p-1 mb-6 border border-slate-700/50 relative overflow-hidden">
+                <button id="tabLogin" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-indigo-600 shadow-md">Giriş Yap</button>
+                <button id="tabRegister" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white">Kayıt Ol</button>
             </div>
 
-            <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1 pt-1">
-                <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors">
-                    <input type="checkbox" class="accent-indigo-500 rounded"> Beni Hatırla
-                </label>
-                <a href="#" class="hover:text-indigo-400 transition-colors">Şifremi Unuttum?</a>
+            <div class="relative min-h-[250px]">
+                
+                <form id="loginForm" class="form-section active-form space-y-4">
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">E-Posta Adresi</label>
+                        <input type="email" id="loginEmail" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
+                    </div>
+
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Giriş Şifresi</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
+                    </div>
+
+                    <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1 pt-1">
+                        <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors">
+                            <input type="checkbox" class="accent-indigo-500 rounded"> Beni Hatırla
+                        </label>
+                        <a href="#" class="hover:text-indigo-400 transition-colors">Şifremi Unuttum?</a>
+                    </div>
+
+                    <button type="submit" id="loginBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-600/20 transition-all mt-4">
+                        Sisteme Bağlan
+                    </button>
+                </form>
+
+                <form id="registerForm" class="form-section hidden-form space-y-4">
+                    <div class="grid grid-cols-2 gap-3 text-left">
+                        <div>
+                            <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Adınız</label>
+                            <input type="text" id="regFirstName" placeholder="Örn: Ahmet" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" required>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Soyadınız</label>
+                            <input type="text" id="regLastName" placeholder="Örn: Kula" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" required>
+                        </div>
+                    </div>
+
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hesap Türü Seçin</label>
+                        <select id="regRole" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500 transition-all font-bold appearance-none cursor-pointer" required>
+                            <option value="student" class="text-slate-900">Öğrenci Adayı</option>
+                            <option value="teacher" class="text-slate-900">Eğitmen / Koç</option>
+                            <option value="kurum" class="text-slate-900">Kurum / Yönetici</option>
+                        </select>
+                    </div>
+
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">E-Posta Adresi</label>
+                        <input type="email" id="regEmail" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" required>
+                    </div>
+
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hesap Şifresi</label>
+                        <input type="password" id="regPassword" placeholder="En az 6 karakter" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" minlength="6" required>
+                    </div>
+
+                    <div class="text-left">
+                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hedef Sınav / Branşınız</label>
+                        <input type="text" id="regSpecialty" placeholder="Örn: YKS veya Matematik" class="w-full px-4 py-3 bg-slate-500/10 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" required>
+                    </div>
+
+                    <button type="submit" id="registerBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-600/20 transition-all mt-4">
+                        Ağa Katıl
+                    </button>
+                </form>
             </div>
 
-            <button type="submit" id="loginBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-600/20 transition-all mt-4">
-                Sisteme Güvenli Giriş Yap
-            </button>
-        </form>
-
-        <div class="mt-8 pt-4 border-t border-slate-900 text-[10px] font-medium text-slate-500 uppercase tracking-wider">
-            Quantum Core v2026.1 • Aktif Bağlantı
+            <div class="mt-6 pt-4 border-t border-slate-800 text-[10px] font-medium text-slate-500 uppercase tracking-wider">
+                Quantum Core v2026.1 • Aktif Bağlantı
+            </div>
         </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('plexusCanvas');
+        function switchTab(tab) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const tabLogin = document.getElementById('tabLogin');
+            const tabRegister = document.getElementById('tabRegister');
+
+            if (tab === 'login') {
+                loginForm.className = "form-section active-form space-y-4";
+                registerForm.className = "form-section hidden-form space-y-4";
+                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-indigo-600 shadow-md";
+                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white bg-transparent";
+            } else {
+                registerForm.className = "form-section active-form space-y-4";
+                loginForm.className = "form-section hidden-form space-y-4";
+                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-indigo-600 shadow-md";
+                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white bg-transparent";
+            }
+        }
+    </script>
+
+    <script>
+        const canvas = document.getElementById('sphereCanvas');
         const ctx = canvas.getContext('2d');
-
+        let width, height;
         let particles = [];
-        const mouse = { x: null, y: null, radius: 140 };
+        const particleCount = window.innerWidth < 768 ? 100 : 180;
+        let rotationX = 0;
+        let rotationY = 0;
+        let targetRotationX = 0;
+        let targetRotationY = 0;
 
-        function getParticleCount() {
-            if (window.innerWidth < 768) return 40;
-            return 100;
-        }
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            initParticles();
-        }
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 0.6;
-                this.vy = (Math.random() - 0.5) * 0.6;
-                this.radius = Math.random() * 2 + 1;
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-
-                if (mouse.x !== null && mouse.y !== null) {
-                    let dx = mouse.x - this.x;
-                    let dy = mouse.y - this.y;
-                    let distance = Math.sqrt(dx * dx + dy * dy);
-
-                    if (distance < mouse.radius) {
-                        let force = (mouse.radius - distance) / mouse.radius;
-                        this.x += (dx / distance) * force * 1.5;
-                        this.y += (dy / distance) * force * 1.5;
-                    }
-                }
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(129, 140, 248, 0.7)';
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
+        function init() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
             particles = [];
-            const count = getParticleCount();
-            for (let i = 0; i < count; i++) {
-                particles.push(new Particle());
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: (Math.random() - 0.5) * 600,
+                    y: (Math.random() - 0.5) * 600,
+                    z: (Math.random() - 0.5) * 600
+                });
             }
         }
 
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(2, 6, 23, 1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            
+            targetRotationY += 0.003; 
+            rotationX += (targetRotationX - rotationX) * 0.05;
+            rotationY += (targetRotationY - rotationY) * 0.05;
 
-            particles.forEach(p => {
-                p.update();
-                p.draw();
+            const cosX = Math.cos(rotationX);
+            const sinX = Math.sin(rotationX);
+            const cosY = Math.cos(rotationY);
+            const sinY = Math.sin(rotationY);
+
+            let transformed = particles.map(p => {
+                let x1 = p.x * cosY - p.z * sinY;
+                let z1 = p.x * sinY + p.z * cosY;
+                let y2 = p.y * cosX - z1 * sinX;
+                let z2 = p.y * sinX + z1 * cosX;
+                return { x: x1, y: y2, z: z2 };
             });
 
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    let dx = particles[i].x - particles[j].x;
-                    let dy = particles[i].y - particles[j].y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
+            transformed.forEach((p) => {
+                let perspective = 1000 / (1000 - p.z);
+                let x = p.x * perspective + width / 2;
+                let y = p.y * perspective + height / 2;
+                let size = Math.max(0.5, 2.5 * perspective);
+                let alpha = Math.min(1, Math.max(0.1, (p.z + 300) / 600));
 
-                    let maxDist = window.innerWidth < 768 ? 90 : 130;
-                    if (dist < maxDist) {
-                        let alpha = (maxDist - dist) / maxDist * 0.25;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(99, 102, 241, ${alpha})`;
+                ctx.fill();
+            });
+
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < transformed.length; i++) {
+                for (let j = i + 1; j < transformed.length; j++) {
+                    let d = Math.hypot(transformed[i].x - transformed[j].x, transformed[i].y - transformed[j].y, transformed[i].z - transformed[j].z);
+                    if (d < 110) {
+                        let alphaLine = (110 - d) / 110 * 0.4;
+                        let perspectiveI = 1000 / (1000 - transformed[i].z);
+                        let perspectiveJ = 1000 / (1000 - transformed[j].z);
+                        
+                        let xi = transformed[i].x * perspectiveI + width / 2;
+                        let yi = transformed[i].y * perspectiveI + height / 2;
+                        let xj = transformed[j].x * perspectiveJ + width / 2;
+                        let yj = transformed[j].y * perspectiveJ + height / 2;
+
                         ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
-                        ctx.lineWidth = 0.8;
+                        ctx.moveTo(xi, yi);
+                        ctx.lineTo(xj, yj);
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${alphaLine})`;
                         ctx.stroke();
                     }
                 }
             }
-            requestAnimationFrame(animate);
+            requestAnimationFrame(draw);
         }
 
-        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
-        window.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
-        window.addEventListener('touchmove', (e) => { if(e.touches.length > 0) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }});
-        window.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
-        window.addEventListener('resize', resizeCanvas);
+        window.addEventListener('mousemove', (e) => {
+            let mouseY = (e.clientY / window.innerHeight) - 0.5;
+            targetRotationX = mouseY * 0.5;
+        });
 
-        resizeCanvas();
-        animate();
+        window.addEventListener('resize', init);
+        init();
+        draw();
     </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
@@ -181,57 +249,95 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- GİRİŞ YAPMA (LOGIN) İŞLEMİ ---
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const email = document.getElementById('emailInput').value.trim();
-            const password = document.getElementById('passwordInput').value.trim();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
             const btn = document.getElementById('loginBtn');
 
-            // UI'ı Yükleniyor durumuna al
-            btn.innerText = "Kimlik Doğrulanıyor...";
-            btn.disabled = true;
+            btn.innerText = "Kimlik Doğrulanıyor..."; btn.disabled = true;
             btn.classList.add('opacity-75', 'cursor-not-allowed');
 
             try {
-                // 1. Firebase Auth ile giriş yap
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                const user = userCredential.user;
-
-                // 2. Firestore'dan kullanıcının rolünü (Öğrenci/Öğretmen/Kurum) öğren
-                const docRef = doc(db, "users", user.uid);
-                const docSnap = await getDoc(docRef);
+                const docSnap = await getDoc(doc(db, "users", userCredential.user.uid));
 
                 if (docSnap.exists()) {
-                    const userData = docSnap.data();
-                    const role = userData.role;
-
+                    const role = docSnap.data().role;
                     btn.innerText = "Bağlantı Başarılı!";
                     btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
 
-                    // 3. Rolüne göre doğru panele ışınla
                     setTimeout(() => {
                         if (role === 'teacher') window.location.href = 'teacher-dashboard.html';
                         else if (role === 'student') window.location.href = 'student-dashboard.html';
-                        else if (role === 'kurum' || role === 'admin') window.location.href = 'kurum-dashboard.html'; // Dosya isminize göre güncelleyebilirsiniz
+                        else if (role === 'kurum') window.location.href = 'kurum-dashboard.html';
                         else alert("Tanımsız hesap türü!");
                     }, 800);
-
                 } else {
-                    alert("Giriş yapıldı fakat veritabanında kullanıcı profiliniz bulunamadı.");
+                    alert("Kullanıcı verisi bulunamadı.");
                     auth.signOut();
-                    resetButton();
+                    resetLoginBtn();
                 }
-
             } catch (error) {
-                console.error("Giriş Hatası:", error);
-                alert("Giriş başarısız. Lütfen e-posta ve şifrenizi kontrol edip tekrar deneyin.");
-                resetButton();
+                alert("Giriş başarısız. E-posta veya şifrenizi kontrol edin.");
+                resetLoginBtn();
             }
 
-            function resetButton() {
-                btn.innerText = "Sisteme Güvenli Giriş Yap";
-                btn.disabled = false;
+            function resetLoginBtn() {
+                btn.innerText = "Sisteme Bağlan"; btn.disabled = false;
+                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        });
+
+        // --- KAYIT OLMA (REGISTER) İŞLEMİ ---
+        function generateHedefId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let id = 'H100-';
+            for(let i=0; i<4; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
+            return id;
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const firstName = document.getElementById('regFirstName').value.trim();
+            const lastName = document.getElementById('regLastName').value.trim();
+            const role = document.getElementById('regRole').value;
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const specialty = document.getElementById('regSpecialty').value.trim();
+            const btn = document.getElementById('registerBtn');
+
+            btn.innerText = "Kimlik Oluşturuluyor..."; btn.disabled = true;
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            try {
+                // Firebase'e kaydet
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const newHedefId = generateHedefId();
+
+                // Veritabanına yaz
+                await setDoc(doc(db, "users", userCredential.user.uid), {
+                    uid: userCredential.user.uid, firstName, lastName, email, role, specialtyOrExam: specialty, hedefId: newHedefId, createdAt: new Date().toISOString()
+                });
+
+                if(role === 'kurum') localStorage.setItem('hedef100_userName', firstName + " " + lastName);
+
+                btn.innerText = "Kayıt Başarılı! Aktarılıyorsunuz...";
+                btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
+
+                // Kayıt başarılı olunca doğrudan paneline gönder (Daha iyi kullanıcı deneyimi)
+                setTimeout(() => {
+                    if (role === 'teacher') window.location.href = 'teacher-dashboard.html';
+                    else if (role === 'student') window.location.href = 'student-dashboard.html';
+                    else if (role === 'kurum') window.location.href = 'kurum-dashboard.html';
+                }, 1000);
+
+            } catch (error) {
+                let errorMsg = "Kayıt sırasında hata meydana geldi.";
+                if(error.code === 'auth/email-already-in-use') errorMsg = "Bu e-posta adresi sistemde zaten mevcut. Lütfen giriş yapın.";
+                alert(errorMsg);
+                btn.innerText = "Ağa Katıl"; btn.disabled = false;
                 btn.classList.remove('opacity-75', 'cursor-not-allowed');
             }
         });
