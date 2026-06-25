@@ -5,84 +5,232 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hedef100 Academia | Geleceğin Eğitim Üssü</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; background-color: #020617; font-family: 'Inter', sans-serif; color: white; }
-        canvas { position: fixed; inset: 0; z-index: 0; }
-        .content-layer { position: relative; z-index: 10; }
-        .glass-card { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        body { margin: 0; background-color: #020617; font-family: 'Inter', sans-serif; color: white; overflow: hidden; }
+        
+        /* 3D Arka Plan Sabit Kalacak */
+        #sphereCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+        
+        /* Kaydırılabilir İçerik Alanı */
+        .scroll-container { position: absolute; inset: 0; z-index: 10; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
+        
+        /* Efektler */
+        .neon-glow { text-shadow: 0 0 15px rgba(99, 102, 241, 0.6), 0 0 30px rgba(99, 102, 241, 0.4); }
+        .glass-nav { background: rgba(2, 6, 23, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .glass-card { 
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.8), rgba(2, 6, 23, 0.9)); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(99, 102, 241, 0.2); 
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.3);
+        }
+        
+        /* Kaydırma Çubuğu Estetiği */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
     </style>
 </head>
 <body>
 
     <canvas id="sphereCanvas"></canvas>
 
-    <div class="content-layer min-h-screen flex flex-col">
-        <nav class="flex justify-between items-center p-6 md:px-12">
-            <div class="text-xl font-black tracking-tighter">HEDEF100<span class="text-indigo-500">.CORE</span></div>
-            <a href="login.html" class="px-6 py-2 bg-slate-800 hover:bg-slate-700 rounded-full text-xs font-bold transition">GİRİŞ YAP</a>
+    <div class="scroll-container">
+        
+        <nav class="glass-nav sticky top-0 w-full z-50 px-6 py-4 flex justify-between items-center transition-all">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-indigo-500/30">H</div>
+                <span class="font-black text-xl tracking-tighter hidden sm:block">HEDEF100<span class="text-indigo-400">.CORE</span></span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <a href="#ozellikler" class="text-sm font-semibold text-slate-300 hover:text-white transition hidden md:block">Nasıl Çalışır?</a>
+                <a href="login.html" class="bg-white hover:bg-slate-200 text-slate-900 font-bold text-xs md:text-sm px-6 py-2.5 rounded-full transition-all shadow-lg hover:scale-105 transform duration-200">SİSTEME GİRİŞ YAP</a>
+            </div>
         </nav>
 
-        <main class="flex-1 flex flex-col justify-center items-center text-center px-4">
-            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">Yapay Zeka Destekli <br><span class="text-indigo-500 neon-glow">Akademik Rehberlik</span></h1>
-            <p class="text-slate-400 max-w-xl text-lg mb-10">Hedef100 Academia, öğrenci gelişimini verilerle analiz eden, kişiselleştirilmiş programlar hazırlayan ve sınav sürecini simüle eden yeni nesil bir ekosistemdir.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl w-full">
-                <div class="glass-card p-6 rounded-3xl text-center">
-                    <div class="text-2xl mb-2">🧠</div>
-                    <h3 class="font-bold mb-2">AI Koçluk</h3>
-                    <p class="text-[10px] text-slate-400">Eksiklerini analiz eden yapay zeka ile her hafta özel program.</p>
-                </div>
-                <div class="glass-card p-6 rounded-3xl text-center">
-                    <div class="text-2xl mb-2">📊</div>
-                    <h3 class="font-bold mb-2">Optik Analiz</h3>
-                    <p class="text-[10px] text-slate-400">Deneme sonuçlarını anında işle, zümre raporlarını PDF al.</p>
-                </div>
-                <div class="glass-card p-6 rounded-3xl text-center">
-                    <div class="text-2xl mb-2">🚀</div>
-                    <h3 class="font-bold mb-2">Sürekli Gelişim</h3>
-                    <p class="text-[10px] text-slate-400">Veriye dayalı net artışı, disiplinli takip ve başarı odaklılık.</p>
-                </div>
+        <header class="min-h-[85vh] flex flex-col justify-center items-center text-center px-4 relative mt-10 md:mt-0">
+            <div class="inline-block px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 text-[10px] font-bold tracking-widest uppercase mb-6 backdrop-blur-md">
+                Yapay Zeka Destekli Eğitim Üssü v2.0
             </div>
-        </main>
+            
+            <h1 class="text-5xl md:text-7xl font-black mb-6 leading-[1.1] tracking-tight max-w-5xl mx-auto">
+                Sınav Sürecini <br class="hidden md:block">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-300 neon-glow">Verilerle Yönetin.</span>
+            </h1>
+            
+            <p class="text-slate-400 max-w-2xl text-base md:text-lg mb-10 font-medium leading-relaxed">
+                YKS, KPSS ve LGS hazırlık süreçlerinde şansa yer bırakmayın. Öğrenci gelişimini analiz eden, kurum geneli denemeleri saniyeler içinde okuyan ve eğitmenlere akıllı zümre raporları sunan B2B & B2C platform.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                <a href="login.html" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg shadow-indigo-600/20 transition-all text-sm uppercase tracking-wider hover:-translate-y-1">
+                    Hemen Kullanmaya Başla
+                </a>
+                <a href="#ozellikler" class="bg-slate-800/80 hover:bg-slate-700 text-white font-bold py-3.5 px-8 rounded-xl border border-slate-700 transition-all text-sm uppercase tracking-wider backdrop-blur-md">
+                    Özellikleri Keşfet ↓
+                </a>
+            </div>
+        </header>
+
+        <section id="ozellikler" class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-black mb-4">Herkes İçin Tek Bir <span class="text-indigo-400">Ekosistem</span></h2>
+                <p class="text-slate-400 text-sm max-w-2xl mx-auto">Eğitimin üç temel sacayağı olan Öğrenci, Eğitmen ve Kurumlar için birbirine tam entegre, canlı senkronize modüller.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                
+                <div class="glass-card p-8 rounded-[2rem] relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl group-hover:bg-orange-500/20 transition-colors"></div>
+                    <div class="w-14 h-14 bg-orange-500/20 text-orange-400 rounded-2xl flex items-center justify-center text-2xl mb-6 border border-orange-500/20">🎓</div>
+                    <h3 class="text-xl font-black mb-3 text-white">Öğrenciler İçin</h3>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-2"><span class="text-orange-400">✦</span> AI destekli dinamik haftalık program.</li>
+                        <li class="flex items-start gap-2"><span class="text-orange-400">✦</span> Eksik kazanımlara göre otomatik telafi.</li>
+                        <li class="flex items-start gap-2"><span class="text-orange-400">✦</span> Geçmiş sınav karneleri ve gelişim grafiği.</li>
+                        <li class="flex items-start gap-2"><span class="text-orange-400">✦</span> Profesyonel koç seçimi ve birebir iletişim.</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card p-8 rounded-[2rem] relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors"></div>
+                    <div class="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center text-2xl mb-6 border border-emerald-500/20">📈</div>
+                    <h3 class="text-xl font-black mb-3 text-white">Eğitmenler İçin</h3>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-2"><span class="text-emerald-400">✦</span> Toplu sınıf ödevlendirme ve takip.</li>
+                        <li class="flex items-start gap-2"><span class="text-emerald-400">✦</span> Riskli (neti düşen) öğrenci algılama radarı.</li>
+                        <li class="flex items-start gap-2"><span class="text-emerald-400">✦</span> Fizik ve Matematik tabanlı zümre raporları.</li>
+                        <li class="flex items-start gap-2"><span class="text-emerald-400">✦</span> Öğrencilerle canlı duyuru ve iletişim kanalı.</li>
+                    </ul>
+                </div>
+
+                <div class="glass-card p-8 rounded-[2rem] relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-colors"></div>
+                    <div class="w-14 h-14 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center text-2xl mb-6 border border-indigo-500/20">🏢</div>
+                    <h3 class="text-xl font-black mb-3 text-white">Kurumlar (B2B) İçin</h3>
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">✦</span> Optik form / Excel tabanlı anında deneme okuma.</li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">✦</span> Şube bazlı genel başarı ve istatistik paneli.</li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">✦</span> Öğrenci ve öğretmen atama operasyonları.</li>
+                        <li class="flex items-start gap-2"><span class="text-indigo-400">✦</span> Derece ve baraj altı öğrencilerin filtrelenmesi.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <footer class="border-t border-slate-800/50 mt-10 py-8 px-6 text-center backdrop-blur-md bg-slate-950/30">
+            <div class="flex items-center justify-center gap-2 mb-4 opacity-50">
+                <div class="w-6 h-6 bg-indigo-600 rounded flex items-center justify-center font-black text-[10px]">H</div>
+                <span class="font-black text-sm tracking-tighter">HEDEF100<span class="text-indigo-400">.CORE</span></span>
+            </div>
+            <p class="text-slate-500 text-xs font-medium">© 2026 Hedef100 Academia. Tüm teknolojik altyapı hakları saklıdır.</p>
+            <p class="text-slate-600 text-[10px] mt-1">Yapay Zeka Destekli Quantum Core v2.0</p>
+        </footer>
+
     </div>
 
     <script>
         const canvas = document.getElementById('sphereCanvas');
         const ctx = canvas.getContext('2d');
-        let width, height, particles = [];
-        const particleCount = 150;
-        let rotationX = 0, rotationY = 0;
+        let width, height;
+        let particles = [];
+        const particleCount = window.innerWidth < 768 ? 100 : 200; // Mobilde daha az partikül, performansı korur
+        let rotationX = 0;
+        let rotationY = 0;
+        let targetRotationX = 0;
+        let targetRotationY = 0;
 
         function init() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             particles = [];
             for (let i = 0; i < particleCount; i++) {
-                particles.push({ x: (Math.random()-0.5)*500, y: (Math.random()-0.5)*500, z: (Math.random()-0.5)*500 });
+                particles.push({
+                    x: (Math.random() - 0.5) * 600,
+                    y: (Math.random() - 0.5) * 600,
+                    z: (Math.random() - 0.5) * 600
+                });
             }
         }
 
         function draw() {
-            ctx.fillStyle = '#020617';
-            ctx.fillRect(0, 0, width, height);
-            rotationY += 0.005;
-            const cosY = Math.cos(rotationY), sinY = Math.sin(rotationY);
+            ctx.clearRect(0, 0, width, height); // Temizle
+            
+            // Sabit dönüş motoru + fare etkileşimi
+            targetRotationY += 0.002; 
+            rotationX += (targetRotationX - rotationX) * 0.05;
+            rotationY += (targetRotationY - rotationY) * 0.05;
 
-            let transformed = particles.map(p => ({
-                x: p.x * cosY - p.z * sinY,
-                y: p.y,
-                z: p.x * sinY + p.z * cosY
-            }));
+            const cosX = Math.cos(rotationX);
+            const sinX = Math.sin(rotationX);
+            const cosY = Math.cos(rotationY);
+            const sinY = Math.sin(rotationY);
 
-            transformed.forEach(p => {
-                let perspective = 800 / (800 - p.z);
+            // 3D Dönüşüm Matrisi
+            let transformed = particles.map(p => {
+                let x1 = p.x * cosY - p.z * sinY;
+                let z1 = p.x * sinY + p.z * cosY;
+                let y2 = p.y * cosX - z1 * sinX;
+                let z2 = p.y * sinX + z1 * cosX;
+                return { x: x1, y: y2, z: z2 };
+            });
+
+            // Partikül Çizimi
+            transformed.forEach((p) => {
+                let perspective = 1000 / (1000 - p.z);
+                let x = p.x * perspective + width / 2;
+                let y = p.y * perspective + height / 2;
+                let size = Math.max(0.5, 2.5 * perspective);
+                let alpha = Math.min(1, Math.max(0.1, (p.z + 300) / 600));
+
                 ctx.beginPath();
-                ctx.arc(p.x * perspective + width/2, p.y * perspective + height/2, 2 * perspective, 0, Math.PI*2);
-                ctx.fillStyle = `rgba(99, 102, 241, ${Math.min(1, (p.z+300)/400)})`;
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(99, 102, 241, ${alpha})`;
                 ctx.fill();
             });
+
+            // Sinir Ağı Çizgileri
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < transformed.length; i++) {
+                for (let j = i + 1; j < transformed.length; j++) {
+                    let d = Math.hypot(transformed[i].x - transformed[j].x, transformed[i].y - transformed[j].y, transformed[i].z - transformed[j].z);
+                    if (d < 110) {
+                        let alphaLine = (110 - d) / 110 * 0.3;
+                        let perspectiveI = 1000 / (1000 - transformed[i].z);
+                        let perspectiveJ = 1000 / (1000 - transformed[j].z);
+                        
+                        let xi = transformed[i].x * perspectiveI + width / 2;
+                        let yi = transformed[i].y * perspectiveI + height / 2;
+                        let xj = transformed[j].x * perspectiveJ + width / 2;
+                        let yj = transformed[j].y * perspectiveJ + height / 2;
+
+                        ctx.beginPath();
+                        ctx.moveTo(xi, yi);
+                        ctx.lineTo(xj, yj);
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${alphaLine})`;
+                        ctx.stroke();
+                    }
+                }
+            }
             requestAnimationFrame(draw);
         }
+
+        // Farenin konumunu alıp kürenin eksenini yumuşakça kaydırma
+        window.addEventListener('mousemove', (e) => {
+            let mouseX = (e.clientX / window.innerWidth) - 0.5;
+            let mouseY = (e.clientY / window.innerHeight) - 0.5;
+            targetRotationX = mouseY * 0.4;
+            targetRotationY += mouseX * 0.01;
+        });
+
         window.addEventListener('resize', init);
         init();
         draw();
