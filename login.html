@@ -18,7 +18,6 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.1);
         }
         
-        /* Kaydırma çubuğu gizleme */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -32,7 +31,12 @@
 
     <canvas id="sphereCanvas"></canvas>
 
-    <div class="w-full max-w-md mx-4 z-20 h-[90vh] md:h-auto overflow-y-auto no-scrollbar py-8">
+    <a href="index.html" class="absolute top-6 left-6 z-50 flex items-center gap-2 text-slate-400 hover:text-white transition-colors bg-slate-900/50 hover:bg-slate-800 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-700/50 text-xs font-bold uppercase tracking-widest">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        Ana Sayfaya Dön
+    </a>
+
+    <div class="w-full max-w-md mx-4 z-20 h-[90vh] md:h-auto overflow-y-auto no-scrollbar py-8 mt-10 md:mt-0">
         <div class="p-8 rounded-[2.5rem] hologram-card relative text-center">
             
             <div class="mb-6">
@@ -41,8 +45,8 @@
             </div>
 
             <div class="flex bg-slate-900/60 rounded-xl p-1 mb-6 border border-slate-700/50 relative overflow-hidden">
-                <button id="tabLogin" onclick="switchTab('login')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-indigo-600 shadow-md">Giriş Yap</button>
-                <button id="tabRegister" onclick="switchTab('register')" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white">Kayıt Ol</button>
+                <button id="tabLogin" onclick="switchTab('login')" class="flex-1 py-2.5 text-xs font-bold rounded-lg transition-all text-white bg-indigo-600 shadow-md">Giriş Yap</button>
+                <button id="tabRegister" onclick="switchTab('register')" class="flex-1 py-2.5 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white">Kayıt Ol</button>
             </div>
 
             <div class="relative min-h-[250px]">
@@ -50,19 +54,12 @@
                 <form id="loginForm" class="form-section active-form space-y-4">
                     <div class="text-left">
                         <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">E-Posta Adresi</label>
-                        <input type="email" id="loginEmail" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
+                        <input type="email" id="loginEmail" placeholder="ornek@gmail.com" class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500 transition-all font-medium" required>
                     </div>
 
                     <div class="text-left">
                         <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Giriş Şifresi</label>
-                        <input type="password" id="loginPassword" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all font-medium" required>
-                    </div>
-
-                    <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400 px-1 pt-1">
-                        <label class="flex items-center gap-1.5 cursor-pointer hover:text-white transition-colors">
-                            <input type="checkbox" class="accent-indigo-500 rounded"> Beni Hatırla
-                        </label>
-                        <a href="#" class="hover:text-indigo-400 transition-colors">Şifremi Unuttum?</a>
+                        <input type="password" id="loginPassword" placeholder="••••••••" class="w-full px-4 py-3 bg-slate-950/60 border border-slate-800 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500 transition-all font-medium" required>
                     </div>
 
                     <button type="submit" id="loginBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-600/20 transition-all mt-4">
@@ -70,72 +67,124 @@
                     </button>
                 </form>
 
-                <form id="registerForm" class="form-section hidden-form space-y-4">
-                    <div class="grid grid-cols-2 gap-3 text-left">
-                        <div>
-                            <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Adınız</label>
-                            <input type="text" id="regFirstName" placeholder="Örn: Ahmet" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" required>
+                <div id="registerContainer" class="form-section hidden-form">
+                    
+                    <div class="grid grid-cols-3 gap-1 bg-slate-900/40 p-1 rounded-lg border border-slate-700/30 mb-5">
+                        <button onclick="switchRoleForm('student')" id="btnRoleStudent" class="py-1.5 text-[10px] font-bold rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 transition-all">Öğrenci</button>
+                        <button onclick="switchRoleForm('teacher')" id="btnRoleTeacher" class="py-1.5 text-[10px] font-bold rounded text-slate-400 hover:text-white transition-all border border-transparent">Eğitmen</button>
+                        <button onclick="switchRoleForm('kurum')" id="btnRoleKurum" class="py-1.5 text-[10px] font-bold rounded text-slate-400 hover:text-white transition-all border border-transparent">Kurum</button>
+                    </div>
+
+                    <form id="formStudent" class="space-y-4" onsubmit="handleRegistration(event, 'student')">
+                        <div class="grid grid-cols-2 gap-3 text-left">
+                            <div><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Ad</label><input type="text" id="sAd" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500" required></div>
+                            <div><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Soyad</label><input type="text" id="sSoyad" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500" required></div>
                         </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Soyadınız</label>
-                            <input type="text" id="regLastName" placeholder="Örn: Kula" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" required>
+                        <div class="text-left">
+                            <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Sınav / Sınıf Seviyesi</label>
+                            <select id="sSinav" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500" required>
+                                <option value="" disabled selected hidden>Seçim Yapın...</option>
+                                <option value="YKS" class="text-slate-900">YKS (TYT - AYT)</option>
+                                <option value="LGS" class="text-slate-900">LGS</option>
+                                <option value="KPSS" class="text-slate-900">KPSS</option>
+                                <option value="12. Sınıf" class="text-slate-900">12. Sınıf (Okul Takviye)</option>
+                                <option value="11. Sınıf" class="text-slate-900">11. Sınıf (Okul Takviye)</option>
+                                <option value="10. Sınıf" class="text-slate-900">10. Sınıf (Okul Takviye)</option>
+                                <option value="9. Sınıf" class="text-slate-900">9. Sınıf (Okul Takviye)</option>
+                            </select>
                         </div>
-                    </div>
+                        <div class="text-left"><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">E-Posta</label><input type="email" id="sEmail" placeholder="ornek@gmail.com" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500" required></div>
+                        <div class="text-left"><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Şifre</label><input type="password" id="sPass" placeholder="En az 6 karakter" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500" minlength="6" required></div>
+                        <button type="submit" id="btnSubmitStudent" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-3 rounded-xl text-xs uppercase tracking-widest transition-all mt-2">Öğrenci Olarak Katıl</button>
+                    </form>
 
-                    <div class="text-left">
-                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hesap Türü Seçin</label>
-                        <select id="regRole" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500 transition-all font-bold appearance-none cursor-pointer" required>
-                            <option value="student" class="text-slate-900">Öğrenci Adayı</option>
-                            <option value="teacher" class="text-slate-900">Eğitmen / Koç</option>
-                            <option value="kurum" class="text-slate-900">Kurum / Yönetici</option>
-                        </select>
-                    </div>
+                    <form id="formTeacher" class="space-y-4 hidden" onsubmit="handleRegistration(event, 'teacher')">
+                        <div class="grid grid-cols-2 gap-3 text-left">
+                            <div><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Ad</label><input type="text" id="tAd" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500" required></div>
+                            <div><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Soyad</label><input type="text" id="tSoyad" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500" required></div>
+                        </div>
+                        <div class="text-left">
+                            <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Uzmanlık Branşı</label>
+                            <select id="tBrans" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500" required>
+                                <option value="" disabled selected hidden>Branş Seçin...</option>
+                                <option value="Matematik" class="text-slate-900">Matematik / Geometri</option>
+                                <option value="Fizik" class="text-slate-900">Fizik</option>
+                                <option value="Kimya" class="text-slate-900">Kimya</option>
+                                <option value="Biyoloji" class="text-slate-900">Biyoloji</option>
+                                <option value="Türkçe" class="text-slate-900">Türkçe / Edebiyat</option>
+                                <option value="Tarih" class="text-slate-900">Tarih</option>
+                                <option value="Coğrafya" class="text-slate-900">Coğrafya</option>
+                                <option value="Felsefe" class="text-slate-900">Felsefe Grubu</option>
+                                <option value="Yabancı Dil" class="text-slate-900">Yabancı Dil (İngilizce vb.)</option>
+                                <option value="PDR / Koçluk" class="text-slate-900">Eğitim Koçu / PDR</option>
+                            </select>
+                        </div>
+                        <div class="text-left"><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">E-Posta</label><input type="email" id="tEmail" placeholder="ornek@gmail.com" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500" required></div>
+                        <div class="text-left"><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Şifre</label><input type="password" id="tPass" placeholder="En az 6 karakter" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500" minlength="6" required></div>
+                        <button type="submit" id="btnSubmitTeacher" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3 rounded-xl text-xs uppercase tracking-widest transition-all mt-2">Eğitmen Olarak Kaydol</button>
+                    </form>
 
-                    <div class="text-left">
-                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">E-Posta Adresi</label>
-                        <input type="email" id="regEmail" placeholder="ornek@hedef100.com" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" required>
-                    </div>
+                    <form id="formKurum" class="space-y-4 hidden" onsubmit="handleRegistration(event, 'kurum')">
+                        <div class="text-left">
+                            <p class="text-xs text-slate-400 mb-4 bg-slate-800/50 p-2 rounded-lg border border-slate-700/50">Kurum yöneticileri sistemi salt okunur (inceleme) modunda deneyimlemek üzere yönlendirilir.</p>
+                            <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Kurum / Şube Adı</label>
+                            <input type="text" id="kAd" placeholder="Kurum İsmi" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500" required>
+                        </div>
+                        <div class="text-left">
+                            <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Yetkili Adı Soyadı</label>
+                            <input type="text" id="kYetkili" placeholder="Ad Soyad" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white outline-none focus:border-indigo-500" required>
+                        </div>
+                        <div class="text-left"><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Kurumsal E-Posta</label><input type="email" id="kEmail" placeholder="ornek@gmail.com" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500" required></div>
+                        <div class="text-left"><label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1">Şifre</label><input type="password" id="kPass" placeholder="En az 6 karakter" class="w-full px-3 py-2.5 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-600 outline-none focus:border-indigo-500" minlength="6" required></div>
+                        <button type="submit" id="btnSubmitKurum" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl text-xs uppercase tracking-widest transition-all mt-2">Kurum Profili Oluştur</button>
+                    </form>
 
-                    <div class="text-left">
-                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hesap Şifresi</label>
-                        <input type="password" id="regPassword" placeholder="En az 6 karakter" class="w-full px-4 py-3 bg-slate-900/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" minlength="6" required>
-                    </div>
-
-                    <div class="text-left">
-                        <label class="block text-[10px] font-bold text-indigo-300 uppercase tracking-widest mb-1 px-1">Hedef Sınav / Branşınız</label>
-                        <input type="text" id="regSpecialty" placeholder="Örn: YKS veya Matematik" class="w-full px-4 py-3 bg-slate-500/10 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500 transition-all" required>
-                    </div>
-
-                    <button type="submit" id="registerBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-600/20 transition-all mt-4">
-                        Ağa Katıl
-                    </button>
-                </form>
+                </div>
             </div>
 
-            <div class="mt-6 pt-4 border-t border-slate-800 text-[10px] font-medium text-slate-500 uppercase tracking-wider">
-                Quantum Core v2026.1 • Aktif Bağlantı
+            <div class="mt-6 pt-4 border-t border-slate-800/50 text-[10px] font-medium text-slate-500 uppercase tracking-wider">
+                Quantum Core v2026.1 • Şifrelenmiş Ağ
             </div>
         </div>
     </div>
 
     <script>
+        // Ana Sekme Geçişi (Giriş / Kayıt)
         function switchTab(tab) {
             const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
+            const registerContainer = document.getElementById('registerContainer');
             const tabLogin = document.getElementById('tabLogin');
             const tabRegister = document.getElementById('tabRegister');
 
             if (tab === 'login') {
                 loginForm.className = "form-section active-form space-y-4";
-                registerForm.className = "form-section hidden-form space-y-4";
-                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-indigo-600 shadow-md";
-                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white bg-transparent";
+                registerContainer.className = "form-section hidden-form";
+                tabLogin.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all text-white bg-indigo-600 shadow-md";
+                tabRegister.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white bg-transparent";
             } else {
-                registerForm.className = "form-section active-form space-y-4";
+                registerContainer.className = "form-section active-form";
                 loginForm.className = "form-section hidden-form space-y-4";
-                tabRegister.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all text-white bg-indigo-600 shadow-md";
-                tabLogin.className = "flex-1 py-2 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white bg-transparent";
+                tabRegister.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all text-white bg-indigo-600 shadow-md";
+                tabLogin.className = "flex-1 py-2.5 text-xs font-bold rounded-lg transition-all text-slate-400 hover:text-white bg-transparent";
             }
+        }
+
+        // Kayıt İçi Rol Geçişi
+        function switchRoleForm(role) {
+            // Formları Gizle/Göster
+            document.getElementById('formStudent').style.display = (role === 'student') ? 'block' : 'none';
+            document.getElementById('formTeacher').style.display = (role === 'teacher') ? 'block' : 'none';
+            document.getElementById('formKurum').style.display = (role === 'kurum') ? 'block' : 'none';
+
+            // Buton Stillerini Sıfırla
+            ['Student', 'Teacher', 'Kurum'].forEach(r => {
+                let btn = document.getElementById('btnRole' + r);
+                btn.className = "py-1.5 text-[10px] font-bold rounded text-slate-400 hover:text-white transition-all border border-transparent";
+            });
+
+            // Aktif Buton Stili
+            let activeBtn = document.getElementById('btnRole' + role.charAt(0).toUpperCase() + role.slice(1));
+            activeBtn.className = "py-1.5 text-[10px] font-bold rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 transition-all shadow-sm";
         }
     </script>
 
@@ -145,10 +194,8 @@
         let width, height;
         let particles = [];
         const particleCount = window.innerWidth < 768 ? 100 : 180;
-        let rotationX = 0;
-        let rotationY = 0;
-        let targetRotationX = 0;
-        let targetRotationY = 0;
+        let rotationX = 0, rotationY = 0;
+        let targetRotationX = 0, targetRotationY = 0;
 
         function init() {
             width = canvas.width = window.innerWidth;
@@ -156,9 +203,7 @@
             particles = [];
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
-                    x: (Math.random() - 0.5) * 600,
-                    y: (Math.random() - 0.5) * 600,
-                    z: (Math.random() - 0.5) * 600
+                    x: (Math.random() - 0.5) * 600, y: (Math.random() - 0.5) * 600, z: (Math.random() - 0.5) * 600
                 });
             }
         }
@@ -170,10 +215,8 @@
             rotationX += (targetRotationX - rotationX) * 0.05;
             rotationY += (targetRotationY - rotationY) * 0.05;
 
-            const cosX = Math.cos(rotationX);
-            const sinX = Math.sin(rotationX);
-            const cosY = Math.cos(rotationY);
-            const sinY = Math.sin(rotationY);
+            const cosX = Math.cos(rotationX), sinX = Math.sin(rotationX);
+            const cosY = Math.cos(rotationY), sinY = Math.sin(rotationY);
 
             let transformed = particles.map(p => {
                 let x1 = p.x * cosY - p.z * sinY;
@@ -222,8 +265,7 @@
         }
 
         window.addEventListener('mousemove', (e) => {
-            let mouseY = (e.clientY / window.innerHeight) - 0.5;
-            targetRotationX = mouseY * 0.5;
+            targetRotationX = ((e.clientY / window.innerHeight) - 0.5) * 0.5;
         });
 
         window.addEventListener('resize', init);
@@ -249,7 +291,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // --- GİRİŞ YAPMA (LOGIN) İŞLEMİ ---
+        // --- GİRİŞ YAPMA İŞLEMİ ---
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
@@ -257,7 +299,6 @@
             const btn = document.getElementById('loginBtn');
 
             btn.innerText = "Kimlik Doğrulanıyor..."; btn.disabled = true;
-            btn.classList.add('opacity-75', 'cursor-not-allowed');
 
             try {
                 const userCredential = await signInWithEmailAndPassword(auth, email, password);
@@ -277,20 +318,15 @@
                 } else {
                     alert("Kullanıcı verisi bulunamadı.");
                     auth.signOut();
-                    resetLoginBtn();
+                    resetBtn(btn, "Sisteme Bağlan");
                 }
             } catch (error) {
                 alert("Giriş başarısız. E-posta veya şifrenizi kontrol edin.");
-                resetLoginBtn();
-            }
-
-            function resetLoginBtn() {
-                btn.innerText = "Sisteme Bağlan"; btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                resetBtn(btn, "Sisteme Bağlan");
             }
         });
 
-        // --- KAYIT OLMA (REGISTER) İŞLEMİ ---
+        // --- 3'LÜ KAYIT OLMA İŞLEMİ ---
         function generateHedefId() {
             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             let id = 'H100-';
@@ -298,35 +334,60 @@
             return id;
         }
 
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+        window.handleRegistration = async function(e, role) {
             e.preventDefault();
-            const firstName = document.getElementById('regFirstName').value.trim();
-            const lastName = document.getElementById('regLastName').value.trim();
-            const role = document.getElementById('regRole').value;
-            const email = document.getElementById('regEmail').value.trim();
-            const password = document.getElementById('regPassword').value.trim();
-            const specialty = document.getElementById('regSpecialty').value.trim();
-            const btn = document.getElementById('registerBtn');
+            
+            let firstName = "", lastName = "", email = "", password = "", specialty = "";
+            let btn;
+
+            // İlgili Formdan Verileri Çek
+            if(role === 'student') {
+                firstName = document.getElementById('sAd').value.trim();
+                lastName = document.getElementById('sSoyad').value.trim();
+                email = document.getElementById('sEmail').value.trim();
+                password = document.getElementById('sPass').value.trim();
+                specialty = document.getElementById('sSinav').value;
+                btn = document.getElementById('btnSubmitStudent');
+            } 
+            else if(role === 'teacher') {
+                firstName = document.getElementById('tAd').value.trim();
+                lastName = document.getElementById('tSoyad').value.trim();
+                email = document.getElementById('tEmail').value.trim();
+                password = document.getElementById('tPass').value.trim();
+                specialty = document.getElementById('tBrans').value;
+                btn = document.getElementById('btnSubmitTeacher');
+            } 
+            else if(role === 'kurum') {
+                firstName = document.getElementById('kAd').value.trim(); // Kurum Adı
+                lastName = document.getElementById('kYetkili').value.trim(); // Yetkili
+                email = document.getElementById('kEmail').value.trim();
+                password = document.getElementById('kPass').value.trim();
+                specialty = "Kurum Yönetimi";
+                btn = document.getElementById('btnSubmitKurum');
+            }
 
             btn.innerText = "Kimlik Oluşturuluyor..."; btn.disabled = true;
-            btn.classList.add('opacity-75', 'cursor-not-allowed');
 
             try {
-                // Firebase'e kaydet
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const newHedefId = generateHedefId();
 
-                // Veritabanına yaz
                 await setDoc(doc(db, "users", userCredential.user.uid), {
-                    uid: userCredential.user.uid, firstName, lastName, email, role, specialtyOrExam: specialty, hedefId: newHedefId, createdAt: new Date().toISOString()
+                    uid: userCredential.user.uid, 
+                    firstName, 
+                    lastName, 
+                    email, 
+                    role, 
+                    specialtyOrExam: specialty, 
+                    hedefId: newHedefId, 
+                    createdAt: new Date().toISOString()
                 });
 
-                if(role === 'kurum') localStorage.setItem('hedef100_userName', firstName + " " + lastName);
+                if(role === 'kurum') localStorage.setItem('hedef100_userName', firstName);
 
-                btn.innerText = "Kayıt Başarılı! Aktarılıyorsunuz...";
-                btn.classList.replace('bg-indigo-600', 'bg-emerald-600');
-
-                // Kayıt başarılı olunca doğrudan paneline gönder (Daha iyi kullanıcı deneyimi)
+                btn.innerText = "Kayıt Başarılı!";
+                
+                // Başarılı kayıttan sonra direkt kendi paneline atar
                 setTimeout(() => {
                     if (role === 'teacher') window.location.href = 'teacher-dashboard.html';
                     else if (role === 'student') window.location.href = 'student-dashboard.html';
@@ -335,12 +396,16 @@
 
             } catch (error) {
                 let errorMsg = "Kayıt sırasında hata meydana geldi.";
-                if(error.code === 'auth/email-already-in-use') errorMsg = "Bu e-posta adresi sistemde zaten mevcut. Lütfen giriş yapın.";
+                if(error.code === 'auth/email-already-in-use') errorMsg = "Bu e-posta adresi zaten kullanımda.";
                 alert(errorMsg);
-                btn.innerText = "Ağa Katıl"; btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                resetBtn(btn, role === 'student' ? "Öğrenci Olarak Katıl" : role === 'teacher' ? "Eğitmen Olarak Kaydol" : "Kurum Profili Oluştur");
             }
-        });
+        };
+
+        function resetBtn(btn, text) {
+            btn.innerText = text; 
+            btn.disabled = false;
+        }
     </script>
 </body>
 </html>
