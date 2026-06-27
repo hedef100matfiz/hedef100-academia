@@ -6,146 +6,162 @@
     <title>Akıllı Hata Kutusu | Hedef100 Academia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #020617; color: #f8fafc; }
-        .bg-grid-pattern { background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px); background-size: 40px 40px; }
         
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        /* SABİT VE SONSUZ ARKA PLAN IZGARASI */
+        .bg-grid-pattern { 
+            background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px); 
+            background-size: 40px 40px; 
+            position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0.4;
+        }
+        
+        /* SCROLL ESTETİĞİ */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #f97316; }
 
-        .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .hologram-modal { backdrop-filter: blur(20px); background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98)); border: 1px solid rgba(99, 102, 241, 0.3); }
-        
-        .upload-zone { border: 2px dashed rgba(99, 102, 241, 0.4); transition: all 0.3s ease; }
-        .upload-zone:hover, .upload-zone.dragover { background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.8); }
+        /* ORYZO CAM EFEKTLERİ */
+        .glass-card { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.04); position: relative; z-index: 10; }
+        .hologram-modal { backdrop-filter: blur(24px); background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98)); border: 1px solid rgba(99, 102, 241, 0.25); }
+        .upload-zone { border: 2px dashed rgba(99, 102, 241, 0.3); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .upload-zone:hover { background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.7); }
 
-        .scanner-line { width: 100%; height: 2px; background: #4ade80; position: absolute; left: 0; box-shadow: 0 0 15px #4ade80; animation: scan 1.5s infinite linear; display: none; z-index: 10; }
+        /* AI LAZER TARAMA ANİMASYONU */
+        .scanner-line { width: 100%; height: 2px; background: #10b981; position: absolute; left: 0; box-shadow: 0 0 15px #10b981; animation: scan 1.5s infinite linear; display: none; z-index: 20; }
         @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+
+        /* SAĞ MENÜ ÇEKMECE GEÇİŞİ */
+        .drawer-transition { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease; }
     </style>
 </head>
 <body class="h-screen flex relative overflow-hidden bg-slate-950">
 
-    <div id="bgGrid" class="fixed inset-0 w-full h-full bg-grid-pattern opacity-40 pointer-events-none z-0 transition-opacity duration-500"></div>
+    <div id="bgGrid" class="bg-grid-pattern transition-opacity duration-500"></div>
 
-    <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-96 opacity-0 transition-all duration-400 bg-indigo-600 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl shadow-indigo-600/30 uppercase tracking-widest flex items-center gap-3">
-        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+    <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-96 opacity-0 transition-all duration-400 bg-orange-500 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl shadow-orange-500/20 uppercase tracking-widest flex items-center gap-3">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
         <span id="toastMessage">İşlem Başarılı</span>
     </div>
 
-    <aside id="sidebar" class="w-64 fixed inset-y-0 left-0 z-50 bg-slate-900/90 backdrop-blur-xl border-r border-slate-800 flex flex-col flex-shrink-0 shadow-2xl hidden md:flex">
-        <div class="h-20 flex items-center justify-between px-5 border-b border-slate-800 bg-slate-950/50">
-            <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 bg-indigo-600 text-white rounded-lg flex items-center justify-center font-black shadow-lg shadow-indigo-500/30">H</div>
-                <span class="font-black text-base tracking-tighter text-white">HEDEF100<span class="text-indigo-400">.CORE</span></span>
+    <div id="rightSidebarBackdrop" onclick="toggleRightDrawer()" class="fixed inset-0 bg-slate-950/60 z-40 hidden backdrop-blur-sm transition-opacity duration-300 opacity-0"></div>
+    
+    <aside id="rightSidebar" class="w-80 fixed inset-y-0 right-0 z-50 bg-slate-900/85 backdrop-blur-2xl border-l border-slate-800/80 flex flex-col flex-shrink-0 shadow-2xl transform translate-x-full drawer-transition opacity-0">
+        <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-950/30">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 bg-orange-500 text-white rounded-md flex items-center justify-center font-black text-xs">H</div>
+                <span class="font-black text-sm tracking-widest text-white uppercase">Komuta Merkezi</span>
             </div>
+            <button onclick="toggleRightDrawer()" class="text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-700 w-9 h-10 rounded-xl flex items-center justify-center transition-colors text-sm">✕</button>
         </div>
 
-        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1 relative z-10">
-            <p class="px-3 text-[10px] font-bold text-slate-500 mb-2.5 uppercase tracking-widest">Sistem Menüsü</p>
-            <a href="index.html" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white text-slate-400 rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                <span class="text-sm">Ana Vitrine Dön</span>
-            </a>
-            <a href="student-dashboard.html" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white text-slate-400 rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span class="text-sm">Öğrenci Paneline Dön</span>
-            </a>
-            
-            <p class="px-3 text-[10px] font-bold text-indigo-400 mb-2.5 mt-6 uppercase tracking-widest">Açık Modüller</p>
-            <button class="nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl font-bold transition-all text-left border-l-4 border-indigo-500 shadow-sm">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
-                <span class="text-sm">Hata Kutusu (Deneyim)</span>
-            </button>
-        </nav>
+        <div class="flex-1 p-6 flex flex-col justify-between">
+            <div class="space-y-6">
+                <div class="bg-slate-950/40 border border-slate-800/80 rounded-2xl p-4">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Arayüz Tercihleri</p>
+                    <button onclick="toggleGrid()" class="w-full flex items-center justify-between text-left text-xs font-bold text-slate-300 hover:text-white bg-slate-900 border border-slate-800 p-3 rounded-xl transition-all hover:border-indigo-500 group">
+                        <span class="flex items-center gap-2">🌐 Arka Plan Izgarası</span>
+                        <span id="gridStatusBadge" class="text-[9px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-black uppercase border border-indigo-500/20">Açık</span>
+                    </button>
+                </div>
+
+                <div class="space-y-2">
+                    <p class="px-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Güvenli Geçiş Kanalları</p>
+                    <a href="index.html" class="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800/50 hover:text-white rounded-xl font-bold transition-all text-xs uppercase tracking-wider">
+                        <span>🏠</span> Ana Vitrine Dön
+                    </a>
+                    <a href="student-dashboard.html" class="w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:bg-slate-800/50 hover:text-white rounded-xl font-bold transition-all text-xs uppercase tracking-wider">
+                        <span>🎓</span> Öğrenci Paneline Dön
+                    </a>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-slate-800 border border-slate-700 rounded-lg flex items-center justify-center text-xs">👤</div>
+                    <div>
+                        <p class="text-xs font-bold text-white leading-tight">Misafir Öğrenci</p>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-wider mt-0.5">Test Modu</p>
+                    </div>
+                </div>
+                <a href="login.html" class="bg-orange-500/10 hover:bg-orange-500 text-orange-400 hover:text-white font-bold text-[9px] px-3 py-1.5 rounded-lg border border-orange-500/20 transition-all uppercase tracking-widest">Kayıt Ol</a>
+            </div>
+        </div>
     </aside>
 
-    <div class="flex-1 flex flex-col h-full relative z-10 w-full">
+    <div class="flex-1 flex flex-col h-full relative z-10 w-full overflow-hidden">
         
-        <header class="bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-800 px-4 md:px-8 py-4 flex justify-between items-center">
-            <div class="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-3">
-                <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="md:hidden text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
-                <span>Akademik Arşiv Merkezi</span>
+        <header class="bg-slate-900/40 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-7 h-7 bg-white rounded-full flex items-center justify-center font-black text-slate-950 text-xs shadow-md">H</div>
+                <div class="text-xs md:text-sm font-black text-white uppercase tracking-wider">HEDEF100 <span class="text-indigo-400 font-medium">CORE</span></div>
             </div>
+            
             <div class="flex items-center space-x-3">
+                <span class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl hidden sm:inline-block">Açık Erişim Arşivi</span>
                 
-                <button onclick="toggleGrid()" class="text-indigo-400 hover:text-white bg-slate-900 hover:bg-indigo-600 w-10 h-10 rounded-xl flex items-center justify-center transition-colors border border-slate-700 shadow-md group" title="Arka Plan Izgarasını Değiştir">
-                    <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM4 10h16M4 14h16M10 4v16M14 4v16"></path></svg>
+                <button onclick="toggleRightDrawer()" class="text-indigo-400 hover:text-white bg-slate-900/80 hover:bg-indigo-600 w-10 h-10 rounded-xl flex items-center justify-center transition-colors border border-slate-800 shadow-md group" title="Menüyü Aç">
+                    <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-
-                <div class="text-right hidden sm:block ml-2">
-                    <p class="text-sm font-bold text-white">Sistem Deneyimi</p>
-                    <p class="text-[9px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 mt-1 inline-block">Misafir Kullanıcı</p>
-                </div>
-                <div class="w-10 h-10 bg-slate-800 text-slate-400 rounded-xl flex items-center justify-center font-black border border-slate-700 shadow-md">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                </div>
             </div>
         </header>
 
-        <main class="p-4 md:p-6 lg:p-8 flex-1 w-full max-w-7xl mx-auto overflow-y-auto">
+        <main class="p-4 md:p-6 lg:p-8 flex-1 w-full max-w-7xl mx-auto overflow-y-auto relative z-10">
             
-            <div class="glass-card rounded-[2rem] p-6 md:p-8 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row justify-between items-stretch gap-6 border-slate-700 mb-6">
+            <div class="glass-card rounded-[2rem] p-6 md:p-8 shadow-2xl overflow-hidden flex flex-col lg:flex-row justify-between items-stretch gap-6 border-slate-800/80 mb-8">
                 <div class="absolute inset-0 bg-gradient-to-r from-indigo-600/10 via-slate-900 to-transparent pointer-events-none"></div>
                 
-                <div class="flex-1 flex flex-col justify-between relative z-10">
+                <div class="flex-1 flex flex-col justify-between relative z-10 py-1">
                     <div>
-                        <span class="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-4 inline-block">Yapay Zeka Arşivi (Misafir Modu)</span>
-                        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-3">Akıllı <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-300">Hata Kutusu.</span></h1>
-                        <p class="text-slate-400 text-xs md:text-sm leading-relaxed max-w-lg">Oturum açmana gerek yok. Hemen bir soru fotoğrafı yükle ve sistemin konuyu nasıl saniyeler içinde analiz ettiğini (OCR) kendin test et.</p>
+                        <span class="px-2.5 py-1 bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 text-[9px] font-black uppercase tracking-widest rounded-md mb-4 inline-block">Kuantum Arşiv Odası</span>
+                        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-3">Dijital <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">Hata Kutusu Üssü.</span></h1>
+                        <p class="text-slate-400 text-xs md:text-sm leading-relaxed max-w-lg">Oturum açma bariyerlerini kaldırdık. Hemen çözemediğin bir sorunun fotoğrafını yükle, yapay zekanın konuyu nasıl atomik düzeyde tespit ettiğini kendin dene.</p>
                     </div>
-                    <div class="mt-6 flex flex-wrap gap-3">
-                        <button onclick="openUploadModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Soru Tarat & Yükle
+                    <div class="mt-6">
+                        <button onclick="openUploadModal()" class="bg-white hover:bg-slate-200 text-slate-950 font-black py-3 px-6 rounded-xl text-xs uppercase tracking-widest transition-all shadow-xl flex items-center gap-2">
+                            🚀 Soru Tarat & Yükle
                         </button>
-                        <a href="login.html" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all">Sisteme Tam Kayıt Ol</a>
                     </div>
                 </div>
 
-                <div class="flex gap-4 w-full lg:w-auto">
-                    <div class="flex-1 lg:w-[300px] min-h-[180px] bg-slate-950/80 border border-slate-800/80 rounded-3xl relative overflow-hidden flex items-center justify-center shadow-inner">
-                        <canvas id="archiveCube3D" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
-                        <div class="absolute bottom-3 right-4 text-[8px] font-mono text-indigo-500/50 uppercase tracking-widest">Açık Ağ Veri Merkezi v2.0</div>
-                    </div>
+                <div class="w-full lg:w-[320px] h-44 lg:h-auto min-h-[180px] bg-slate-950/80 border border-slate-800 rounded-2xl relative overflow-hidden flex items-center justify-center">
+                    <canvas id="archiveCube3D" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
                 </div>
             </div>
 
-            <div class="mb-4 mt-10">
-                <h3 class="font-bold text-white text-lg">Örnek Çözümler Vitrini</h3>
-                <p class="text-xs text-slate-500">Sisteme daha önce yüklenmiş ve çözülmüş soru örneklerini incele.</p>
+            <div class="mb-4 border-b border-slate-800/60 pb-3 flex justify-between items-end">
+                <div>
+                    <h3 class="font-black text-white text-base">Örnek Çözümler Vitrini</h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">Sistemin işleyişini görmek için aşağıdaki çözülmüş kartları inceleyin.</p>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                
-                <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-700 group hover:border-emerald-500 transition-colors cursor-pointer relative" onclick="openSolutionModal()">
-                    <div class="h-36 bg-slate-900 relative flex items-center justify-center overflow-hidden">
-                        <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
-                        <span class="text-4xl opacity-50 relative z-10 group-hover:scale-110 transition-transform">📝</span>
-                        <div class="absolute top-2 right-2 bg-emerald-500/20 text-emerald-400 text-[9px] font-black px-2 py-1 rounded border border-emerald-500/30 backdrop-blur-md">Çözüldü</div>
+                <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-800 group hover:border-emerald-500 transition-colors cursor-pointer" onclick="openSolutionModal()">
+                    <div class="h-36 bg-slate-950/60 relative flex items-center justify-center overflow-hidden border-b border-slate-800/40">
+                        <span class="text-3xl opacity-40 group-hover:scale-110 transition-transform">📝</span>
+                        <div class="absolute top-3 right-3 bg-emerald-500/10 text-emerald-400 text-[8px] font-black px-2 py-0.5 rounded border border-emerald-500/20 uppercase tracking-wider">Çözüldü</div>
                     </div>
-                    <div class="p-4 bg-slate-950">
-                        <div class="flex justify-between items-start mb-1"><h4 class="font-bold text-white text-sm">Limit ve Süreklilik</h4></div>
-                        <p class="text-[9px] text-slate-500 mb-3 font-semibold uppercase tracking-widest">Matematik • Örnek Arşiv</p>
-                        <button class="w-full bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition-colors group-hover:bg-emerald-600">Örnek Çözümü İncele</button>
+                    <div class="p-4 bg-slate-950/40">
+                        <h4 class="font-bold text-white text-sm">Limit ve Süreklilik Teorisi</h4>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Matematik • Örnek Gösterim</p>
+                        <button class="w-full bg-slate-900 border border-slate-800 text-slate-300 font-bold py-2 rounded-xl text-xs mt-4 group-hover:bg-emerald-600 group-hover:text-white group-hover:border-transparent transition-colors">Çözümü İncele</button>
                     </div>
                 </div>
 
-                <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-700 group hover:border-indigo-500 transition-colors cursor-pointer" onclick="openSolutionModal()">
-                    <div class="h-36 bg-slate-900 relative flex items-center justify-center overflow-hidden">
-                        <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
-                        <span class="text-4xl opacity-50 relative z-10 group-hover:scale-110 transition-transform">📝</span>
-                        <div class="absolute top-2 right-2 bg-indigo-500/20 text-indigo-400 text-[9px] font-black px-2 py-1 rounded border border-indigo-500/30 backdrop-blur-md">Çözüldü</div>
+                <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-800 group hover:border-indigo-500 transition-colors cursor-pointer" onclick="openSolutionModal()">
+                    <div class="h-36 bg-slate-950/60 relative flex items-center justify-center overflow-hidden border-b border-slate-800/40">
+                        <span class="text-3xl opacity-40 group-hover:scale-110 transition-transform">📝</span>
+                        <div class="absolute top-3 right-3 bg-indigo-500/10 text-indigo-400 text-[8px] font-black px-2 py-0.5 rounded border border-indigo-500/20 uppercase tracking-wider">Çözüldü</div>
                     </div>
-                    <div class="p-4 bg-slate-950">
-                        <div class="flex justify-between items-start mb-1"><h4 class="font-bold text-white text-sm">Elektromanyetizma</h4></div>
-                        <p class="text-[9px] text-slate-500 mb-3 font-semibold uppercase tracking-widest">Fizik • Örnek Arşiv</p>
-                        <button class="w-full bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition-colors group-hover:bg-indigo-600">Örnek Çözümü İncele</button>
+                    <div class="p-4 bg-slate-950/40">
+                        <h4 class="font-bold text-white text-sm">Elektromanyetizma Akısı</h4>
+                        <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Fizik • Örnek Gösterim</p>
+                        <button class="w-full bg-slate-900 border border-slate-800 text-slate-300 font-bold py-2 rounded-xl text-xs mt-4 group-hover:bg-indigo-600 group-hover:text-white group-hover:border-transparent transition-colors">Çözümü İncele</button>
                     </div>
                 </div>
-
             </div>
         </main>
     </div>
@@ -156,216 +172,224 @@
             
             <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
                 <div>
-                    <h2 class="text-xl font-black text-white">Soru Tarat & Test Et</h2>
-                    <p class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mt-1">Sistem Test Modu</p>
+                    <h2 class="text-lg font-black text-white">Soru Fotoğrafı Yükle</h2>
+                    <p class="text-[9px] text-emerald-400 font-bold uppercase tracking-widest mt-0.5">Yapay Zeka Ağ Desteği</p>
                 </div>
-                <button onclick="closeUploadModal()" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors">✕</button>
+                <button onclick="closeUploadModal()" class="text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center">✕</button>
             </div>
 
-            <form id="uploadForm" onsubmit="handleQuestionUpload(event)" class="space-y-5">
-                <div id="dropZone" class="upload-zone rounded-2xl p-8 text-center cursor-pointer bg-slate-900/50 relative overflow-hidden" onclick="triggerFileSelect()">
+            <form id="uploadForm" onsubmit="handleQuestionUpload(event)" class="space-y-4">
+                <div class="upload-zone rounded-2xl p-8 text-center cursor-pointer bg-slate-950/40 relative overflow-hidden" onclick="document.getElementById('fileInput').click()">
                     <input type="file" id="fileInput" class="hidden" accept="image/*">
                     <div id="scannerLine" class="scanner-line"></div>
-                    
-                    <div id="uploadInitUI">
-                        <svg class="w-10 h-10 text-indigo-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
-                        <p class="text-sm font-bold text-indigo-300">Test İçin Fotoğraf Yükleyin</p>
-                        <p class="text-[10px] text-slate-500 mt-1">Sistem görüntüyü tarayıp konuyu bulacaktır.</p>
+                    <div id="uploadInitUI" class="space-y-2">
+                        <span class="text-3xl block">📷</span>
+                        <p class="text-xs font-bold text-indigo-300">Görsel Seçin veya Sürükleyin</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Branş</label>
-                        <input type="text" id="aiSubject" placeholder="Bekleniyor..." class="w-full bg-slate-900 border border-slate-700 text-emerald-400 font-bold text-xs rounded-xl px-3 py-2.5 outline-none transition-colors" readonly>
+                        <label class="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-1">Ders (AI Analiz)</label>
+                        <input type="text" id="aiSubject" placeholder="Taranıyor..." class="w-full bg-slate-950 border border-slate-800 text-emerald-400 font-bold text-xs rounded-xl px-3 py-2.5 outline-none" readonly>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Konu Tespiti</label>
-                        <input type="text" id="aiTopic" placeholder="Bekleniyor..." class="w-full bg-slate-900 border border-slate-700 text-emerald-400 font-bold text-xs rounded-xl px-3 py-2.5 outline-none transition-colors" readonly>
+                        <label class="block text-[9px] font-black text-slate-500 uppercase tracking-wider mb-1">Konu (AI Analiz)</label>
+                        <input type="text" id="aiTopic" placeholder="Taranıyor..." class="w-full bg-slate-950 border border-slate-800 text-emerald-400 font-bold text-xs rounded-xl px-3 py-2.5 outline-none" readonly>
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-2 tracking-widest cursor-not-allowed" disabled>Önce Soru Yükle</button>
+                <button type="submit" id="submitBtn" class="w-full bg-slate-800 text-slate-500 font-black py-3 rounded-xl text-xs uppercase tracking-widest cursor-not-allowed mt-2" disabled>Önce Fotoğraf Yükle</button>
             </form>
         </div>
     </div>
 
-    <div id="solutionModal" class="fixed inset-0 z-[9999] hidden flex justify-center items-center p-4 md:p-8 opacity-0 transition-opacity duration-300">
-        <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-md" onclick="closeSolutionModal()"></div>
-        <div class="hologram-modal w-full max-w-5xl rounded-[2rem] shadow-2xl relative z-10 flex flex-col md:flex-row max-h-[90vh] overflow-hidden transform scale-95 transition-transform duration-300" id="solutionContent">
+    <div id="solutionModal" class="fixed inset-0 z-[9999] hidden flex justify-center items-center p-4 md:p-6 opacity-0 transition-opacity duration-300">
+        <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm" onclick="closeSolutionModal()"></div>
+        <div class="hologram-modal w-full max-w-4xl rounded-[2rem] shadow-2xl relative z-10 flex flex-col md:flex-row max-h-[85vh] overflow-hidden transform scale-95 transition-transform duration-300" id="solutionContent">
             
-            <div class="w-full md:w-[45%] bg-slate-950 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col p-4 relative min-h-[250px]">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="bg-slate-900 border border-slate-700 text-slate-300 text-[10px] font-bold px-3 py-1.5 rounded shadow-md">Orijinal Soru (Örnek)</span>
-                </div>
-                <div class="w-full flex-1 border-2 border-dashed border-slate-800 rounded-xl flex items-center justify-center text-slate-700 flex-col gap-2">
-                    <span class="text-6xl opacity-30">📷</span>
-                    <span class="text-xs font-bold uppercase tracking-widest opacity-50">Soru Fotoğrafı</span>
-                </div>
+            <div class="w-full md:w-[45%] bg-slate-950 p-4 flex flex-col justify-center items-center relative border-b md:border-b-0 md:border-r border-slate-800">
+                <span class="bg-slate-900 border border-slate-800 text-slate-400 text-[9px] font-bold px-2 py-1 rounded absolute top-4 left-4">Orijinal Fotoğraf</span>
+                <span class="text-5xl opacity-20">📷</span>
+                <p class="text-[10px] text-slate-600 font-mono mt-2">Görsel Simülasyon Verisi</p>
             </div>
 
-            <div class="w-full md:w-[55%] p-6 md:p-8 flex flex-col bg-slate-900/50 overflow-hidden">
-                <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
+            <div class="w-full md:w-[55%] p-6 flex flex-col bg-slate-900/30">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
                     <div>
-                        <h2 class="text-xl font-black text-white">Öğretmen Çözümü</h2>
-                        <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mt-1 block">Sistem Demostrasyonu</span>
+                        <h3 class="text-base font-black text-white leading-tight">Öğretmen Çözüm Kapsülü</h3>
+                        <p class="text-[9px] text-emerald-400 font-bold uppercase tracking-wider mt-0.5">Zümre Onaylı Yanıt</p>
                     </div>
-                    <button onclick="closeSolutionModal()" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors">✕</button>
+                    <button onclick="closeSolutionModal()" class="text-slate-400 hover:text-white bg-slate-800 w-8 h-8 rounded-full flex items-center justify-center">✕</button>
                 </div>
 
-                <div class="flex-1 overflow-y-auto custom-scrollbar relative">
-                    <div class="space-y-5">
-                        <div class="bg-indigo-500/5 border border-indigo-500/20 rounded-xl p-5 relative">
-                            <div class="absolute -top-3 left-4 bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest shadow">Danışman Notu</div>
-                            <p class="text-sm text-slate-300 leading-relaxed mt-2">
-                                Merhaba, bu soruda türevin limit tanımını kullanman gerekiyor. Formülü doğrudan uygulamak yerine L'Hôpital kuralını denemelisin.
-                            </p>
+                <div class="flex gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800 mb-4">
+                    <button onclick="switchSolutionTab('video')" id="tab-video" class="flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg bg-indigo-600 text-white shadow">Video Çözüm</button>
+                    <button onclick="switchSolutionTab('text')" id="tab-text" class="flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg text-slate-400 hover:text-white">Formül & Notlar</button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto pr-1">
+                    <div id="sol-video" class="block">
+                        <div class="w-full aspect-video bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center relative group cursor-pointer shadow-lg" onclick="triggerToast('Video çözüm oynatıcısı simüle ediliyor.')">
+                            <div class="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center shadow-lg pl-0.5 group-hover:scale-105 transition-transform">▶</div>
                         </div>
-                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
-                            <h4 class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-3 border-b border-slate-800 pb-2">Matematiksel İspat Altyapısı</h4>
-                            <div class="text-slate-200 text-sm overflow-x-auto no-scrollbar py-2 font-serif">
-                                $$ \lim_{x \to 0} \frac{\sin x}{x} = 1 $$<br>
-                                Platformumuz karmaşık fizik ve matematik formüllerini (LaTeX altyapısıyla) bu şekilde kusursuz oluşturur. 
-                            </div>
+                    </div>
+                    <div id="sol-text" class="hidden space-y-4 font-serif text-sm text-slate-300 leading-relaxed">
+                        <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl">
+                            $$ \lim_{x \to 0} \frac{\sin x}{x} = 1 $$<br>
+                            Türevin limit tanımını unutmaman gerekir. Pay ve paydanın türevini ayrı ayrı alarak (L'Hôpital) sonuca saniyeler içinde ulaşabilirsin.
                         </div>
                     </div>
                 </div>
+
+                <div class="border-t border-slate-800 pt-4 mt-4">
+                    <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest text-center mb-2.5">Aralıklı Tekrar Çizelgeleme</p>
+                    <div class="flex gap-2">
+                        <button onclick="scheduleRepetition('3 Gün')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-[9px] font-black uppercase tracking-wider border border-slate-700">3 Gün Sonra</button>
+                        <button onclick="scheduleRepetition('1 Hafta')" class="flex-1 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white py-2 rounded-xl text-[9px] font-black uppercase tracking-wider border border-indigo-500/20">1 Hafta Sonra</button>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <script>
-        // IZGARA (GRID) AÇMA/KAPATMA FONKSİYONU
-        window.toggleGrid = function() {
-            const grid = document.getElementById('bgGrid');
-            if (grid.classList.contains('opacity-40')) {
-                grid.classList.replace('opacity-40', 'opacity-0');
-                triggerToast('Arka plan ızgarası gizlendi.', 'info');
-            } else {
-                grid.classList.replace('opacity-0', 'opacity-40');
-                triggerToast('Arka plan ızgarası aktif.', 'success');
-            }
-        };
-
-        window.triggerToast = function(message, type = 'success') {
-            const toast = document.getElementById('toastBox');
-            document.getElementById('toastMessage').innerText = message;
-            toast.className = type === 'success' 
-                ? "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl uppercase tracking-widest flex items-center gap-3 bg-indigo-600 shadow-indigo-600/30"
-                : "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl uppercase tracking-widest flex items-center gap-3 bg-slate-800 shadow-slate-900/30 border border-slate-700";
+        // --- 1. SAĞ MENÜ (HAMBURGER / DRAWER) MOTORU ---
+        function toggleRightDrawer() {
+            const sidebar = document.getElementById('rightSidebar');
+            const backdrop = document.getElementById('rightSidebarBackdrop');
             
-            toast.classList.remove('translate-x-96', 'opacity-0');
-            setTimeout(() => { toast.classList.add('translate-x-96', 'opacity-0'); }, 3000);
-        };
+            if (sidebar.classList.contains('translate-x-full')) {
+                // Menüyü Aç
+                backdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    sidebar.classList.remove('translate-x-full', 'opacity-0');
+                    sidebar.classList.add('translate-x-0', 'opacity-100');
+                    backdrop.classList.remove('opacity-0');
+                    backdrop.classList.add('opacity-100');
+                }, 10);
+            } else {
+                // Menüyü Kapat
+                sidebar.classList.remove('translate-x-0', 'opacity-100');
+                sidebar.classList.add('translate-x-full', 'opacity-0');
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+                setTimeout(() => backdrop.classList.add('hidden'), 400);
+            }
+        }
 
-        function triggerFileSelect() { document.getElementById('fileInput').click(); }
-        
-        document.getElementById('fileInput').addEventListener('change', function(e) {
+        // --- 2. IZGARA (GRID) PARAMETRE KONTROLÜ ---
+        function toggleGrid() {
+            const grid = document.getElementById('bgGrid');
+            const badge = document.getElementById('gridStatusBadge');
+            
+            if (grid.style.opacity === "0") {
+                grid.style.opacity = "0.4";
+                badge.innerText = "Açık";
+                badge.className = "text-[9px] bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-black uppercase border border-indigo-500/20";
+                triggerToast('Arka plan ızgarası aktif.');
+            } else {
+                grid.style.opacity = "0";
+                badge.innerText = "Kapalı";
+                badge.className = "text-[9px] bg-slate-800 text-slate-500 px-2 py-0.5 rounded font-black uppercase border border-slate-700";
+                triggerToast('Arka plan ızgarası gizlendi.');
+            }
+        }
+
+        // --- 3. TOAST (ANLIK BİLDİRİM) KONTROLÜ ---
+        function triggerToast(msg) {
+            const toast = document.getElementById('toastBox');
+            document.getElementById('toastMessage').innerText = msg;
+            toast.classList.remove('translate-x-96', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-x-96', 'opacity-0'), 3000);
+        }
+
+        // --- 4. AI TARAMA VE DOSYA EKLEME MOTORU ---
+        document.getElementById('fileInput').addEventListener('change', function() {
             if(this.files.length > 0) {
                 const ui = document.getElementById('uploadInitUI');
-                const scanner = document.getElementById('scannerLine');
+                const line = document.getElementById('scannerLine');
                 const btn = document.getElementById('submitBtn');
                 
-                ui.innerHTML = `<p class="text-sm font-black text-emerald-400 mb-1">Fotoğraf İşleniyor...</p><p class="text-[10px] text-slate-400 uppercase tracking-widest">Yapay Zeka Konuyu Tespit Ediyor</p>`;
-                scanner.style.display = 'block';
+                line.style.display = 'block';
+                ui.innerHTML = `<p class="text-xs font-black text-emerald-400">Yapay Zeka Katmanı Taranıyor...</p>`;
 
                 setTimeout(() => {
-                    scanner.style.display = 'none';
-                    ui.innerHTML = `<p class="text-xl">✅</p><p class="text-sm font-black text-white mt-2">Tarama Başarılı!</p>`;
+                    line.style.display = 'none';
+                    ui.innerHTML = `<span class="text-xl">✅</span><p class="text-xs font-bold text-white mt-1">Görsel İşlendi</p>`;
                     
-                    document.getElementById('aiSubject').value = "Matematik (Örnek)";
-                    document.getElementById('aiSubject').classList.replace('border-slate-700', 'border-emerald-500');
-                    document.getElementById('aiTopic').value = "Türev Kuralları";
-                    document.getElementById('aiTopic').classList.replace('border-slate-700', 'border-emerald-500');
-
+                    document.getElementById('aiSubject').value = "Matematik (Fizik/MatFiz Core)";
+                    document.getElementById('aiTopic').value = "Türev Kuralları & L'Hopital";
+                    
                     btn.disabled = false;
                     btn.innerText = "Sistemi Test Et (Gönder)";
-                    btn.className = "w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-2 tracking-widest shadow-indigo-600/30";
+                    btn.className = "w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3 rounded-xl transition-all text-xs uppercase shadow-md mt-2 tracking-widest shadow-indigo-600/30 cursor-pointer";
                 }, 1500);
             }
         });
 
-        window.openUploadModal = function() {
+        // Modalların Açılıp Kapanması
+        function openUploadModal() {
             document.getElementById('uploadModal').classList.remove('hidden');
-            setTimeout(() => { 
-                document.getElementById('uploadModal').classList.remove('opacity-0'); 
-                document.getElementById('uploadContent').classList.remove('scale-95'); 
-            }, 10);
-        };
-        
-        window.closeUploadModal = function() {
-            document.getElementById('uploadContent').classList.add('scale-95');
-            document.getElementById('uploadModal').classList.add('opacity-0');
-            setTimeout(() => { 
-                document.getElementById('uploadModal').classList.add('hidden'); 
-                document.getElementById('uploadForm').reset();
-                document.getElementById('submitBtn').disabled = true;
-                document.getElementById('submitBtn').className = "w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-2 tracking-widest cursor-not-allowed";
-                document.getElementById('submitBtn').innerText = "Önce Soru Yükle";
-                document.getElementById('uploadInitUI').innerHTML = `<svg class="w-10 h-10 text-indigo-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg><p class="text-sm font-bold text-indigo-300">Test İçin Fotoğraf Yükleyin</p><p class="text-[10px] text-slate-500 mt-1">Sistem görüntüyü tarayıp konuyu bulacaktır.</p>`;
-                document.getElementById('aiSubject').classList.replace('border-emerald-500', 'border-slate-700');
-                document.getElementById('aiTopic').classList.replace('border-emerald-500', 'border-slate-700');
-            }, 300);
-        };
-        
-        window.handleQuestionUpload = function(e) {
-            e.preventDefault();
-            closeUploadModal();
-            setTimeout(() => { triggerToast('Demo başarılı!'); }, 400);
-        };
+            setTimeout(() => { document.getElementById('uploadModal').classList.remove('opacity-0'); document.getElementById('uploadContent').classList.remove('scale-95'); }, 10);
+        }
+        function closeUploadModal() {
+            document.getElementById('uploadContent').classList.add('scale-95'); document.getElementById('uploadModal').classList.add('opacity-0');
+            setTimeout(() => document.getElementById('uploadModal').classList.add('hidden'), 300);
+        }
+        function handleQuestionUpload(e) {
+            e.preventDefault(); closeUploadModal();
+            setTimeout(() => triggerToast('Soru demo havuzuna başarıyla simüle edildi!'), 400);
+        }
 
-        window.openSolutionModal = function() {
+        function openSolutionModal() {
             document.getElementById('solutionModal').classList.remove('hidden');
-            setTimeout(() => { 
-                document.getElementById('solutionModal').classList.remove('opacity-0'); 
-                document.getElementById('solutionContent').classList.remove('scale-95'); 
-            }, 10);
-        };
-        
-        window.closeSolutionModal = function() {
-            document.getElementById('solutionContent').classList.add('scale-95');
-            document.getElementById('solutionModal').classList.add('opacity-0');
+            setTimeout(() => { document.getElementById('solutionModal').classList.remove('opacity-0'); document.getElementById('solutionContent').classList.remove('scale-95'); }, 10);
+        }
+        function closeSolutionModal() {
+            document.getElementById('solutionContent').classList.add('scale-95'); document.getElementById('solutionModal').classList.add('opacity-0');
             setTimeout(() => document.getElementById('solutionModal').classList.add('hidden'), 300);
-        };
+        }
 
-        // 3D Kuantum Arşiv Küpü
+        // Çözüm İçi Sekme Geçişi
+        function switchSolutionTab(tabId) {
+            document.getElementById('sol-video').style.display = (tabId === 'video') ? 'block' : 'none';
+            document.getElementById('sol-text').style.display = (tabId === 'text') ? 'block' : 'none';
+            
+            document.getElementById('tab-video').className = (tabId === 'video') ? "flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all bg-indigo-600 text-white shadow" : "flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg text-slate-400 hover:text-white bg-transparent";
+            document.getElementById('tab-text').className = (tabId === 'text') ? "flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg transition-all bg-indigo-600 text-white shadow" : "flex-1 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-lg text-slate-400 hover:text-white bg-transparent";
+        }
+
+        function scheduleRepetition(time) {
+            closeSolutionModal();
+            setTimeout(() => triggerToast(`Başarılı! Bu soru ${time} sonra karşına tekrar çıkarılacak.`), 350);
+        }
+
+        // --- 5. 3D ARŞİV KÜPÜ (TESSERACT) MOTORU ---
         const canvas = document.getElementById('archiveCube3D');
         const ctx = canvas.getContext('2d');
-        let angleX = 0, angleY = 0, nodes = [];
-
-        function initCube() {
-            canvas.width = canvas.parentElement.offsetWidth;
-            canvas.height = canvas.parentElement.offsetHeight;
-            nodes = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
-        }
+        let angleX = 0, angleY = 0, nodes = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
+        function initCube() { canvas.width = canvas.parentElement.offsetWidth; canvas.height = canvas.parentElement.offsetHeight; }
         function drawCube() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            angleX += 0.005; angleY += 0.01;
-            const cx = canvas.width / 2, cy = canvas.height / 2, size = Math.min(canvas.width, canvas.height) * 0.25;
-            
-            let projected = nodes.map(node => {
-                let y1 = node[1] * Math.cos(angleX) - node[2] * Math.sin(angleX);
-                let z1 = node[1] * Math.sin(angleX) + node[2] * Math.cos(angleX);
-                let x2 = node[0] * Math.cos(angleY) + z1 * Math.sin(angleY);
-                let z2 = -node[0] * Math.sin(angleY) + z1 * Math.cos(angleY);
-                let persp = 200 / (200 + z2 * size);
-                return { x: x2 * size * persp + cx, y: y1 * size * persp + cy, p: persp };
+            angleX += 0.006; angleY += 0.009;
+            const cx = canvas.width / 2, cy = canvas.height / 2, size = 35;
+            let projected = nodes.map(n => {
+                let y1 = n[1]*Math.cos(angleX) - n[2]*Math.sin(angleX);
+                let z1 = n[1]*Math.sin(angleX) + n[2]*Math.cos(angleX);
+                let x2 = n[0]*Math.cos(angleY) + z1*Math.sin(angleY);
+                let z2 = -n[0]*Math.sin(angleY) + z1*Math.cos(angleY);
+                let p = 180 / (180 + z2 * size);
+                return { x: x2 * size * p + cx, y: y1 * size * p + cy };
             });
-
             const edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
-            ctx.lineWidth = 1.5;
-            edges.forEach(edge => {
-                ctx.beginPath(); ctx.moveTo(projected[edge[0]].x, projected[edge[0]].y); ctx.lineTo(projected[edge[1]].x, projected[edge[1]].y);
-                ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)'; ctx.stroke();
-            });
-
-            projected.forEach(p => {
-                ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(1, 3 * p.p), 0, Math.PI * 2);
-                ctx.fillStyle = '#818cf8'; ctx.shadowBlur = 15; ctx.shadowColor = '#818cf8'; ctx.fill();
-            });
+            ctx.strokeStyle = 'rgba(99, 102, 241, 0.35)'; ctx.lineWidth = 1.2;
+            edges.forEach(e => { ctx.beginPath(); ctx.moveTo(projected[e[0]].x, projected[edge[0]].y); ctx.lineTo(projected[e[1]].x, projected[e[1]].y); ctx.stroke(); });
+            projected.forEach(p => { ctx.beginPath(); ctx.arc(p.x, p.y, 2.5, 0, Math.PI*2); ctx.fillStyle = '#818cf8'; ctx.fill(); });
             requestAnimationFrame(drawCube);
         }
-        setTimeout(() => { initCube(); drawCube(); }, 100);
+        initCube(); drawCube();
         window.addEventListener('resize', initCube);
     </script>
 </body>
