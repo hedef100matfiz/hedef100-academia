@@ -9,7 +9,6 @@
     <style>
         body { margin: 0; background-color: #030712; font-family: 'Inter', sans-serif; color: white; overflow-x: hidden; }
         
-        /* CİNEMATİC GRAIN (FİLM KUMLANMASI) */
         .film-grain {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none; z-index: 50; opacity: 0.25; mix-blend-mode: overlay;
@@ -24,7 +23,6 @@
 
         .content-layer { position: relative; z-index: 10; }
         
-        /* PREMIUM GLASSMORPHISM */
         .glass-nav { background: rgba(3, 7, 18, 0.4); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .glass-card { 
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.005)); 
@@ -55,6 +53,7 @@
     <div class="ambient-light light-2"></div>
     <canvas id="fluidCanvas"></canvas>
 
+    <!-- MOBİL MENÜ DRAWER -->
     <div id="mobileDrawer" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-[999] hidden flex flex-col justify-center items-center space-y-8 text-xl font-bold uppercase tracking-widest opacity-0 transition-all duration-300">
         <button onclick="toggleMobileSidebar()" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-900 w-12 h-12 rounded-full flex items-center justify-center border border-slate-800">✕</button>
         <a href="#vision" onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white">Vizyon</a>
@@ -65,6 +64,7 @@
 
     <div class="content-layer">
         
+        <!-- HEADER -->
         <nav class="glass-nav sticky top-0 w-full px-6 py-5 flex justify-between items-center z-50" id="navbar">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center font-black text-slate-950 text-sm shadow-[0_0_15px_rgba(255,255,255,0.3)]">H</div>
@@ -83,29 +83,64 @@
             </button>
         </nav>
 
-        <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-10 pb-20">
-            <div class="reveal-up delay-100 mb-6">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 backdrop-blur-md">
-                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
-                    <span class="text-indigo-300 text-[9px] font-bold tracking-[0.2em] uppercase">Akademik Kuantum Motoru v2.0</span>
+        <!-- HERO SECTION -->
+        <section class="min-h-screen flex flex-col lg:flex-row justify-center items-center px-6 max-w-7xl mx-auto gap-12 pt-10 pb-20 relative">
+            <div class="flex-1 text-center lg:text-left">
+                <div class="reveal-up delay-100 mb-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 backdrop-blur-md">
+                        <span class="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse"></span>
+                        <span class="text-indigo-300 text-[9px] font-bold tracking-[0.2em] uppercase">Akademik Kuantum Motoru v2.0</span>
+                    </div>
+                </div>
+                
+                <h1 class="reveal-up delay-200 text-4xl md:text-[5rem] font-black leading-[1.05] tracking-tighter mb-8">
+                    Eğitimde <br>
+                    <span class="text-gradient-accent">Verinin Kusursuz Güzelliği.</span>
+                </h1>
+                
+                <p class="reveal-up delay-300 text-slate-400 max-w-xl text-sm md:text-lg mb-10 font-medium leading-relaxed tracking-wide">
+                    Yapay zeka destekli, saniyesinde senkronize olan, kurumları ve öğrencileri atomik hassasiyetle yöneten yeni nesil SaaS platformu.
+                </p>
+                
+                <div class="reveal-up delay-400 flex flex-col sm:flex-row gap-4 items-center justify-center lg:justify-start">
+                    <a href="login.html" class="btn-primary font-black py-4 px-10 rounded-full text-xs uppercase tracking-[0.15em] text-center w-full sm:w-auto">Evreni Keşfet</a>
+                    <a href="hata-kutusu.html" class="px-10 py-4 rounded-full border border-slate-700 text-white font-bold text-xs uppercase tracking-[0.15em] hover:bg-white/5 transition-all w-full sm:w-auto backdrop-blur-sm text-center">AI Deneyimle (Ücretsiz)</a>
                 </div>
             </div>
-            
-            <h1 class="reveal-up delay-200 text-5xl md:text-[5.5rem] font-black leading-[1.05] tracking-tighter max-w-5xl mx-auto mb-8">
-                Eğitimde <br class="hidden md:block">
-                <span class="text-gradient-accent">Verinin Kusursuz Güzelliği.</span>
-            </h1>
-            
-            <p class="reveal-up delay-300 text-slate-400 max-w-2xl text-base md:text-xl mb-12 font-medium leading-relaxed tracking-wide">
-                Yapay zeka destekli, saniyesinde senkronize olan, kurumları ve öğrencileri atomik hassasiyetle yöneten yeni nesil SaaS platformu.
-            </p>
-            
-            <div class="reveal-up delay-400 flex flex-col sm:flex-row gap-4 w-full sm:w-auto items-center">
-                <a href="login.html" class="btn-primary font-black py-4 px-10 rounded-full text-xs uppercase tracking-[0.15em] w-full sm:w-auto text-center">Evreni Keşfet</a>
-                <a href="hata-kutusu.html" class="px-10 py-4 rounded-full border border-slate-700 text-white font-bold text-xs uppercase tracking-[0.15em] hover:bg-white/5 transition-all w-full sm:w-auto backdrop-blur-sm text-center">AI Deneyimle (Ücretsiz)</a>
+
+            <!-- GÖRSEL 4: HERO SAĞ TARAF KAPSÜLÜ -->
+            <div class="flex-1 reveal-up delay-300 hidden lg:block max-w-md aspect-square bg-slate-900/40 rounded-[3rem] border border-white/5 overflow-hidden shadow-2xl relative">
+                <img src="hero-quantum.png" alt="Quantum Architecture" class="w-full h-full object-cover opacity-70">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
             </div>
         </section>
 
+        <!-- SİNEMATİK VİZYON ANLATIMI -->
+        <section id="vision" class="py-32 px-6 relative max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                <div class="reveal-up">
+                    <h2 class="text-3xl md:text-5xl font-black mb-6 tracking-tight">Görünmeyeni <br><span class="text-slate-500">Görünür Kılıyoruz.</span></h2>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed mb-6">
+                        Geleneksel platformlar size sadece bir tablo verir. Biz ise her bir öğrencinin öğrenme eğrisini, hatalarını ve potansiyelini bir araya getirerek kurumunuz için yaşayan, nefes alan bir nöral ağ inşa ediyoruz.
+                    </p>
+                    <p class="text-slate-400 text-xs md:text-sm leading-relaxed">
+                        Öğrenciler hata yapar, yapay zekamız (OCR) tarar, eğitmenler müdahale eder. Tüm bu süreç arka planda kusursuz bir sessizlikle akar.
+                    </p>
+                </div>
+                
+                <!-- GÖRSEL 5: VİZYON SAĞ TARAF KAPSÜLÜ -->
+                <div class="reveal-up glass-card rounded-[2rem] aspect-video flex flex-col justify-end relative overflow-hidden group">
+                    <img src="vision-network.png" alt="Neural Vision Network" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-102 transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent z-0"></div>
+                    <div class="relative z-10 p-6 space-y-2 font-mono text-[10px] text-slate-400 opacity-80 bg-slate-950/40 backdrop-blur-sm border-t border-white/5">
+                        <p class="text-indigo-400 animate-pulse">> Neural.Engine.Initialize()</p>
+                        <p class="text-emerald-400">> Başarı tahmini: %94 Yükseliş Eğilimi</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BENTO GRID ECOSYSTEM -->
         <section id="ecosystem" class="py-32 px-6 border-t border-white/5 bg-slate-950/20 backdrop-blur-lg">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-20 reveal-up">
@@ -115,6 +150,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     
+                    <!-- GÖRSEL 1: Öğrenci Kartı (PNG) -->
                     <div class="reveal-up glass-card rounded-[2.5rem] flex flex-col overflow-hidden group">
                         <div class="h-48 bg-slate-950 overflow-hidden relative border-b border-white/5">
                             <img src="ogrenci-ai.png" alt="Öğrenci AI Modülü" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700">
@@ -128,6 +164,7 @@
                         </div>
                     </div>
 
+                    <!-- GÖRSEL 2: Kurum Kartı (PNG) -->
                     <div class="reveal-up glass-card rounded-[2.5rem] flex flex-col overflow-hidden group md:transform md:-translate-y-8 border-indigo-500/20 shadow-[0_0_40px_rgba(79,70,229,0.1)]">
                         <div class="h-56 bg-slate-950 overflow-hidden relative border-b border-white/5">
                             <img src="kurum-hq.png" alt="Kurumsal Yönetim Veri Tabanı" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700">
@@ -141,9 +178,10 @@
                         </div>
                     </div>
 
+                    <!-- GÖRSEL 3: Eğitmen Kartı (PNG) -->
                     <div class="reveal-up glass-card rounded-[2.5rem] flex flex-col overflow-hidden group">
                         <div class="h-48 bg-slate-950 overflow-hidden relative border-b border-white/5">
-                            <img src="kurum-hq.png" alt="Eğitmen Kontrol Radarı" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700">
+                            <img src="egitmen-radar.png" alt="Eğitmen Kontrol Radarı" class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
                         </div>
                         <div class="p-8 flex flex-col flex-1">
@@ -158,11 +196,13 @@
             </div>
         </section>
 
+        <!-- FOOTER -->
         <footer class="py-12 text-center border-t border-white/5 bg-slate-950/40">
             <p class="text-slate-600 text-xs font-medium">© 2026 Hedef100 Academia. Tüm Hakları Saklıdır.</p>
         </footer>
     </div>
 
+    <!-- SİNEMATİK MOTOR -->
     <script>
         window.toggleMobileSidebar = function() {
             const drawer = document.getElementById('mobileDrawer');
