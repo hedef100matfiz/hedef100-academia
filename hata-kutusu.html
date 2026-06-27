@@ -6,6 +6,7 @@
     <title>Akıllı Hata Kutusu | Hedef100 Academia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #020617; color: #f8fafc; }
@@ -28,7 +29,7 @@
 </head>
 <body class="h-screen flex relative overflow-hidden bg-slate-950">
 
-    <div class="fixed inset-0 w-full h-full bg-grid-pattern opacity-40 pointer-events-none z-0"></div>
+    <div id="bgGrid" class="fixed inset-0 w-full h-full bg-grid-pattern opacity-40 pointer-events-none z-0 transition-opacity duration-500"></div>
 
     <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-96 opacity-0 transition-all duration-400 bg-indigo-600 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl shadow-indigo-600/30 uppercase tracking-widest flex items-center gap-3">
         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
@@ -69,8 +70,13 @@
                 <button onclick="document.getElementById('sidebar').classList.toggle('hidden')" class="md:hidden text-slate-400"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
                 <span>Akademik Arşiv Merkezi</span>
             </div>
-            <div class="flex items-center space-x-4">
-                <div class="text-right hidden sm:block">
+            <div class="flex items-center space-x-3">
+                
+                <button onclick="toggleGrid()" class="text-indigo-400 hover:text-white bg-slate-900 hover:bg-indigo-600 w-10 h-10 rounded-xl flex items-center justify-center transition-colors border border-slate-700 shadow-md group" title="Arka Plan Izgarasını Değiştir">
+                    <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM4 10h16M4 14h16M10 4v16M14 4v16"></path></svg>
+                </button>
+
+                <div class="text-right hidden sm:block ml-2">
                     <p class="text-sm font-bold text-white">Sistem Deneyimi</p>
                     <p class="text-[9px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 mt-1 inline-block">Misafir Kullanıcı</p>
                 </div>
@@ -87,14 +93,15 @@
                 
                 <div class="flex-1 flex flex-col justify-between relative z-10">
                     <div>
-                        <span class="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-4 inline-block">Yapay Zeka Arşivi</span>
+                        <span class="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-4 inline-block">Yapay Zeka Arşivi (Misafir Modu)</span>
                         <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-3">Akıllı <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-300">Hata Kutusu.</span></h1>
                         <p class="text-slate-400 text-xs md:text-sm leading-relaxed max-w-lg">Oturum açmana gerek yok. Hemen bir soru fotoğrafı yükle ve sistemin konuyu nasıl saniyeler içinde analiz ettiğini (OCR) kendin test et.</p>
                     </div>
                     <div class="mt-6 flex flex-wrap gap-3">
                         <button onclick="openUploadModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg> Soru Tarat & Yükle
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Soru Tarat & Yükle
                         </button>
+                        <a href="login.html" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all">Sisteme Tam Kayıt Ol</a>
                     </div>
                 </div>
 
@@ -112,6 +119,7 @@
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                
                 <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-700 group hover:border-emerald-500 transition-colors cursor-pointer relative" onclick="openSolutionModal()">
                     <div class="h-36 bg-slate-900 relative flex items-center justify-center overflow-hidden">
                         <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
@@ -137,6 +145,7 @@
                         <button class="w-full bg-slate-800 text-white font-bold py-2.5 rounded-xl text-xs transition-colors group-hover:bg-indigo-600">Örnek Çözümü İncele</button>
                     </div>
                 </div>
+
             </div>
         </main>
     </div>
@@ -226,9 +235,25 @@
     </div>
 
     <script>
-        window.triggerToast = function(message) {
+        // IZGARA (GRID) AÇMA/KAPATMA FONKSİYONU
+        window.toggleGrid = function() {
+            const grid = document.getElementById('bgGrid');
+            if (grid.classList.contains('opacity-40')) {
+                grid.classList.replace('opacity-40', 'opacity-0');
+                triggerToast('Arka plan ızgarası gizlendi.', 'info');
+            } else {
+                grid.classList.replace('opacity-0', 'opacity-40');
+                triggerToast('Arka plan ızgarası aktif.', 'success');
+            }
+        };
+
+        window.triggerToast = function(message, type = 'success') {
             const toast = document.getElementById('toastBox');
             document.getElementById('toastMessage').innerText = message;
+            toast.className = type === 'success' 
+                ? "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl uppercase tracking-widest flex items-center gap-3 bg-indigo-600 shadow-indigo-600/30"
+                : "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl uppercase tracking-widest flex items-center gap-3 bg-slate-800 shadow-slate-900/30 border border-slate-700";
+            
             toast.classList.remove('translate-x-96', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-x-96', 'opacity-0'); }, 3000);
         };
