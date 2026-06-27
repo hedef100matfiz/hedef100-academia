@@ -1,34 +1,32 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="tr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hedef100 Academia | Geleceğin Eğitim Üssü</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <style>
         body { margin: 0; background-color: #030712; font-family: 'Inter', sans-serif; color: white; overflow-x: hidden; }
         
-        /* OYROZO TARZI FİLM KUMLANMASI (CİNEMATİC GRAIN) */
+        /* CİNEMATİC GRAIN (FİLM KUMLANMASI) */
         .film-grain {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none; z-index: 50; opacity: 0.25; mix-blend-mode: overlay;
             background-image: url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* 3D AKIŞKAN ARKA PLAN */
+        /* 3D AKIŞKAN ARKA PLAN VE ORTAM IŞIKLARI */
         #fluidCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
-        
-        /* ORTAM IŞIKLARI (AMBIENT GLOW) */
         .ambient-light { position: fixed; border-radius: 50%; filter: blur(120px); z-index: 1; pointer-events: none; opacity: 0.4; animation: floatGlow 15s infinite ease-in-out alternate; }
-        .light-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(79, 70, 229, 0.4); } /* Indigo */
-        .light-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: rgba(234, 88, 12, 0.25); animation-delay: -5s; } /* Orange */
+        .light-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: rgba(79, 70, 229, 0.4); }
+        .light-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: rgba(234, 88, 12, 0.25); animation-delay: -5s; }
         @keyframes floatGlow { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(10%, 10%) scale(1.2); } }
 
-        /* İÇERİK KATMANI */
         .content-layer { position: relative; z-index: 10; }
         
-        /* YÜKSEK KALİTE CAM EFEKTİ (PREMIUM GLASSMORPHISM) */
+        /* PREMIUM GLASSMORPHISM */
         .glass-nav { background: rgba(3, 7, 18, 0.4); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .glass-card { 
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)); 
@@ -39,11 +37,10 @@
         }
         .glass-card:hover { border-color: rgba(99, 102, 241, 0.4); transform: translateY(-5px); background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)); }
 
-        /* KAYDIRMA (SCROLL) ANİMASYONLARI */
+        /* SCROLL REVEAL KAPILARI */
         .reveal-up { opacity: 0; transform: translateY(40px) scale(0.98); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
         .reveal-up.active { opacity: 1; transform: translateY(0) scale(1); }
 
-        /* METİN VE BUTON EFEKTLERİ */
         .text-gradient { background: linear-gradient(to right, #ffffff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .text-gradient-accent { background: linear-gradient(to right, #818cf8, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
@@ -66,19 +63,32 @@
     <div class="ambient-light light-2"></div>
     <canvas id="fluidCanvas"></canvas>
 
+    <div id="mobileDrawer" class="fixed inset-0 bg-slate-950/95 backdrop-blur-2xl z-[999] hidden flex flex-col justify-center items-center space-y-8 text-xl font-bold uppercase tracking-widest transition-all duration-300 opacity-0">
+        <button onclick="toggleMobileSidebar()" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-900 w-12 h-12 rounded-full flex items-center justify-center border border-slate-800">✕</button>
+        <a href="#vision" onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white transition-colors">Vizyon</a>
+        <a href="#ecosystem" onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white transition-colors">Ekosistem</a>
+        <a href="hata-kutusu.html" class="text-indigo-400 hover:text-indigo-300 transition-colors">Hata Kutusunu Test Et</a>
+        <a href="login.html" class="btn-primary font-bold text-xs px-8 py-3.5 rounded-full uppercase tracking-widest mt-4">Sisteme Giriş</a>
+    </div>
+
     <div class="content-layer">
         
-        <nav class="glass-nav sticky top-0 w-full px-6 py-5 flex justify-between items-center transition-all duration-500" id="navbar">
+        <nav class="glass-nav sticky top-0 w-full px-6 py-5 flex justify-between items-center transition-all duration-500 z-50" id="navbar">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center font-black text-slate-950 text-sm shadow-[0_0_15px_rgba(255,255,255,0.3)]">H</div>
                 <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-indigo-400 font-medium">.AI</span></span>
             </div>
             
-            <div class="flex items-center gap-8">
-                <a href="#vision" class="text-xs font-semibold text-slate-400 hover:text-white transition uppercase tracking-widest hidden md:block">Vizyon</a>
-                <a href="#ecosystem" class="text-xs font-semibold text-slate-400 hover:text-white transition uppercase tracking-widest hidden md:block">Ekosistem</a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#vision" class="text-xs font-semibold text-slate-400 hover:text-white transition uppercase tracking-widest">Vizyon</a>
+                <a href="#ecosystem" class="text-xs font-semibold text-slate-400 hover:text-white transition uppercase tracking-widest">Ekosistem</a>
+                <a href="hata-kutusu.html" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition uppercase tracking-widest border border-indigo-500/20 px-4 py-1.5 rounded-full bg-indigo-500/5">Hata Kutusunu Test Et</a>
                 <a href="login.html" class="btn-primary font-bold text-[11px] px-6 py-2.5 rounded-full uppercase tracking-widest">Sisteme Giriş</a>
             </div>
+
+            <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-400 hover:text-white p-2 bg-slate-900/60 border border-slate-800 rounded-xl transition-colors focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
         </nav>
 
         <section class="min-h-screen flex flex-col justify-center items-center text-center px-4 relative pt-10 pb-20">
@@ -99,10 +109,10 @@
             </p>
             
             <div class="reveal-up delay-400 flex flex-col sm:flex-row gap-4 w-full sm:w-auto items-center">
-                <a href="login.html" class="btn-primary font-black py-4 px-10 rounded-full text-xs uppercase tracking-[0.15em] w-full sm:w-auto">
+                <a href="login.html" class="btn-primary font-black py-4 px-10 rounded-full text-xs uppercase tracking-[0.15em] w-full sm:w-auto text-center">
                     Evreni Keşfet
                 </a>
-                <a href="hata-kutusu.html" class="px-10 py-4 rounded-full border border-slate-700 text-white font-bold text-xs uppercase tracking-[0.15em] hover:bg-white/5 transition-all w-full sm:w-auto backdrop-blur-sm">
+                <a href="hata-kutusu.html" class="px-10 py-4 rounded-full border border-slate-700 text-white font-bold text-xs uppercase tracking-[0.15em] hover:bg-white/5 transition-all w-full sm:w-auto backdrop-blur-sm text-center">
                     AI Deneyimle (Ücretsiz)
                 </a>
             </div>
@@ -122,7 +132,7 @@
                     </div>
                     
                     <div class="reveal-up glass-card p-6 rounded-[2rem] aspect-square md:aspect-auto md:h-[400px] flex flex-col justify-end relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] opacity-10"></div>
+                        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHIpxjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')] opacity-10"></div>
                         <div class="absolute top-0 right-0 w-full h-full bg-gradient-to-b from-transparent to-indigo-900/30 group-hover:to-indigo-900/50 transition-all duration-700"></div>
                         
                         <div class="relative z-10 space-y-3 font-mono text-[10px] sm:text-xs text-slate-400 opacity-80">
@@ -149,7 +159,7 @@
                         <div class="absolute -right-10 -top-10 w-40 h-40 bg-orange-500/20 rounded-full blur-3xl group-hover:bg-orange-500/30 transition-all duration-500"></div>
                         <div class="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-xl mb-8">🎓</div>
                         <h3 class="text-2xl font-black text-white mb-4">Öğrenci Merkezi</h3>
-                        <p class="text-sm text-slate-400 leading-relaxed mb-8 flex-1">Oyunlaştırılmış yapay zeka görevleri, eksik kazanım tomografisi ve dijital hata kutusu ile sıfır veri kaybı.</p>
+                        <p class="text-sm text-slate-400 leading-relaxed mb-8 flex-1">Oyunlaştırılmış yapay zeka görevleri, eksik kazanım tomografisi oily dijital hata kutusu ile sıfır veri kaybı.</p>
                         <a href="login.html" class="text-orange-400 text-[10px] font-bold uppercase tracking-widest hover:text-orange-300 transition flex items-center gap-2">Sisteme Bağlan <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg></a>
                     </div>
 
@@ -174,7 +184,7 @@
             </div>
         </section>
 
-        <footer class="py-12 text-center border-t border-white/5 relative z-10">
+        <footer class="py-12 text-center border-t border-white/5 relative z-10 bg-slate-950/40">
             <div class="flex items-center justify-center gap-2 mb-4 opacity-50">
                 <div class="w-6 h-6 bg-white rounded-full flex items-center justify-center font-black text-slate-950 text-[10px]">H</div>
                 <span class="font-black text-sm tracking-tighter text-white">HEDEF100<span class="text-indigo-400">.AI</span></span>
@@ -185,55 +195,62 @@
     </div>
 
     <script>
-        // --- 1. KAYDIRMA (SCROLL) İLE ORTAYA ÇIKMA (REVEAL) EFEKTİ ---
-        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+        // --- 1. MOBIL SIDEBAR MENU DRAWER SİSTEMİ (AKTİF) ---
+        window.toggleMobileSidebar = function() {
+            const drawer = document.getElementById('mobileDrawer');
+            if(drawer.classList.contains('hidden')) {
+                drawer.classList.remove('hidden');
+                setTimeout(() => {
+                    drawer.classList.add('opacity-100');
+                    drawer.classList.remove('opacity-0');
+                }, 10);
+            } else {
+                drawer.classList.add('opacity-0');
+                drawer.classList.remove('opacity-100');
+                setTimeout(() => {
+                    drawer.classList.add('hidden');
+                }, 300);
+            }
+        };
+
+        // --- 2. SCROLL REVEAL (EKRANA SÜZÜLEREK GELME) MOTORU ---
+        const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
         const observer = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('active');
-                    observer.unobserve(entry.target); // Sadece bir kere animasyon oynasın
                 }
             });
         }, observerOptions);
 
         document.querySelectorAll('.reveal-up').forEach((el) => observer.observe(el));
 
-        // Navbar'ı Kaydırınca Blurlama Efekti
+        // Navbar Dinamik Blur Kontrolü
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                nav.style.background = 'rgba(3, 7, 18, 0.7)';
-                nav.style.boxShadow = '0 10px 30px -10px rgba(0,0,0,0.5)';
+            if (window.scrollY > 30) {
+                nav.style.background = 'rgba(3, 7, 18, 0.75)';
+                nav.style.boxShadow = '0 10px 35px -10px rgba(0,0,0,0.7)';
             } else {
                 nav.style.background = 'rgba(3, 7, 18, 0.4)';
                 nav.style.boxShadow = 'none';
             }
         });
 
-        // --- 2. ORYZO TARZI 3D AKIŞKAN DALGA (FLUID WAVE) MOTORU ---
-        // Dışarıdan kütüphane yüklemeden, performanslı Vanilla JS ile yapılan 3D simülasyon
+        // --- 3. 3D AKIŞKAN RADYAL GRİD TERRAIN MOTORU ---
         const canvas = document.getElementById('fluidCanvas');
         const ctx = canvas.getContext('2d');
         
-        let width, height;
-        let points = [];
-        const columns = 50; 
-        const rows = 30;
-        let time = 0;
-        let scrollY = 0;
-
-        // Farenin konumunu takip et
-        let mouseX = 0;
-        let mouseY = 0;
-        let targetMouseX = 0;
-        let targetMouseY = 0;
+        let width, height, points = [];
+        const columns = 45; 
+        const rows = 25;
+        let time = 0, scrollY = 0;
+        let mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
 
         function initCanvas() {
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             points = [];
-            
-            // X ve Z ekseninde bir ızgara (grid) oluşturuyoruz
             for (let z = 0; z < rows; z++) {
                 for (let x = 0; x < columns; x++) {
                     points.push({ x: x, z: z });
@@ -249,64 +266,47 @@
 
         function drawFluid() {
             ctx.clearRect(0, 0, width, height);
+            time += 0.012;
             
-            time += 0.015;
-            
-            // Farenin yumuşak (easing) takibi
             mouseX += (targetMouseX - mouseX) * 0.05;
             mouseY += (targetMouseY - mouseY) * 0.05;
 
-            // Kamera açıları (Kaydırma ve fare hareketine tepki)
-            // Sayfayı kaydırdıkça kameranın açısı değişir, 3D hissi artar.
             let camX = width / 2;
-            let camY = height / 2 + (scrollY * 0.3); 
+            let camY = height / 2 + (scrollY * 0.25); 
             
-            let angleX = 1.0 + (mouseY * 0.5) - (scrollY * 0.0005); // Yukarıdan bakış açısı
-            let angleY = mouseX * 0.5; // Sağa sola dönüş
+            let angleX = 1.0 + (mouseY * 0.4) - (scrollY * 0.0004); 
+            let angleY = mouseX * 0.4; 
             
             const cosX = Math.cos(angleX); const sinX = Math.sin(angleX);
             const cosY = Math.cos(angleY); const sinY = Math.sin(angleY);
 
-            const gridSpacing = width / 20;
+            const gridSpacing = width / 22;
             const offsetX = (columns * gridSpacing) / 2;
             const offsetZ = (rows * gridSpacing) / 2;
 
             ctx.lineWidth = 1;
 
-            // Noktaları hesapla ve projeksiyon yap
             let projectedPoints = [];
             for(let i = 0; i < points.length; i++) {
                 let p = points[i];
-                
-                // Dalga matematiği (Sine dalgaları + zaman)
-                let waveX = Math.sin(p.x * 0.3 + time) * 30;
-                let waveZ = Math.cos(p.z * 0.3 + time * 0.8) * 30;
-                let waveC = Math.sin((p.x + p.z) * 0.2 - time * 1.5) * 40;
-                let y = waveX + waveZ + waveC;
+                let waveX = Math.sin(p.x * 0.35 + time) * 25;
+                let waveZ = Math.cos(p.z * 0.35 + time * 0.7) * 25;
+                let y = waveX + waveZ;
 
-                // Merkezi Koordinatlar
                 let x = p.x * gridSpacing - offsetX;
                 let z = p.z * gridSpacing - offsetZ;
 
-                // 3D Rotasyonlar
-                // Y-Ekseni (Sağ Sol Dönüş)
                 let x1 = x * cosY - z * sinY;
                 let z1 = x * sinY + z * cosY;
-                // X-Ekseni (Yukarı Aşağı Bakış)
                 let y2 = y * cosX - z1 * sinX;
                 let z2 = y * sinX + z1 * cosX;
 
-                // Ekrana İzdüşüm (Perspective)
-                let zOffset = 600; // Kameranın mesafesi
-                let perspective = 1000 / (z2 + zOffset);
+                let zOffset = 550; 
+                let perspective = 900 / (z2 + zOffset);
                 
-                let screenX = x1 * perspective + camX;
-                let screenY = y2 * perspective + camY;
-
-                projectedPoints.push({ x: screenX, y: screenY, z: z2, p: perspective });
+                projectedPoints.push({ x: x1 * perspective + camX, y: y2 * perspective + camY, z: z2, p: perspective });
             }
 
-            // Çizgileri çiz (Grid Bağlantıları)
             for (let z = 0; z < rows - 1; z++) {
                 ctx.beginPath();
                 for (let x = 0; x < columns - 1; x++) {
@@ -315,12 +315,9 @@
                     let pRight = projectedPoints[index + 1];
                     let pDown = projectedPoints[index + columns];
 
-                    // Z derinliğine göre opaklık ayarı (Uzaklık = karanlık, yakınlık = parlak)
-                    let alpha = Math.min(1, Math.max(0, (200 - p.z) / 400));
-                    // Oryzo.ai stilinde ince, zarif beyaz/mavi çizgiler
-                    ctx.strokeStyle = `rgba(165, 180, 252, ${alpha * 0.15})`; // Indigo-300
+                    let alpha = Math.min(1, Math.max(0, (250 - p.z) / 450));
+                    ctx.strokeStyle = `rgba(165, 180, 252, ${alpha * 0.12})`; 
 
-                    // Sadece ekranda olanları çiz (Performans için)
                     if (p.p > 0) {
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(pRight.x, pRight.y);
@@ -330,7 +327,6 @@
                 }
                 ctx.stroke();
             }
-
             requestAnimationFrame(drawFluid);
         }
 
@@ -338,7 +334,6 @@
         initCanvas();
         drawFluid();
 
-        // Reveal CSS Keyframe eklentileri (Tailwind'de olmayanlar için JS fallback)
         const style = document.createElement('style');
         style.textContent = `
             @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
