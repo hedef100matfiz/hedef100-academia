@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hata Kutusu & Çözüm Havuzu | Hedef100 Academia</title>
+    <title>Akıllı Hata Kutusu | Hedef100 Academia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
@@ -22,6 +22,10 @@
         
         .upload-zone { border: 2px dashed rgba(99, 102, 241, 0.4); transition: all 0.3s ease; }
         .upload-zone:hover, .upload-zone.dragover { background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.8); }
+
+        /* Tarama (Scanner) Animasyonu */
+        .scanner-line { width: 100%; height: 2px; background: #4ade80; position: absolute; left: 0; box-shadow: 0 0 10px #4ade80; animation: scan 1.5s infinite linear; display: none; }
+        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
     </style>
 </head>
 <body class="h-screen flex relative overflow-hidden bg-slate-950">
@@ -48,10 +52,10 @@
                 <span class="text-sm">Ana Panele Dön</span>
             </a>
             
-            <p class="px-3 text-[10px] font-bold text-indigo-400 mb-2.5 mt-6 uppercase tracking-widest">Arşiv Modülleri</p>
-            <button class="nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl font-bold transition-all text-left border-l-4 border-indigo-500">
+            <p class="px-3 text-[10px] font-bold text-indigo-400 mb-2.5 mt-6 uppercase tracking-widest">Akıllı Modüller</p>
+            <button class="nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl font-bold transition-all text-left border-l-4 border-indigo-500 shadow-sm">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
-                <span class="text-sm">Hata Kutusu</span>
+                <span class="text-sm">Hata Kutusu (AI)</span>
             </button>
         </nav>
     </aside>
@@ -59,9 +63,7 @@
     <div class="flex-1 flex flex-col h-full relative z-10 w-full">
         
         <header class="bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-800 px-4 md:px-8 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest">Akademik Arşiv Merkezi</div>
-            </div>
+            <div class="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-widest">Akademik Arşiv & Tekrar Merkezi</div>
             <div class="flex items-center space-x-4">
                 <div class="text-right hidden sm:block">
                     <p class="text-sm font-bold text-white">Can Yılmaz</p>
@@ -72,72 +74,104 @@
 
         <main class="p-4 md:p-6 lg:p-8 flex-1 w-full max-w-7xl mx-auto overflow-y-auto">
             
-            <div class="glass-card rounded-[2rem] p-6 md:p-10 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row justify-between items-stretch gap-6 border-slate-700 mb-8">
+            <div class="glass-card rounded-[2rem] p-6 md:p-8 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row justify-between items-stretch gap-6 border-slate-700 mb-6">
                 <div class="absolute inset-0 bg-gradient-to-r from-indigo-600/10 via-slate-900 to-transparent pointer-events-none"></div>
-                <div class="flex-1 flex flex-col justify-between py-1 relative z-10">
+                
+                <div class="flex-1 flex flex-col justify-between relative z-10">
                     <div>
                         <span class="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-4 inline-block">Yapay Zeka Arşivi</span>
-                        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-3">Dijital <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-300">Hata Kutun.</span></h1>
-                        <p class="text-slate-400 text-sm leading-relaxed max-w-lg">Çözemediğin soruları buraya fırlat. Yapay zeka konuyu analiz eder, eğitmenlerin (veya sistem) sana özel çözümler sunar. Sınava girmeden önce tüm hatalarınla yüzleş!</p>
+                        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-3">Akıllı <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400">Hata Kutun.</span></h1>
+                        <p class="text-slate-400 text-xs md:text-sm leading-relaxed max-w-lg">Fotoğrafı çek, yükle. Yapay zeka soruyu tanısın, hocan çözsün. Sistem bu soruları sınavdan önce sana "Aralıklı Tekrar Algoritması" ile yeniden sorsun.</p>
                     </div>
-                    <div class="mt-8 flex gap-3">
+                    <div class="mt-6">
                         <button onclick="openUploadModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-indigo-600/20 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Yeni Soru Yükle
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Soru Tarat & Yükle
                         </button>
                     </div>
                 </div>
-                <div class="w-full lg:w-[350px] h-48 lg:h-auto min-h-[200px] bg-slate-950/80 border border-slate-800/80 rounded-3xl relative overflow-hidden flex items-center justify-center shadow-inner">
-                    <canvas id="archiveCube3D" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
-                    <div class="absolute bottom-3 right-4 text-[9px] font-mono text-indigo-500/50 uppercase tracking-widest">Data Tesseract v1.0</div>
+
+                <div class="flex gap-4 w-full lg:w-auto">
+                    <div class="flex flex-col gap-3 justify-center w-40 relative z-10 hidden sm:flex">
+                        <div class="bg-slate-900/80 border border-slate-700 rounded-xl p-3 text-center">
+                            <p class="text-2xl font-black text-white">45</p>
+                            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Toplam Hata</p>
+                        </div>
+                        <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-3 text-center">
+                            <p class="text-2xl font-black text-indigo-400">12</p>
+                            <p class="text-[9px] text-indigo-300 font-bold uppercase tracking-widest">Tekrar Edilecek</p>
+                        </div>
+                    </div>
+                    <div class="flex-1 lg:w-[250px] min-h-[180px] bg-slate-950/80 border border-slate-800/80 rounded-3xl relative overflow-hidden flex items-center justify-center shadow-inner">
+                        <canvas id="archiveCube3D" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+                        <div class="absolute bottom-3 right-4 text-[8px] font-mono text-indigo-500/50 uppercase tracking-widest">Data Tesseract v2.0</div>
+                    </div>
                 </div>
             </div>
 
             <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
                 <div class="flex gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar pb-1">
-                    <button class="bg-indigo-600 text-white font-bold text-xs px-4 py-2 rounded-lg whitespace-nowrap">Tümü (12)</button>
-                    <button class="bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 font-bold text-xs px-4 py-2 rounded-lg transition-colors whitespace-nowrap">Matematik (5)</button>
-                    <button class="bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 font-bold text-xs px-4 py-2 rounded-lg transition-colors whitespace-nowrap">Fizik (4)</button>
+                    <button class="bg-indigo-600 text-white font-bold text-xs px-4 py-2 rounded-lg whitespace-nowrap">Tüm Sorular</button>
+                    <button class="bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 font-bold text-xs px-4 py-2 rounded-lg transition-colors whitespace-nowrap">⏳ Çözüm Bekleyen (3)</button>
+                    <button class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 font-bold text-xs px-4 py-2 rounded-lg transition-colors whitespace-nowrap">♻️ Tekrar Vakti Gelenler (12)</button>
                 </div>
                 <div class="flex gap-2 w-full sm:w-auto">
-                    <select class="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-lg px-3 py-2 outline-none focus:border-indigo-500 cursor-pointer">
-                        <option>Durum: Tümü</option>
-                        <option>Çözüm Bekliyor</option>
-                        <option>Çözüldü</option>
+                    <select class="bg-slate-900 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg px-3 py-2 outline-none focus:border-indigo-500 cursor-pointer">
+                        <option>Branş: Tümü</option>
+                        <option>Matematik (28)</option>
+                        <option>Fizik (17)</option>
                     </select>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 
-                <div class="glass-card rounded-2xl overflow-hidden border border-slate-700 group hover:border-emerald-500 transition-colors cursor-pointer" onclick="openSolutionModal()">
+                <div class="glass-card rounded-[1.5rem] overflow-hidden border-2 border-emerald-500/30 group hover:border-emerald-500 transition-colors cursor-pointer relative shadow-[0_0_15px_rgba(16,185,129,0.1)]" onclick="openSolutionModal()">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
                     <div class="h-36 bg-slate-900 relative flex items-center justify-center overflow-hidden">
                         <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
                         <span class="text-4xl opacity-50 relative z-10 group-hover:scale-110 transition-transform">📝</span>
-                        <div class="absolute top-2 right-2 bg-emerald-500/20 text-emerald-400 text-[9px] font-bold px-2 py-1 rounded border border-emerald-500/30 backdrop-blur-md">Çözüldü</div>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-bold text-white text-sm">Limit / Türev</h4>
-                            <span class="text-[9px] text-slate-500">2 Gün Önce</span>
+                        <div class="absolute top-2 right-2 bg-emerald-500/90 text-white text-[9px] font-black px-2 py-1 rounded shadow-lg backdrop-blur-md flex items-center gap-1">
+                            <span>♻️</span> Tekrar Vakti!
                         </div>
-                        <p class="text-[10px] text-slate-400 mb-3">Orijinal TYT Deneme Sınavı 3, Soru 15</p>
-                        <button class="w-full bg-emerald-600/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white font-bold py-2 rounded-lg text-xs transition-colors">Çözümü İncele</button>
+                    </div>
+                    <div class="p-4 bg-gradient-to-b from-slate-900 to-slate-950">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-white text-sm">Limit ve Süreklilik</h4>
+                        </div>
+                        <p class="text-[9px] text-slate-500 mb-3 font-semibold uppercase tracking-widest">Matematik • 14 Gün Önce Çözüldü</p>
+                        <button class="w-full bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600 hover:text-white font-bold py-2.5 rounded-xl text-xs transition-colors flex justify-center items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Çözümü Hatırla
+                        </button>
                     </div>
                 </div>
 
-                <div class="glass-card rounded-2xl overflow-hidden border border-slate-800 group">
+                <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-700 group relative">
                     <div class="h-36 bg-slate-900 relative flex items-center justify-center overflow-hidden">
                         <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
                         <span class="text-4xl opacity-50 relative z-10">📷</span>
-                        <div class="absolute top-2 right-2 bg-amber-500/20 text-amber-400 text-[9px] font-bold px-2 py-1 rounded border border-amber-500/30 backdrop-blur-md">Bekliyor</div>
+                        <div class="absolute top-2 right-2 bg-amber-500/20 text-amber-400 text-[9px] font-bold px-2 py-1 rounded border border-amber-500/30 backdrop-blur-md animate-pulse">Çözüm Bekliyor</div>
                     </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-start mb-2">
-                            <h4 class="font-bold text-white text-sm">Elektromanyetizma</h4>
-                            <span class="text-[9px] text-slate-500">Bugün, 14:30</span>
+                    <div class="p-4 bg-slate-950">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-white text-sm">Vektörler ve Kuvvet</h4>
                         </div>
-                        <p class="text-[10px] text-slate-400 mb-3">3D Yayınları Soru Bankası, Test 5</p>
-                        <button class="w-full bg-slate-800 text-slate-500 font-bold py-2 rounded-lg text-xs cursor-not-allowed">Eğitmen İnceliyor...</button>
+                        <p class="text-[9px] text-slate-500 mb-3 font-semibold uppercase tracking-widest">Fizik • Bugün 14:30'da yüklendi</p>
+                        <button class="w-full bg-slate-800 text-slate-500 font-bold py-2.5 rounded-xl text-xs cursor-not-allowed border border-slate-700">Ahmet Hoca İnceliyor...</button>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-700 group hover:border-indigo-500 transition-colors cursor-pointer" onclick="openSolutionModal()">
+                    <div class="h-36 bg-slate-900 relative flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
+                        <span class="text-4xl opacity-50 relative z-10 group-hover:scale-110 transition-transform">📝</span>
+                        <div class="absolute top-2 right-2 bg-slate-800 border border-slate-600 text-slate-300 text-[9px] font-bold px-2 py-1 rounded backdrop-blur-md">Arşivde</div>
+                    </div>
+                    <div class="p-4 bg-slate-950">
+                        <div class="flex justify-between items-start mb-1">
+                            <h4 class="font-bold text-white text-sm">Organik Kimya</h4>
+                        </div>
+                        <p class="text-[9px] text-slate-500 mb-3 font-semibold uppercase tracking-widest">Kimya • 2 Ay Önce Çözüldü</p>
+                        <button class="w-full bg-indigo-600/10 text-indigo-400 border border-indigo-500/30 hover:bg-indigo-600 hover:text-white font-bold py-2.5 rounded-xl text-xs transition-colors">Geçmiş Çözüme Bak</button>
                     </div>
                 </div>
 
@@ -147,85 +181,117 @@
 
     <div id="uploadModal" class="fixed inset-0 z-[9999] hidden flex justify-center items-center p-4 opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeUploadModal()"></div>
-        <div class="hologram-modal w-full max-w-lg rounded-[2rem] shadow-2xl relative z-10 p-6 md:p-8 transform scale-95 transition-transform duration-300" id="uploadContent">
+        <div class="hologram-modal w-full max-w-md rounded-[2rem] shadow-2xl relative z-10 p-6 md:p-8 transform scale-95 transition-transform duration-300" id="uploadContent">
             
             <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
-                <h2 class="text-xl font-black text-white">Soru Fırlat (Yükle)</h2>
+                <div>
+                    <h2 class="text-xl font-black text-white">Soru Tarat & Yükle</h2>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Yapay Zeka (OCR) Destekli</p>
+                </div>
                 <button onclick="closeUploadModal()" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors">✕</button>
             </div>
 
-            <form onsubmit="handleQuestionUpload(event)" class="space-y-5">
-                <div class="upload-zone rounded-2xl p-8 text-center cursor-pointer bg-slate-900/50" onclick="document.getElementById('fileInput').click()">
+            <form id="uploadForm" onsubmit="handleQuestionUpload(event)" class="space-y-5">
+                <div id="dropZone" class="upload-zone rounded-2xl p-8 text-center cursor-pointer bg-slate-900/50 relative overflow-hidden" onclick="triggerFileSelect()">
                     <input type="file" id="fileInput" class="hidden" accept="image/*">
-                    <svg class="w-10 h-10 text-indigo-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                    <p class="text-sm font-bold text-indigo-300">Fotoğraf Yüklemek İçin Tıklayın</p>
-                    <p class="text-[10px] text-slate-500 mt-1">Veya buraya sürükleyip bırakın (JPG, PNG)</p>
+                    <div id="scannerLine" class="scanner-line"></div>
+                    
+                    <div id="uploadInitUI">
+                        <svg class="w-10 h-10 text-indigo-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+                        <p class="text-sm font-bold text-indigo-300" id="uploadText">Soru Fotoğrafı Seç veya Çek</p>
+                        <p class="text-[10px] text-slate-500 mt-1">Yapay zeka konuyu otomatik tespit edecektir.</p>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Branş</label>
-                        <select class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500" required>
-                            <option value="">Seçiniz...</option>
-                            <option value="matematik">Matematik / Geometri</option>
-                            <option value="fizik">Fizik</option>
-                        </select>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Branş (AI Tespit)</label>
+                        <input type="text" id="aiSubject" placeholder="Bekleniyor..." class="w-full bg-slate-900 border border-slate-700 text-emerald-400 font-bold text-xs rounded-xl px-3 py-2.5 outline-none transition-colors" readonly>
                     </div>
                     <div>
-                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Konu / Etiket</label>
-                        <input type="text" placeholder="Örn: Limit" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500" required>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Konu (AI Tespit)</label>
+                        <input type="text" id="aiTopic" placeholder="Bekleniyor..." class="w-full bg-slate-900 border border-slate-700 text-emerald-400 font-bold text-xs rounded-xl px-3 py-2.5 outline-none transition-colors" readonly>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Kaynak Notu (Opsiyonel)</label>
-                    <input type="text" placeholder="Örn: Orijinal Yayınları Sayfa 45" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Öğretmene Ek Notun (İsteğe Bağlı)</label>
+                    <input type="text" placeholder="Hocam formülü anladım ama işlemi çıkaramadım..." class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500">
                 </div>
 
-                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-2 tracking-widest">Havuz'a Gönder</button>
+                <button type="submit" id="submitBtn" class="w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-2 tracking-widest cursor-not-allowed" disabled>Önce Soru Yükle</button>
             </form>
         </div>
     </div>
 
     <div id="solutionModal" class="fixed inset-0 z-[9999] hidden flex justify-center items-center p-4 md:p-8 opacity-0 transition-opacity duration-300">
         <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-md" onclick="closeSolutionModal()"></div>
-        <div class="hologram-modal w-full max-w-4xl rounded-[2rem] shadow-2xl relative z-10 flex flex-col md:flex-row max-h-[90vh] overflow-hidden transform scale-95 transition-transform duration-300" id="solutionContent">
+        <div class="hologram-modal w-full max-w-5xl rounded-[2rem] shadow-2xl relative z-10 flex flex-col md:flex-row max-h-[90vh] overflow-hidden transform scale-95 transition-transform duration-300" id="solutionContent">
             
-            <div class="w-full md:w-1/2 bg-slate-950 border-b md:border-b-0 md:border-r border-slate-800 flex items-center justify-center p-4 relative min-h-[250px]">
-                <div class="absolute top-4 left-4 bg-slate-900 border border-slate-700 text-slate-300 text-[10px] font-bold px-2 py-1 rounded shadow-md z-10">Senin Yüklediğin Soru</div>
-                <div class="w-full h-full border-2 border-dashed border-slate-800 rounded-xl flex items-center justify-center text-slate-700 text-5xl">📝</div>
+            <div class="w-full md:w-[45%] bg-slate-950 border-b md:border-b-0 md:border-r border-slate-800 flex flex-col p-4 relative min-h-[250px]">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="bg-slate-900 border border-slate-700 text-slate-300 text-[10px] font-bold px-3 py-1.5 rounded shadow-md">Orijinal Sorun</span>
+                    <span class="bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-bold px-3 py-1.5 rounded shadow-md flex items-center gap-1">Zorluk: 8/10</span>
+                </div>
+                <div class="w-full flex-1 border-2 border-dashed border-slate-800 rounded-xl flex items-center justify-center text-slate-700 flex-col gap-2">
+                    <span class="text-6xl opacity-30">📷</span>
+                    <span class="text-xs font-bold uppercase tracking-widest opacity-50">Soru Fotoğrafı</span>
+                </div>
             </div>
 
-            <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col bg-slate-900/50 overflow-y-auto custom-scrollbar">
-                <div class="flex justify-between items-start mb-6 border-b border-slate-800 pb-4">
+            <div class="w-full md:w-[55%] p-6 md:p-8 flex flex-col bg-slate-900/50 overflow-hidden">
+                <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4">
                     <div>
-                        <h2 class="text-xl font-black text-white">Çözüm Detayları</h2>
-                        <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 mt-1 inline-block">Ahmet Hoca Tarafından Çözüldü</span>
+                        <h2 class="text-xl font-black text-white">Öğretmen Çözümü</h2>
+                        <span class="text-[10px] text-emerald-400 font-bold uppercase tracking-widest mt-1 block">Ahmet Kula Yanıtladı</span>
                     </div>
                     <button onclick="closeSolutionModal()" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 w-8 h-8 rounded-full flex items-center justify-center transition-colors">✕</button>
                 </div>
 
-                <div class="flex-1 space-y-5">
-                    <div class="bg-indigo-500/5 border border-indigo-500/20 rounded-xl p-5 relative">
-                        <div class="absolute -top-3 left-4 bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-widest shadow">Danışman Notu</div>
-                        <p class="text-sm text-slate-300 leading-relaxed mt-2">
-                            Can selam, bu soruda türevin limit tanımını kullanman gerekiyor. Formülü doğrudan uygulamak yerine fonksiyonun \(x \to 0\) a giderkenki davranışını incelemelisin. L'Hôpital kuralı burada hayat kurtarır.
-                        </p>
+                <div class="flex gap-2 mb-4 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+                    <button onclick="switchSolutionTab('video')" id="tab-video" class="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all bg-indigo-600 text-white shadow">Video Çözüm</button>
+                    <button onclick="switchSolutionTab('text')" id="tab-text" class="flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all text-slate-400 hover:text-white">Ses & Yazı</button>
+                </div>
+
+                <div class="flex-1 overflow-y-auto custom-scrollbar pr-2 relative">
+                    
+                    <div id="sol-video" class="block h-full flex flex-col justify-center">
+                        <div class="w-full aspect-video bg-slate-950 border border-slate-800 rounded-2xl flex items-center justify-center relative overflow-hidden group cursor-pointer shadow-xl">
+                            <div class="absolute inset-0 bg-gradient-to-br from-indigo-900/40 to-slate-900 opacity-50"></div>
+                            <div class="w-16 h-16 bg-indigo-600/90 text-white rounded-full flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(79,70,229,0.5)] z-10 pl-1">
+                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+                            </div>
+                            <div class="absolute bottom-3 left-4 text-xs font-bold text-white z-10 bg-slate-900/60 px-2 py-1 rounded">Ahmet Hoca Çözümü.mp4 (02:45)</div>
+                        </div>
                     </div>
 
-                    <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
-                        <h4 class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-3">Matematiksel İspat</h4>
-                        <div class="text-slate-200 text-sm overflow-x-auto no-scrollbar py-2">
-                            Hatırlaman gereken temel limit kuralı şudur:<br><br>
-                            $$ \lim_{x \to 0} \frac{\sin x}{x} = 1 $$<br>
-                            Eğer türev alarak (L'Hôpital) yaparsak, payın türevi $\cos x$, paydanın türevi $1$ olur. $x=0$ koyduğunda sonuç $\cos(0) = 1$ çıkar. İkinci adımdaki integral alanına dikkat et!
+                    <div id="sol-text" class="hidden space-y-5">
+                        <div class="bg-slate-800/50 border border-slate-700 rounded-xl p-3 flex items-center gap-4">
+                            <button class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white flex-shrink-0 hover:bg-indigo-500 transition-colors pl-0.5"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></button>
+                            <div class="flex-1">
+                                <div class="flex justify-between text-[10px] font-bold text-slate-400 mb-1"><span>Sesli Açıklama</span><span>00:00 / 01:12</span></div>
+                                <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden"><div class="w-1/3 h-full bg-indigo-500"></div></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-5">
+                            <h4 class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-3 border-b border-slate-800 pb-2">Hocanın Çözüm Notu</h4>
+                            <div class="text-slate-200 text-sm leading-relaxed font-serif">
+                                Can selam, bu soruda türevin limit tanımını kullanman gerekiyor. Formülü doğrudan uygulamak yerine $x \to 0$ a giderkenki davranışını incelemelisin.<br><br>
+                                $$ f'(x) = \lim_{h \to 0} \frac{f(x+h) - f(x)}{h} $$<br>
+                                Bu kuralı uyguladığında sonucun hızla $\cos(x)$ e gittiğini göreceksin. Videoda detaylıca anlattım, izlemeyi unutma!
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-6 pt-4 border-t border-slate-800 flex gap-3">
-                    <button onclick="triggerToast('Soru arşivine eklendi. Sınav öncesi tekrar sorulacak.')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl text-xs transition-colors border border-slate-700">Tekrar Listesine Al</button>
-                    <button onclick="closeSolutionModal()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs uppercase shadow-md transition-colors tracking-widest">Anladım</button>
+                <div class="mt-6 pt-5 border-t border-slate-800">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 text-center">Yapay Zeka Ne Zaman Tekrar Sorsun?</p>
+                    <div class="flex gap-2">
+                        <button onclick="scheduleRepetition('3 Gün')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 rounded-xl text-[10px] transition-colors border border-slate-700">⏳ 3 Gün Sonra</button>
+                        <button onclick="scheduleRepetition('1 Hafta')" class="flex-1 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white font-bold py-3 rounded-xl text-[10px] transition-colors border border-indigo-500/30">📅 1 Hafta Sonra</button>
+                        <button onclick="scheduleRepetition('Sınav Öncesi')" class="flex-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white font-bold py-3 rounded-xl text-[10px] transition-colors border border-emerald-500/30">🎯 Sınav Öncesi</button>
+                    </div>
                 </div>
             </div>
 
@@ -241,6 +307,43 @@
             setTimeout(() => { toast.classList.add('translate-x-96', 'opacity-0'); }, 3000);
         };
 
+        // --- YAPAY ZEKA TARAMA SİMÜLASYONU (OCR) ---
+        function triggerFileSelect() { document.getElementById('fileInput').click(); }
+        
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if(this.files.length > 0) {
+                const ui = document.getElementById('uploadInitUI');
+                const scanner = document.getElementById('scannerLine');
+                const btn = document.getElementById('submitBtn');
+                
+                ui.innerHTML = `<p class="text-sm font-black text-emerald-400 mb-1">Fotoğraf İşleniyor...</p><p class="text-[10px] text-slate-400 uppercase tracking-widest">Yapay Zeka Konuyu Tespit Ediyor</p>`;
+                scanner.style.display = 'block';
+
+                // Simüle edilmiş AI bekleme süresi (1.5 Saniye)
+                setTimeout(() => {
+                    scanner.style.display = 'none';
+                    ui.innerHTML = `<p class="text-xl">✅</p><p class="text-sm font-black text-white mt-2">Tarama Başarılı!</p>`;
+                    
+                    // Alanları AI doldurmuş gibi göster
+                    const subjectInput = document.getElementById('aiSubject');
+                    const topicInput = document.getElementById('aiTopic');
+                    
+                    subjectInput.value = "Matematik";
+                    subjectInput.classList.replace('border-slate-700', 'border-emerald-500');
+                    
+                    topicInput.value = "Türev ve Limit";
+                    topicInput.classList.replace('border-slate-700', 'border-emerald-500');
+
+                    // Butonu Aktifleştir
+                    btn.disabled = false;
+                    btn.innerText = "Soruyu Havuza Gönder";
+                    btn.className = "w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-2 tracking-widest shadow-indigo-600/30";
+                    
+                    triggerToast('AI sorunun konusunu başarıyla tespit etti.');
+                }, 1500);
+            }
+        });
+
         // Yükleme Modalı
         window.openUploadModal = function() {
             const modal = document.getElementById('uploadModal');
@@ -253,15 +356,28 @@
             const content = document.getElementById('uploadContent');
             content.classList.add('scale-95');
             modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
+            
+            // Formu ve AI Alanlarını Sıfırla
+            setTimeout(() => { 
+                modal.classList.add('hidden'); 
+                document.getElementById('uploadForm').reset();
+                document.getElementById('submitBtn').disabled = true;
+                document.getElementById('submitBtn').className = "w-full bg-slate-800 text-slate-500 font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-2 tracking-widest cursor-not-allowed";
+                document.getElementById('submitBtn').innerText = "Önce Soru Yükle";
+                document.getElementById('aiSubject').value = "";
+                document.getElementById('aiSubject').classList.replace('border-emerald-500', 'border-slate-700');
+                document.getElementById('aiTopic').value = "";
+                document.getElementById('aiTopic').classList.replace('border-emerald-500', 'border-slate-700');
+                document.getElementById('uploadInitUI').innerHTML = `<svg class="w-10 h-10 text-indigo-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg><p class="text-sm font-bold text-indigo-300">Fotoğraf Yüklemek İçin Tıklayın</p><p class="text-[10px] text-slate-500 mt-1">Veya buraya sürükleyip bırakın (JPG, PNG)</p>`;
+            }, 300);
         };
         window.handleQuestionUpload = function(e) {
             e.preventDefault();
             closeUploadModal();
-            setTimeout(() => { triggerToast('Soru yapay zeka analizine alındı ve öğretmene iletildi.'); e.target.reset(); }, 400);
+            setTimeout(() => { triggerToast('Soru sisteme yüklendi. Öğretmenine bildirim gönderildi.'); }, 400);
         };
 
-        // Çözüm İnceleme Modalı
+        // Çözüm İnceleme ve Video Sekmeleri Modalı
         window.openSolutionModal = function() {
             const modal = document.getElementById('solutionModal');
             const content = document.getElementById('solutionContent');
@@ -275,79 +391,60 @@
             modal.classList.add('opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 300);
         };
+        window.switchSolutionTab = function(tabId) {
+            document.getElementById('sol-video').style.display = 'none';
+            document.getElementById('sol-text').style.display = 'none';
+            document.getElementById('sol-' + tabId).style.display = 'block';
+            
+            document.getElementById('tab-video').className = "flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all text-slate-400 hover:text-white bg-transparent";
+            document.getElementById('tab-text').className = "flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all text-slate-400 hover:text-white bg-transparent";
+            
+            document.getElementById('tab-' + tabId).className = "flex-1 py-2 text-[10px] font-bold uppercase tracking-widest rounded-lg transition-all bg-indigo-600 text-white shadow";
+        };
 
-        // Dosya Sürükle-Bırak Efekti Simülasyonu
-        const fileInput = document.getElementById('fileInput');
-        fileInput.addEventListener('change', function() {
-            if(this.files.length > 0) triggerToast(this.files[0].name + ' seçildi. Formu doldurup gönderin.');
-        });
+        // Aralıklı Tekrar Çizelgeleme
+        window.scheduleRepetition = function(time) {
+            closeSolutionModal();
+            setTimeout(() => { triggerToast(`Soru algoritmaya eklendi. ${time} tekrar sorulacak.`); }, 300);
+        };
 
         // 3D Kuantum Arşiv Küpü (Tesseract)
         const canvas = document.getElementById('archiveCube3D');
         const ctx = canvas.getContext('2d');
-        let angleX = 0, angleY = 0;
-        let nodes = [];
+        let angleX = 0, angleY = 0, nodes = [];
 
         function initCube() {
             canvas.width = canvas.parentElement.offsetWidth;
             canvas.height = canvas.parentElement.offsetHeight;
-            nodes = [
-                [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
-                [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
-            ];
+            nodes = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]];
         }
-
         function drawCube() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            angleX += 0.01; angleY += 0.015;
-            
-            const cx = canvas.width / 2, cy = canvas.height / 2;
-            const size = 45; // Küp boyutu
+            angleX += 0.005; angleY += 0.01;
+            const cx = canvas.width / 2, cy = canvas.height / 2, size = Math.min(canvas.width, canvas.height) * 0.25;
             
             let projected = nodes.map(node => {
-                // X Ekseni Dönüşü
                 let y1 = node[1] * Math.cos(angleX) - node[2] * Math.sin(angleX);
                 let z1 = node[1] * Math.sin(angleX) + node[2] * Math.cos(angleX);
-                // Y Ekseni Dönüşü
                 let x2 = node[0] * Math.cos(angleY) + z1 * Math.sin(angleY);
                 let z2 = -node[0] * Math.sin(angleY) + z1 * Math.cos(angleY);
-                
                 let persp = 200 / (200 + z2 * size);
-                return {
-                    x: x2 * size * persp + cx,
-                    y: y1 * size * persp + cy,
-                    p: persp
-                };
+                return { x: x2 * size * persp + cx, y: y1 * size * persp + cy, p: persp };
             });
 
-            // Çizgileri çiz (Bağlantılar)
-            const edges = [
-                [0,1], [1,2], [2,3], [3,0], // Arka yüz
-                [4,5], [5,6], [6,7], [7,4], // Ön yüz
-                [0,4], [1,5], [2,6], [3,7]  // Bağlantılar
-            ];
-
-            ctx.lineWidth = 1;
+            const edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+            ctx.lineWidth = 1.5;
             edges.forEach(edge => {
-                ctx.beginPath();
-                ctx.moveTo(projected[edge[0]].x, projected[edge[0]].y);
-                ctx.lineTo(projected[edge[1]].x, projected[edge[1]].y);
-                ctx.strokeStyle = 'rgba(99, 102, 241, 0.4)';
-                ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(projected[edge[0]].x, projected[edge[0]].y); ctx.lineTo(projected[edge[1]].x, projected[edge[1]].y);
+                ctx.strokeStyle = 'rgba(99, 102, 241, 0.3)'; ctx.stroke();
             });
 
-            // Noktaları Çiz
             projected.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, Math.max(1, 3 * p.p), 0, Math.PI * 2);
-                ctx.fillStyle = '#818cf8';
-                ctx.shadowBlur = 10; ctx.shadowColor = '#818cf8';
-                ctx.fill();
+                ctx.beginPath(); ctx.arc(p.x, p.y, Math.max(1, 3 * p.p), 0, Math.PI * 2);
+                ctx.fillStyle = '#818cf8'; ctx.shadowBlur = 15; ctx.shadowColor = '#818cf8'; ctx.fill();
             });
-
             requestAnimationFrame(drawCube);
         }
-
         setTimeout(() => { initCube(); drawCube(); }, 100);
         window.addEventListener('resize', initCube);
     </script>
