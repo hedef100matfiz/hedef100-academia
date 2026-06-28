@@ -22,7 +22,6 @@
         .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .neon-text { text-shadow: 0 0 10px rgba(249, 115, 22, 0.5); }
         
-        /* Dinamik Görev Çizilme Efekti */
         .completed-task { opacity: 0.5; text-decoration: line-through; color: #94a3b8; }
     </style>
 </head>
@@ -30,13 +29,16 @@
 
     <div class="fixed inset-0 w-full h-full bg-grid-pattern opacity-40 pointer-events-none z-0"></div>
 
+    <!-- MOBİL MENÜ BACKDROP -->
     <div id="sidebarBackdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-950/80 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
+    <!-- ================= ANLIK BİLDİRİM TOAST KUTUSU ================= -->
     <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-96 opacity-0 transition-all duration-400 bg-orange-500 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl shadow-orange-500/30 uppercase tracking-widest flex items-center gap-3">
         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
         <span id="toastMessage">İşlem Başarılı</span>
     </div>
 
+    <!-- ================= TAM EKRAN ODAK & SINAV ODASI MODALI ================= -->
     <div id="focusRoomModal" class="fixed inset-0 z-[99999] hidden bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
         <img src="focus-room-bg.png" alt="Focus Success Background" class="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none" onerror="this.src='https://images.unsplash.com/photo-1518655061766-48f23af930d0?auto=format&fit=crop&w=1200&q=80'">
         <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/40 to-slate-950 pointer-events-none"></div>
@@ -57,6 +59,7 @@
         </div>
     </div>
 
+    <!-- ================= SOL MENÜ (SIDEBAR) ================= -->
     <aside id="sidebar" class="w-64 fixed inset-y-0 left-0 z-50 bg-slate-900/90 backdrop-blur-xl border-r border-slate-800 flex flex-col flex-shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 md:static text-slate-400 transition-transform duration-300 ease-in-out">
         <div class="h-20 flex items-center justify-between px-5 border-b border-slate-800 bg-slate-950/50">
             <div class="flex items-center gap-2.5">
@@ -99,12 +102,12 @@
             </button>
 
             <p class="px-3 text-[10px] font-bold text-orange-400 mb-2.5 mt-6 uppercase tracking-widest">Akıllı Modüller</p>
-            <a href="hata-kutusu.html" class="nav-item w-full flex items-center justify-between px-3 py-2.5 bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 rounded-xl font-bold transition-all border-l-4 border-orange-500 shadow-sm">
+            <a href="hata-kutusu.html" class="nav-item w-full flex items-center justify-between px-3 py-2.5 bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 hover:text-orange-300 rounded-xl font-bold transition-all text-left border-l-4 border-orange-500 shadow-sm">
                 <div class="flex items-center gap-3">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
                     <span class="text-sm">Hata Kutusu</span>
                 </div>
-                <span class="bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-black animate-pulse shadow-md">1 Yeni</span>
+                <span class="bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-black animate-pulse shadow-md shadow-emerald-500/30">1 Yeni</span>
             </a>
         </nav>
 
@@ -115,8 +118,10 @@
         </div>
     </aside>
 
+    <!-- ================= ANA GÖVDE ================= -->
     <div class="flex-1 flex flex-col h-full relative z-10">
         
+        <!-- HEADER -->
         <header class="bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-800 px-4 md:px-8 py-4 flex justify-between items-center relative">
             <div class="flex items-center gap-3">
                 <button onclick="toggleMobileSidebar()" class="md:hidden p-2 -ml-2 text-slate-400 focus:outline-none"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
@@ -127,27 +132,29 @@
                     <p id="studentNameDisplay" class="text-sm font-bold text-white">Yükleniyor...</p>
                     <p id="targetExamBadge" class="text-[9px] text-orange-400 font-black uppercase tracking-widest bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/20 mt-1 inline-block">ADAY</p>
                 </div>
-                <div id="avatarInitials" class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-700 text-white rounded-xl flex items-center justify-center font-black text-sm shadow-lg">?</div>
+                <div id="avatarInitials" class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-700 text-white rounded-xl flex items-center justify-center font-black text-sm shadow-md">?</div>
             </div>
         </header>
 
+        <!-- İÇERİK KAPSAYICI -->
         <main class="p-4 md:p-6 lg:p-8 flex-1 w-full max-w-7xl mx-auto overflow-y-auto">
             
+            <!-- SEKMELER 1: DASHBOARD -->
             <div id="section-dashboard" class="section-active space-y-6">
                 <div class="glass-card rounded-[2rem] p-6 md:p-10 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row justify-between items-stretch gap-6 border-slate-700">
                     <div class="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-slate-900 to-transparent pointer-events-none z-10"></div>
                     <div class="flex-1 flex flex-col justify-between py-1 relative z-20">
                         <div>
-                            <span class="px-3 py-1 bg-white/10 border border-white/20 text-white/80 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-5 inline-block">Kuantum Motoru Aktif</span>
+                            <span class="px-3 py-1 bg-white/10 border border-white/20 text-white/80 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-5 inline-block backdrop-blur-md">Kuantum Motoru Aktif</span>
                             <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight mb-4">Zirveye Uçuşa Hazır Mısın, <br/><span id="welcomeName" class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-300 neon-text">Öğrenci</span>? 🚀</h1>
                             <p class="text-slate-400 text-sm leading-relaxed max-w-lg">Yapay zeka koçun haftalık verilerini işledi. Denemelerindeki zayıf noktalar tespit edildi ve sana özel optimizasyon görevleri oluşturuldu.</p>
                         </div>
                         <div class="mt-8 flex flex-wrap gap-3">
-                            <button onclick="switchSection('focusroom')" class="bg-orange-500 hover:bg-orange-400 text-white font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all">⏱️ Odak Odasını Aç</button>
+                            <button onclick="switchSection('focusroom')" class="bg-orange-500 hover:bg-orange-400 text-white font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-orange-500/20">⏱️ Odak Odasını Aç</button>
                             <button onclick="switchSection('analytics')" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all">AI Raporunu Oku</button>
                         </div>
                     </div>
-                    <div class="w-full lg:w-[350px] h-48 lg:h-auto min-h-[200px] bg-slate-950/80 border border-slate-800/80 rounded-3xl relative overflow-hidden flex items-center justify-center">
+                    <div class="w-full lg:w-[350px] h-48 lg:h-auto min-h-[200px] bg-slate-950/80 border border-slate-800/80 rounded-3xl relative overflow-hidden flex items-center justify-center shadow-inner">
                         <img src="student-hero.png" alt="Student Sunrise Focus" class="w-full h-full object-cover opacity-70 absolute inset-0" onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=500&q=80'">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
                     </div>
@@ -173,12 +180,13 @@
                         <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Görev Durumu</p>
                         <div>
                             <p class="text-2xl font-black text-emerald-400">%80</p>
-                            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2"><div class="bg-emerald-500 h-1.5 rounded-full w-[80%]"></div></div>
+                            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2"><div class="bg-emerald-500 h-1.5 rounded-full w-[80%] shadow-[0_0_10px_#10b981]"></div></div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- SEKMELER 2: ODAK ODASI ANA MERKEZİ -->
             <div id="section-focusroom" class="section-hidden space-y-6">
                 <div class="border-b border-slate-800 pb-4 mb-4">
                     <h2 class="text-2xl font-black text-white">⏱️ Odak ve Sınav Yönetim Merkezi</h2>
@@ -211,9 +219,10 @@
                 </div>
             </div>
 
+            <!-- ================= SEKMELER 3: INTERAKTİF GÖREVLER & HAFTALIK PROGRAM ================= -->
             <div id="section-program" class="section-hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                    
+                    <!-- Sol Taraf: Özelleştirilmiş Görev Ekleme Formu -->
                     <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
                         <div class="border-b border-slate-800 pb-2">
                             <h3 class="text-base font-black text-white">🎯 Günlük Hedef Planlayıcı</h3>
@@ -240,13 +249,13 @@
                                 Ajandama Ekle
                             </button>
                         </form>
-                        
                         <div class="rounded-2xl border border-slate-800 overflow-hidden aspect-video relative mt-4 hidden lg:block">
                             <img src="student-scheduler-view.png" alt="Scheduler Layout" class="absolute inset-0 w-full h-full object-cover opacity-30" onerror="this.src='https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=500&q=80'">
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
                         </div>
                     </div>
 
+                    <!-- Sağ Taraf: Haftalık Ajanda / Takvim Görünümü (7 Günlük Grid) -->
                     <div class="lg:col-span-2 space-y-4">
                         <div class="flex justify-between items-center bg-slate-900/40 p-4 rounded-xl border border-slate-800">
                             <h3 class="font-black text-sm text-white tracking-wide uppercase">📅 Haftalık Akademik Takvim Matrisi</h3>
@@ -254,6 +263,7 @@
                         </div>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <!-- GÜNLER -->
                             <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]">
                                 <h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Pazartesi</h4>
                                 <div id="day-pazartesi" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div>
@@ -284,10 +294,10 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
+            <!-- SEKMELER 4: AI ANALİZİ -->
             <div id="section-analytics" class="section-hidden space-y-6">
                 <div class="glass-card p-6 rounded-2xl flex flex-col lg:flex-row gap-6 items-center justify-between">
                     <div class="flex-1"><h3 class="text-xl font-black text-white mb-4">🧠 AI Kazanım Tomografisi</h3></div>
@@ -295,36 +305,74 @@
                 </div>
             </div>
 
+            <!-- ================= SEKMELER 5: GELİŞMİŞ VE DETAYLI DENEME GİRİŞİ ================= -->
             <div id="section-exams" class="section-hidden space-y-6">
-                <div class="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-800">
-                    <form onsubmit="handleAdvancedExamSubmit(event)" class="space-y-6">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div>
-                                <select id="examTypeSelector" onchange="renderExamFields()" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white outline-none">
-                                    <option value="TYT">📋 YKS - TYT Oturumu</option>
-                                    <option value="AYT">⚡ YKS - AYT Oturumu</option>
-                                </select>
-                            </div>
-                            <div>
-                                <select id="examPublisher" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none cursor-pointer">
-                                    <option value="3D">3D Yayınları</option>
-                                    <option value="Bilgi Sarmal">Bilgi Sarmal</option>
-                                </select>
-                            </div>
-                            <div><input type="text" id="examTitle" placeholder="Deneme No" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white outline-none" required></div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    
+                    <!-- Form Alanı (Sol Taraf) -->
+                    <div class="lg:col-span-2 glass-card p-6 md:p-8 rounded-[2rem] border border-slate-800">
+                        <div class="border-b border-slate-800 pb-4 mb-6">
+                            <h3 class="text-xl font-black text-white">Akademik Deneme Analiz Girişi</h3>
+                            <p class="text-xs text-slate-400 mt-1">Girdiğin her veri yapay zeka kazanım tomografini atomik düzeyde besler.</p>
                         </div>
-                        <div id="dynamicExamContainer" class="space-y-4"></div>
-                        <button type="submit" class="w-full bg-orange-500 text-white font-black py-4 rounded-xl text-xs uppercase">Kaydet</button>
-                    </form>
+                        
+                        <form onsubmit="handleAdvancedExamSubmit(event)" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Sınav Türü Matrixi</label>
+                                    <select id="examTypeSelector" onchange="renderExamFields()" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none focus:border-orange-500 cursor-pointer">
+                                        <option value="TYT">📋 YKS - TYT Oturumu</option>
+                                        <option value="AYT">⚡ YKS - AYT Oturumu</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Yayın Tercihi</label>
+                                    <select id="examPublisher" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none focus:border-orange-500 cursor-pointer">
+                                        <option value="3D">3D Yayınları</option>
+                                        <option value="Bilgi Sarmal">Bilgi Sarmal</option>
+                                        <option value="Apotemi">Apotemi</option>
+                                        <option value="Özdebir">Özdebir Türkiye Geneli</option>
+                                        <option value="Diğer">Diğer / Manuel Başlık</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Deneme No / Başlık</label>
+                                    <input type="text" id="examTitle" placeholder="Örn: Deneme - 3" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none focus:border-orange-500" required>
+                                </div>
+                            </div>
+
+                            <!-- DERS VE NET HÜCRELERİNİN DİNAMİK GELECEĞİ ALAN -->
+                            <div id="dynamicExamContainer" class="space-y-4"></div>
+
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-4 rounded-xl shadow-lg shadow-orange-500/20 transition-all uppercase tracking-widest text-xs">
+                                Verileri Güvenle Arşive Kaydet
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Sağ Bilgilendirme ve Nano Banana Görsel Kapsülü -->
+                    <div class="space-y-6">
+                        <div class="glass-card p-5 rounded-2xl border border-slate-800">
+                            <h4 class="text-xs font-black text-orange-400 uppercase tracking-widest mb-2">💡 Neden Detaylı Giriş?</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">Sadece net girmek eksiklerinizi görmenizi engeller. İsteğe bağlı sunulan konu analiz kutucuklarını doldurursanız, Ahmet Kula ve AI Motoru bir sonraki haftalık programınızda o açıkları kapatacak ödevleri otomatik listeler.</p>
+                        </div>
+                        <div class="rounded-3xl border border-slate-800 overflow-hidden aspect-video relative group shadow-2xl">
+                            <img src="exam-entry-analytics.png" alt="Advanced Analytics Layout" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-102 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
+            <!-- SEKMELER 6: KOÇLUK & İLETİŞİM -->
             <div id="section-koc" class="section-hidden space-y-6">
                 <div class="glass-card p-6 rounded-[2rem] border-l-4 border-l-indigo-500">
                     <h3 class="text-2xl font-black text-white">Ahmet Kula</h3>
                 </div>
             </div>
 
+            <!-- SEKMELER 7: SİSTEM AYARLARI -->
             <div id="section-ayarlar" class="section-hidden space-y-6">
                 <div class="glass-card rounded-[2rem] flex flex-col md:flex-row h-auto md:min-h-[60vh] overflow-hidden">
                     <div class="w-full md:w-64 border-r border-slate-800 bg-slate-900/50 p-6">
@@ -336,6 +384,7 @@
         </main>
     </div>
 
+    <!-- ================= MOTOR SCRIPTLERİ ================= -->
     <script>
         // --- İNTERAKTİF ÖĞRENCİ GÖREV EKLEME MOTORU (LOCALSTORAGE DESTEKLİ) ---
         let userProgramTasks = JSON.parse(localStorage.getItem('h100_student_scheduler')) || [
@@ -344,9 +393,11 @@
         ];
 
         function renderSchedulerGrid() {
-            // Önce tüm gün konteynerlarını boşalt
             const days = ["pazartesi", "sali", "carsamba", "persembe", "cuma", "cumartesi", "pazar"];
-            days.forEach(day => document.getElementById(`day-${day}`).innerHTML = "");
+            days.forEach(day => {
+                const el = document.getElementById(`day-${day}`);
+                if(el) el.innerHTML = "";
+            });
 
             userProgramTasks.forEach(task => {
                 const dayContainer = document.getElementById(`day-${task.day}`);
@@ -362,22 +413,17 @@
             });
             localStorage.setItem('h100_student_scheduler', JSON.stringify(userProgramTasks));
         }
-
-        // İlk açılışta görevleri listele
-        renderSchedulerGrid();
+        
+        // Modal Yüklenince hemen çalıştır
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSchedulerGrid();
+        });
 
         window.addUserTask = function(e) {
             e.preventDefault();
             const titleInput = document.getElementById('customTaskTitle');
             const dayInput = document.getElementById('customTaskDay');
-
-            const newTask = {
-                id: Date.now(),
-                title: titleInput.value,
-                day: dayInput.value,
-                done: false
-            };
-
+            const newTask = { id: Date.now(), title: titleInput.value, day: dayInput.value, done: false };
             userProgramTasks.push(newTask);
             renderSchedulerGrid();
             triggerToast('Görev haftalık ajandanıza başarıyla işlendi!', 'success');
@@ -386,34 +432,33 @@
 
         window.toggleTaskState = function(id) {
             userProgramTasks = userProgramTasks.map(task => {
-                if (task.id === id) {
-                    task.done = !task.done;
-                    if(task.done) triggerToast('Harika, bir hedefi daha tamamladın! 🎉');
-                }
+                if (task.id === id) { task.done = !task.done; if(task.done) triggerToast('Harika, bir hedefi daha tamamladın! 🎉'); }
                 return task;
             });
             renderSchedulerGrid();
         };
 
         window.clearAllUserTasks = function() {
-            userProgramTasks = [];
-            renderSchedulerGrid();
-            triggerToast('Haftalık ajandanız temizlendi.');
+            userProgramTasks = []; renderSchedulerGrid(); triggerToast('Haftalık ajandanız temizlendi.');
         };
 
         // --- DENEME GİRİŞ MATRIX MOTORU ---
         const examDataMatrix = {
             TYT: [
-                { name: "Temel Matematik", max: 40, topics: ["Sayı Basamakları", "Problemler", "Geometri"] },
-                { name: "Türkçe", max: 40, topics: ["Paragrafta Anlam", "Dil Bilgisi"] }
+                { name: "Temel Matematik", max: 40, topics: ["Sayı Basamakları", "Üslü-Köklü İfadeler", "Problemler", "Fonksiyonlar", "Geometri"] },
+                { name: "Türkçe", max: 40, topics: ["Paragrafta Anlam", "Dil Bilgisi", "Cümle Yorumu", "Yazım Kuralları"] },
+                { name: "Fen Bilimleri", max: 20, topics: ["Optik (Fizik)", "Maddenin Halleri (Kimya)", "Hücre Bölünmeleri (Biyoloji)", "Kalıtım"] },
+                { name: "Sosyal Bilimler", max: 20, topics: ["Tarih ve Zaman", "İklim Bilgisi", "Felsefi Akımlar", "Din Kültürü Kavramları"] }
             ],
             AYT: [
-                { name: "Matematik (İleri Düzey)", max: 40, topics: ["Trigonometri", "Limit ve Süreklilik", "Türev Kuralları", "İntegral"] },
-                { name: "Fen Bilimleri (AYT)", max: 40, topics: ["Mekanik & Çembersel Hareket", "Elektromanyetizma"] }
+                { name: "Matematik (İleri Düzey)", max: 40, topics: ["Trigonometri", "Logaritma", "Diziler", "Limit ve Süreklilik", "Türev Kuralları", "İntegral"] },
+                { name: "Fen Bilimleri (AYT)", max: 40, topics: ["Mekanik & Çembersel Hareket", "Elektromanyetizma", "Modern Fizik", "Kimyasal Denge", "Sistemler (Biyoloji)"] },
+                { name: "Türk Dili ve Edebiyatı - Sosyal 1", max: 40, topics: ["Divan Edebiyatı", "Cumhuriyet Dönemi", "Tarih-1", "Coğrafya-1"] },
+                { name: "Sosyal Bilimler - 2 Oturumu", max: 40, topics: ["Tarih-2", "Coğrafya-2", "Felsefe Grubu", "Mantık"] }
             ]
         };
 
-        function renderExamFields() {
+        window.renderExamFields = function() {
             const type = document.getElementById('examTypeSelector').value;
             const container = document.getElementById('dynamicExamContainer');
             if(!container) return;
@@ -422,26 +467,36 @@
                 let boxTopicId = `box_topic_${index}`;
                 container.innerHTML += `
                     <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-4">
-                        <div class="flex items-center justify-between">
-                            <h4 class="font-black text-xs text-white">🔶 ${subject.name}</h4>
-                            <div class="flex items-center gap-1">
-                                <input type="number" placeholder="D" class="w-12 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs text-emerald-400 font-bold" min="0" max="${subject.max}">
-                                <input type="number" placeholder="Y" class="w-12 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs text-rose-400 font-bold" min="0" max="${subject.max}">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <h4 class="font-black text-sm text-white tracking-wide flex items-center gap-2">🔶 ${subject.name} <span class="text-[10px] text-slate-500 font-medium">(Soru: ${subject.max})</span></h4>
+                            <div class="flex items-center gap-2">
+                                <input type="number" placeholder="D" class="w-14 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs font-bold text-emerald-400 outline-none focus:border-emerald-500" min="0" max="${subject.max}" required>
+                                <input type="number" placeholder="Y" class="w-14 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs font-bold text-rose-400 outline-none focus:border-rose-500" min="0" max="${subject.max}" required>
+                                <input type="number" placeholder="B" class="w-14 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs font-bold text-slate-400 outline-none focus:border-slate-500" min="0" max="${subject.max}" required>
                             </div>
                         </div>
                         <div>
-                            <button type="button" onclick="document.getElementById('${boxTopicId}').classList.toggle('hidden')" class="text-[10px] font-bold text-orange-400">🔍 Konu Hata Analizi Ekle</button>
-                            <div id="${boxTopicId}" class="hidden mt-2 p-2 bg-slate-950/60 rounded-xl grid grid-cols-2 gap-2">
-                                ${subject.topics.map(t => `<label class="flex items-center justify-between p-1 text-[10px] text-slate-400"><span>${t}</span><select class="bg-slate-900 text-rose-400 text-[9px] rounded"><option value="0">Sorun Yok</option><option value="1">Hata Var</option></select></label>`).join('')}
+                            <button type="button" onclick="document.getElementById('${boxTopicId}').classList.toggle('hidden')" class="text-[10px] font-bold text-orange-400 hover:text-orange-300 transition-colors">🔍 Konu Bazlı Hata Analizi Ekle (İsteğe Bağlı)</button>
+                            <div id="${boxTopicId}" class="hidden mt-3 p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-2 animate-fade-in">
+                                ${subject.topics.map(t => `<label class="flex items-center justify-between p-2 rounded-lg bg-slate-900/40 text-[11px] text-slate-300 border border-transparent hover:border-slate-800 cursor-pointer"><span>${t}</span><select class="bg-slate-950 border border-slate-800 rounded px-1 text-[10px] font-bold text-rose-400 outline-none"><option value="0">Sorun Yok</option><option value="1">1 Yanlış</option><option value="2">2+ Yanlış</option><option value="boş">Boş Bırakıldı</option></select></label>`).join('')}
                             </div>
                         </div>
                     </div>
                 `;
             });
-        }
-        renderExamFields();
+        };
+        // Initial load for exam fields
+        document.addEventListener('DOMContentLoaded', renderExamFields);
 
-        function handleAdvancedExamSubmit(e) { e.preventDefault(); triggerToast('Veriler arşive kaydoldu!', 'success'); e.target.reset(); renderExamFields(); }
+        window.handleAdvancedExamSubmit = function(e) {
+            e.preventDefault();
+            const pub = document.getElementById('examPublisher').value;
+            const title = document.getElementById('examTitle').value;
+            triggerToast(`${pub} - ${title} Analizi ve Konu Hataları Veritabanına Kaydedildi!`, 'success');
+            e.target.reset();
+            renderExamFields();
+            setTimeout(() => { switchSection('analytics'); }, 1500);
+        };
 
         // --- KRONOMETRE VE ALTYAPI MOTORLARI ---
         let stopwatchInterval; let isRunning = false;
@@ -451,14 +506,21 @@
             let hrs = Math.floor(elapsedSeconds / 3600).toString().padStart(2, '0');
             let mins = Math.floor((elapsedSeconds % 3600) / 60).toString().padStart(2, '0');
             let secs = (elapsedSeconds % 60).toString().padStart(2, '0');
-            document.getElementById('modalStopwatchDisplay').innerText = `${hrs}:${mins}:${secs}`;
-            document.getElementById('dashboardStopwatchDisplay').innerText = `${hrs}:${mins}:${secs}`;
+            const timeStr = `${hrs}:${mins}:${secs}`;
+            document.getElementById('modalStopwatchDisplay').innerText = timeStr;
+            document.getElementById('dashboardStopwatchDisplay').innerText = timeStr;
         }
         updateDisplays();
 
         window.openFocusRoom = function(type = 'deneme') {
             const badge = document.getElementById('focusRoomModeBadge');
-            badge.innerText = type === 'deneme' ? "DENEME SINAV MODU" : "SERBEST KONU ETÜT MODU";
+            if (type === 'deneme') {
+                badge.innerText = "DENEME SINAV MODU";
+                badge.className = "px-4 py-1.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-black uppercase tracking-widest rounded-full";
+            } else {
+                badge.innerText = "SERBEST KONU ETÜT MODU";
+                badge.className = "px-4 py-1.5 bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-black uppercase tracking-widest rounded-full";
+            }
             document.getElementById('focusRoomModal').classList.remove('hidden');
         };
         window.closeFocusRoom = function() { document.getElementById('focusRoomModal').classList.add('hidden'); };
@@ -466,15 +528,17 @@
         window.toggleStopwatch = function() {
             const btn = document.getElementById('modalStartBtn');
             if (isRunning) {
-                clearInterval(stopwatchInterval); btn.innerText = "BAŞLAT"; isRunning = false;
+                clearInterval(stopwatchInterval); btn.innerText = "BAŞLAT"; btn.className = "bg-orange-500 hover:bg-orange-400 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest transition-all min-w-[140px]"; isRunning = false;
             } else {
-                isRunning = true; btn.innerText = "DURDUR";
+                isRunning = true; btn.innerText = "DURDUR"; btn.className = "bg-rose-500 hover:bg-rose-400 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest transition-all min-w-[140px] animate-pulse";
                 stopwatchInterval = setInterval(() => { elapsedSeconds++; localStorage.setItem('h100_focus_seconds', elapsedSeconds); updateDisplays(); }, 1000);
             }
         };
 
         window.saveStudySession = function() {
-            let totalHours = (elapsedSeconds / 3600).toFixed(1); triggerToast(`${totalHours} saatlik çalışmanız işlendi!`, 'success');
+            if (elapsedSeconds === 0) { triggerToast('Süre bulunamadı.', 'info'); return; }
+            let totalHours = (elapsedSeconds / 3600).toFixed(1);
+            triggerToast(`${totalHours} saatlik çalışmanız başarıyla veritabanına işlendi!`, 'success');
             clearInterval(stopwatchInterval); elapsedSeconds = 0; localStorage.setItem('h100_focus_seconds', 0); updateDisplays();
             isRunning = false; document.getElementById('modalStartBtn').innerText = "BAŞLAT"; document.getElementById('focusRoomModal').classList.add('hidden');
         };
@@ -482,12 +546,11 @@
         window.triggerToast = function(message, type = 'success') {
             const toast = document.getElementById('toastBox');
             document.getElementById('toastMessage').innerText = message;
-            toast.className = type === 'success' ? "fixed top-6 right-6 z-[9999] transform transition-all text-white font-bold text-xs px-6 py-4 rounded-xl bg-orange-500" : "fixed top-6 right-6 z-[9999] transform transition-all text-white font-bold text-xs px-6 py-4 rounded-xl bg-indigo-600";
+            toast.className = type === 'success' ? "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl bg-orange-500 shadow-orange-500/30" : "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl bg-indigo-600 shadow-indigo-600/30";
             toast.classList.remove('translate-x-96', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-x-96', 'opacity-0'); }, 3000);
         };
 
-        window.handleTaskCompletion = function(checkbox) { if(checkbox.checked) triggerToast('Görev tamamlandı!'); };
         window.toggleMobileSidebar = function() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarBackdrop').classList.toggle('hidden'); };
         window.logoutUser = function() { window.location.href = 'login.html'; };
 
@@ -498,11 +561,17 @@
             const activeBtn = document.getElementById('nav-' + sectionId);
             if(activeBtn) activeBtn.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/10 text-orange-400 rounded-xl font-bold text-left border-l-4 border-orange-500";
             if (window.innerWidth < 768) toggleMobileSidebar();
+            
+            // Eğer programa geçilirse grid'i tekrar render et ki görseller hizalansın
+            if (sectionId === 'program') {
+                renderSchedulerGrid();
+            }
         };
 
         document.querySelectorAll('img').forEach(img => { img.addEventListener('error', function() { let src = this.getAttribute('src'); if (src && src.endsWith('.png')) this.src = src.replace('.png', '.PNG'); }); });
     </script>
 
+    <!-- ================= FIREBASE ENTEGRASYONU ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
