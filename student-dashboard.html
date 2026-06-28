@@ -22,9 +22,8 @@
         .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .neon-text { text-shadow: 0 0 10px rgba(249, 115, 22, 0.5); }
         
-        .task-checkbox:checked + div { opacity: 0.5; }
-        .task-checkbox:checked + div h4 { text-decoration: line-through; color: #94a3b8; }
-        .task-checkbox:checked ~ span { background-color: #10b981; border-color: #10b981; color: white; transform: scale(1.1); box-shadow: 0 0 15px rgba(16, 185, 129, 0.4); }
+        /* Dinamik Görev Çizilme Efekti */
+        .completed-task { opacity: 0.5; text-decoration: line-through; color: #94a3b8; }
     </style>
 </head>
 <body class="h-screen flex relative overflow-hidden bg-slate-950">
@@ -110,7 +109,7 @@
         </nav>
 
         <div class="p-4 border-t border-slate-800 bg-slate-950/50">
-            <button onclick="logoutUser()" class="w-full flex items-center gap-3 px-3 py-2.5 text-rose-400 hover:bg-rose-500/10 rounded-xl font-bold transition-colors text-left text-xs uppercase tracking-wider">
+            <button onclick="logoutUser()" class="w-full flex items-center gap-3 px-3 py-2.5 text-rose-400 hover:bg-rose-500/10 hover:text-rose-500 rounded-xl font-bold transition-colors text-left text-xs uppercase tracking-wider">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Çıkış Yap
             </button>
         </div>
@@ -183,7 +182,7 @@
             <div id="section-focusroom" class="section-hidden space-y-6">
                 <div class="border-b border-slate-800 pb-4 mb-4">
                     <h2 class="text-2xl font-black text-white">⏱️ Odak ve Sınav Yönetim Merkezi</h2>
-                    <p class="text-xs text-slate-400">Çallışmalarınız ve denemeleriniz için kesintisiz, odaklanmış tam ekran seansları başlatın.</p>
+                    <p class="text-xs text-slate-400">Çalışmalarınız ve denemeleriniz için kesintisiz, odaklanmış tam ekran seansları başlatın.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="glass-card p-6 rounded-3xl flex flex-col justify-between border border-orange-500/10">
@@ -213,12 +212,79 @@
             </div>
 
             <div id="section-program" class="section-hidden space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <label class="glass-card p-5 rounded-2xl cursor-pointer group flex items-start gap-4 border-l-4 border-l-orange-500">
-                        <input type="checkbox" class="task-checkbox hidden" onchange="handleTaskCompletion(this)">
-                        <div class="flex-1"><h4 class="font-bold text-white text-sm mb-1">Matematik: Türev Fasikülü</h4></div>
-                        <span class="w-6 h-6 rounded-full border-2 border-slate-600 flex items-center justify-center text-transparent">✓</span>
-                    </label>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="border-b border-slate-800 pb-2">
+                            <h3 class="text-base font-black text-white">🎯 Günlük Hedef Planlayıcı</h3>
+                            <p class="text-[11px] text-slate-400">Kendine özel ders, kütüphane veya tekrar görevleri ata.</p>
+                        </div>
+                        <form onsubmit="addUserTask(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Görev Açıklaması</label>
+                                <input type="text" id="customTaskTitle" placeholder="Örn: Apotemi Trigonometri 50 Soru" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-orange-500 font-semibold" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Program Günü</label>
+                                <select id="customTaskDay" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-300 font-semibold outline-none focus:border-orange-500 cursor-pointer">
+                                    <option value="pazartesi">Pazartesi</option>
+                                    <option value="sali">Salı</option>
+                                    <option value="carsamba">Çarşamba</option>
+                                    <option value="persembe">Perşembe</option>
+                                    <option value="cuma">Cuma</option>
+                                    <option value="cumartesi">Cumartesi</option>
+                                    <option value="pazar">Pazar</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-3 rounded-xl text-xs uppercase tracking-widest shadow-md transition-all">
+                                Ajandama Ekle
+                            </button>
+                        </form>
+                        
+                        <div class="rounded-2xl border border-slate-800 overflow-hidden aspect-video relative mt-4 hidden lg:block">
+                            <img src="student-scheduler-view.png" alt="Scheduler Layout" class="absolute inset-0 w-full h-full object-cover opacity-30" onerror="this.src='https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=500&q=80'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="flex justify-between items-center bg-slate-900/40 p-4 rounded-xl border border-slate-800">
+                            <h3 class="font-black text-sm text-white tracking-wide uppercase">📅 Haftalık Akademik Takvim Matrisi</h3>
+                            <button onclick="clearAllUserTasks()" class="text-[10px] font-bold text-rose-400 hover:text-rose-300">Tümünü Temizle</button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]">
+                                <h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Pazartesi</h4>
+                                <div id="day-pazartesi" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]">
+                                <h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Salı</h4>
+                                <div id="day-sali" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]">
+                                <h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Çarşamba</h4>
+                                <div id="day-carsamba" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]">
+                                <h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Perşembe</h4>
+                                <div id="day-persembe" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]">
+                                <h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Cuma</h4>
+                                <div id="day-cuma" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]">
+                                <h4 class="font-black text-xs text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Cumartesi</h4>
+                                <div id="day-cumartesi" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div>
+                            </div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]">
+                                <h4 class="font-black text-xs text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Pazar</h4>
+                                <div id="day-pazar" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -230,59 +296,26 @@
             </div>
 
             <div id="section-exams" class="section-hidden space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                    
-                    <div class="lg:col-span-2 glass-card p-6 md:p-8 rounded-[2rem] border border-slate-800">
-                        <div class="border-b border-slate-800 pb-4 mb-6">
-                            <h3 class="text-xl font-black text-white">Akademik Deneme Analiz Girişi</h3>
-                            <p class="text-xs text-slate-400 mt-1">Girdiğin her veri yapay zeka kazanım tomografini atomik düzeyde besler.</p>
-                        </div>
-                        
-                        <form onsubmit="handleAdvancedExamSubmit(event)" class="space-y-6">
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Sınav Türü Matrixi</label>
-                                    <select id="examTypeSelector" onchange="renderExamFields()" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none focus:border-orange-500 cursor-pointer">
-                                        <option value="TYT">📋 YKS - TYT Oturumu</option>
-                                        <option value="AYT">⚡ YKS - AYT Oturumu</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Yayın Tercihi</label>
-                                    <select id="examPublisher" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none focus:border-orange-500 cursor-pointer">
-                                        <option value="3D">3D Yayınları</option>
-                                        <option value="Bilgi Sarmal">Bilgi Sarmal</option>
-                                        <option value="Apotemi">Apotemi</option>
-                                        <option value="Özdebir">Özdebir Türkiye Geneli</option>
-                                        <option value="Diğer">Diğer / Manuel Başlık</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Deneme No / Başlık</label>
-                                    <input type="text" id="examTitle" placeholder="Örn: Deneme - 3" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none focus:border-orange-500" required>
-                                </div>
+                <div class="glass-card p-6 md:p-8 rounded-[2rem] border border-slate-800">
+                    <form onsubmit="handleAdvancedExamSubmit(event)" class="space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <select id="examTypeSelector" onchange="renderExamFields()" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white outline-none">
+                                    <option value="TYT">📋 YKS - TYT Oturumu</option>
+                                    <option value="AYT">⚡ YKS - AYT Oturumu</option>
+                                </select>
                             </div>
-
-                            <div id="dynamicExamContainer" class="space-y-4">
-                                </div>
-
-                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-4 rounded-xl shadow-lg shadow-orange-500/20 transition-all uppercase tracking-widest text-xs">
-                                Verileri Güvenle Arşive Kaydet
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div class="glass-card p-5 rounded-2xl border border-slate-800">
-                            <h4 class="text-xs font-black text-orange-400 uppercase tracking-widest mb-2">💡 Neden Detaylı Giriş?</h4>
-                            <p class="text-xs text-slate-400 leading-relaxed">Sadece net girmek eksiklerinizi görmenizi engeller. İsteğe bağlı sunulan konu analiz kutucuklarını doldurursanız, Ahmet Kula ve AI Motoru bir sonraki haftalık programınızda o açıkları kapatacak ödevleri otomatik listeler.</p>
+                            <div>
+                                <select id="examPublisher" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none cursor-pointer">
+                                    <option value="3D">3D Yayınları</option>
+                                    <option value="Bilgi Sarmal">Bilgi Sarmal</option>
+                                </select>
+                            </div>
+                            <div><input type="text" id="examTitle" placeholder="Deneme No" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white outline-none" required></div>
                         </div>
-                        <div class="rounded-3xl border border-slate-800 overflow-hidden aspect-video relative group shadow-2xl">
-                            <img src="exam-entry-analytics.png" alt="Advanced Analytics Layout" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-102 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80'">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
-                        </div>
-                    </div>
-
+                        <div id="dynamicExamContainer" class="space-y-4"></div>
+                        <button type="submit" class="w-full bg-orange-500 text-white font-black py-4 rounded-xl text-xs uppercase">Kaydet</button>
+                    </form>
                 </div>
             </div>
 
@@ -304,81 +337,111 @@
     </div>
 
     <script>
-        // TYT VE AYT DERS VE KONU VERİ SETİ (Kapsamlı ve Modüler)
+        // --- İNTERAKTİF ÖĞRENCİ GÖREV EKLEME MOTORU (LOCALSTORAGE DESTEKLİ) ---
+        let userProgramTasks = JSON.parse(localStorage.getItem('h100_student_scheduler')) || [
+            { id: 1, title: "Matematik: Türev Fasikülü Kontrolü", day: "pazartesi", done: false },
+            { id: 2, title: "Fizik: Çembersel Hareket Tekrarı", day: "carsamba", done: false }
+        ];
+
+        function renderSchedulerGrid() {
+            // Önce tüm gün konteynerlarını boşalt
+            const days = ["pazartesi", "sali", "carsamba", "persembe", "cuma", "cumartesi", "pazar"];
+            days.forEach(day => document.getElementById(`day-${day}`).innerHTML = "");
+
+            userProgramTasks.forEach(task => {
+                const dayContainer = document.getElementById(`day-${task.day}`);
+                if (dayContainer) {
+                    let html = `
+                        <div onclick="toggleTaskState(${task.id})" class="p-2.5 rounded-xl bg-slate-950 border border-slate-800/60 hover:border-orange-500/40 cursor-pointer transition-all flex items-start gap-2 group">
+                            <span class="w-3.5 h-3.5 rounded-full border border-slate-600 flex items-center justify-center text-[8px] font-bold mt-0.5 shrink-0 ${task.done ? 'bg-emerald-500 border-emerald-500 text-white' : 'text-transparent group-hover:border-orange-500'}">✓</span>
+                            <p class="text-[10px] font-semibold leading-tight text-slate-300 ${task.done ? 'completed-task' : ''}">${task.title}</p>
+                        </div>
+                    `;
+                    dayContainer.innerHTML += html;
+                }
+            });
+            localStorage.setItem('h100_student_scheduler', JSON.stringify(userProgramTasks));
+        }
+
+        // İlk açılışta görevleri listele
+        renderSchedulerGrid();
+
+        window.addUserTask = function(e) {
+            e.preventDefault();
+            const titleInput = document.getElementById('customTaskTitle');
+            const dayInput = document.getElementById('customTaskDay');
+
+            const newTask = {
+                id: Date.now(),
+                title: titleInput.value,
+                day: dayInput.value,
+                done: false
+            };
+
+            userProgramTasks.push(newTask);
+            renderSchedulerGrid();
+            triggerToast('Görev haftalık ajandanıza başarıyla işlendi!', 'success');
+            titleInput.value = "";
+        };
+
+        window.toggleTaskState = function(id) {
+            userProgramTasks = userProgramTasks.map(task => {
+                if (task.id === id) {
+                    task.done = !task.done;
+                    if(task.done) triggerToast('Harika, bir hedefi daha tamamladın! 🎉');
+                }
+                return task;
+            });
+            renderSchedulerGrid();
+        };
+
+        window.clearAllUserTasks = function() {
+            userProgramTasks = [];
+            renderSchedulerGrid();
+            triggerToast('Haftalık ajandanız temizlendi.');
+        };
+
+        // --- DENEME GİRİŞ MATRIX MOTORU ---
         const examDataMatrix = {
             TYT: [
-                { name: "Temel Matematik", max: 40, topics: ["Sayı Basamakları", "Üslü-Köklü İfadeler", "Problemler", "Fonksiyonlar", "Geometri"] },
-                { name: "Türkçe", max: 40, topics: ["Paragrafta Anlam", "Dil Bilgisi", "Cümle Yorumu", "Yazım Kuralları"] },
-                { name: "Fen Bilimleri", max: 20, topics: ["Optik (Fizik)", "Maddenin Halleri (Kimya)", "Hücre Bölünmeleri (Biyoloji)", "Kalıtım"] },
-                { name: "Sosyal Bilimler", max: 20, topics: ["Tarih ve Zaman", "İklim Bilgisi", "Felsefi Akımlar", "Din Kültürü Kavramları"] }
+                { name: "Temel Matematik", max: 40, topics: ["Sayı Basamakları", "Problemler", "Geometri"] },
+                { name: "Türkçe", max: 40, topics: ["Paragrafta Anlam", "Dil Bilgisi"] }
             ],
             AYT: [
-                { name: "Matematik (İleri Düzey)", max: 40, topics: ["Trigonometri", "Logaritma", "Diziler", "Limit ve Süreklilik", "Türev Kuralları", "İntegral"] },
-                { name: "Fen Bilimleri (AYT)", max: 40, topics: ["Mekanik & Çembersel Hareket", "Elektromanyetizma", "Modern Fizik", "Kimyasal Denge", "Sistemler (Biyoloji)"] },
-                { name: "Türk Dili ve Edebiyatı - Sosyal 1", max: 40, topics: ["Divan Edebiyatı", "Cumhuriyet Dönemi", "Tarih-1", "Coğrafya-1"] },
-                { name: "Sosyal Bilimler - 2 Oturumu", max: 40, topics: ["Tarih-2", "Coğrafya-2", "Felsefe Grubu", "Mantık"] }
+                { name: "Matematik (İleri Düzey)", max: 40, topics: ["Trigonometri", "Limit ve Süreklilik", "Türev Kuralları", "İntegral"] },
+                { name: "Fen Bilimleri (AYT)", max: 40, topics: ["Mekanik & Çembersel Hareket", "Elektromanyetizma"] }
             ]
         };
 
         function renderExamFields() {
             const type = document.getElementById('examTypeSelector').value;
             const container = document.getElementById('dynamicExamContainer');
-            container.innerHTML = ""; // İçeriği temizle
-
+            if(!container) return;
+            container.innerHTML = "";
             examDataMatrix[type].forEach((subject, index) => {
-                let subjectId = `subj_${index}`;
-                let topicToggleId = `toggle_topic_${index}`;
-                let topicBoxId = `box_topic_${index}`;
-
-                let html = `
+                let boxTopicId = `box_topic_${index}`;
+                container.innerHTML += `
                     <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-4">
-                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                            <h4 class="font-black text-sm text-white tracking-wide flex items-center gap-2">🔶 ${subject.name} <span class="text-[10px] text-slate-500 font-medium">(Soru: ${subject.max})</span></h4>
-                            
-                            <div class="flex items-center gap-2">
-                                <input type="number" placeholder="D" class="w-14 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs font-bold text-emerald-400 outline-none focus:border-emerald-500" min="0" max="${subject.max}" required>
-                                <input type="number" placeholder="Y" class="w-14 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs font-bold text-rose-400 outline-none focus:border-rose-500" min="0" max="${subject.max}" required>
-                                <input type="number" placeholder="B" class="w-14 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs font-bold text-slate-400 outline-none focus:border-slate-500" min="0" max="${subject.max}" required>
+                        <div class="flex items-center justify-between">
+                            <h4 class="font-black text-xs text-white">🔶 ${subject.name}</h4>
+                            <div class="flex items-center gap-1">
+                                <input type="number" placeholder="D" class="w-12 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs text-emerald-400 font-bold" min="0" max="${subject.max}">
+                                <input type="number" placeholder="Y" class="w-12 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs text-rose-400 font-bold" min="0" max="${subject.max}">
                             </div>
                         </div>
-
                         <div>
-                            <button type="button" onclick="document.getElementById('${topicBoxId}').classList.toggle('hidden')" class="text-[10px] font-bold text-orange-400 hover:text-orange-300 flex items-center gap-1 transition-colors">
-                                🔍 Konu Bazlı Hata Analizi Ekle (İsteğe Bağlı)
-                            </button>
-                            
-                            <div id="${topicBoxId}" class="hidden mt-3 p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-2 animate-fade-in">
-                                ${subject.topics.map(topic => `
-                                    <label class="flex items-center justify-between p-2 rounded-lg bg-slate-900/40 text-[11px] text-slate-300 border border-transparent hover:border-slate-800 cursor-pointer">
-                                        <span>${topic}</span>
-                                        <select class="bg-slate-950 border border-slate-800 rounded px-1 text-[10px] font-bold text-rose-400 outline-none">
-                                            <option value="0">Sorun Yok</option>
-                                            <option value="1">1 Yanlış</option>
-                                            <option value="2">2+ Yanlış</option>
-                                            <option value="boş">Boş Bırakıldı</option>
-                                        </select>
-                                    </label>
-                                `).join('')}
+                            <button type="button" onclick="document.getElementById('${boxTopicId}').classList.toggle('hidden')" class="text-[10px] font-bold text-orange-400">🔍 Konu Hata Analizi Ekle</button>
+                            <div id="${boxTopicId}" class="hidden mt-2 p-2 bg-slate-950/60 rounded-xl grid grid-cols-2 gap-2">
+                                ${subject.topics.map(t => `<label class="flex items-center justify-between p-1 text-[10px] text-slate-400"><span>${t}</span><select class="bg-slate-900 text-rose-400 text-[9px] rounded"><option value="0">Sorun Yok</option><option value="1">Hata Var</option></select></label>`).join('')}
                             </div>
                         </div>
                     </div>
                 `;
-                container.innerHTML += html;
             });
         }
-
-        // İlk açılışta varsayılan olarak TYT alanlarını render et
         renderExamFields();
 
-        function handleAdvancedExamSubmit(e) {
-            e.preventDefault();
-            const pub = document.getElementById('examPublisher').value;
-            const title = document.getElementById('examTitle').value;
-            triggerToast(`${pub} - ${title} Analizi ve Konu Hataları Veritabanına Kaydedildi!`, 'success');
-            e.target.reset();
-            renderExamFields(); // Formu sıfırlayıp dersleri yeniden oluştur
-            setTimeout(() => { switchSection('analytics'); }, 1500);
-        }
+        function handleAdvancedExamSubmit(e) { e.preventDefault(); triggerToast('Veriler arşive kaydoldu!', 'success'); e.target.reset(); renderExamFields(); }
 
         // --- KRONOMETRE VE ALTYAPI MOTORLARI ---
         let stopwatchInterval; let isRunning = false;
@@ -388,39 +451,30 @@
             let hrs = Math.floor(elapsedSeconds / 3600).toString().padStart(2, '0');
             let mins = Math.floor((elapsedSeconds % 3600) / 60).toString().padStart(2, '0');
             let secs = (elapsedSeconds % 60).toString().padStart(2, '0');
-            const timeStr = `${hrs}:${mins}:${secs}`;
-            document.getElementById('modalStopwatchDisplay').innerText = timeStr;
-            document.getElementById('dashboardStopwatchDisplay').innerText = timeStr;
+            document.getElementById('modalStopwatchDisplay').innerText = `${hrs}:${mins}:${secs}`;
+            document.getElementById('dashboardStopwatchDisplay').innerText = `${hrs}:${mins}:${secs}`;
         }
         updateDisplays();
 
         window.openFocusRoom = function(type = 'deneme') {
             const badge = document.getElementById('focusRoomModeBadge');
-            if (type === 'deneme') {
-                badge.innerText = "DENEME SINAV MODU";
-                badge.className = "px-4 py-1.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-black uppercase tracking-widest rounded-full";
-            } else {
-                badge.innerText = "SERBEST KONU ETÜT MODU";
-                badge.className = "px-4 py-1.5 bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-black uppercase tracking-widest rounded-full";
-            }
+            badge.innerText = type === 'deneme' ? "DENEME SINAV MODU" : "SERBEST KONU ETÜT MODU";
             document.getElementById('focusRoomModal').classList.remove('hidden');
         };
-        window.closeFocusRoom = function() { document.getElementById('focusRoomModal').classList.add('hidden'); triggerToast('Odak odasından çıkıldı.'); };
+        window.closeFocusRoom = function() { document.getElementById('focusRoomModal').classList.add('hidden'); };
 
         window.toggleStopwatch = function() {
             const btn = document.getElementById('modalStartBtn');
             if (isRunning) {
-                clearInterval(stopwatchInterval); btn.innerText = "BAŞLAT"; btn.className = "bg-orange-500 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest"; isRunning = false;
+                clearInterval(stopwatchInterval); btn.innerText = "BAŞLAT"; isRunning = false;
             } else {
-                isRunning = true; btn.innerText = "DURDUR"; btn.className = "bg-rose-500 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest animate-pulse";
+                isRunning = true; btn.innerText = "DURDUR";
                 stopwatchInterval = setInterval(() => { elapsedSeconds++; localStorage.setItem('h100_focus_seconds', elapsedSeconds); updateDisplays(); }, 1000);
             }
         };
 
         window.saveStudySession = function() {
-            if (elapsedSeconds === 0) { triggerToast('Süre bulunamadı.', 'info'); return; }
-            let totalHours = (elapsedSeconds / 3600).toFixed(1);
-            triggerToast(`${totalHours} saatlik çalışmanız başarıyla veritabanına işlendi!`, 'success');
+            let totalHours = (elapsedSeconds / 3600).toFixed(1); triggerToast(`${totalHours} saatlik çalışmanız işlendi!`, 'success');
             clearInterval(stopwatchInterval); elapsedSeconds = 0; localStorage.setItem('h100_focus_seconds', 0); updateDisplays();
             isRunning = false; document.getElementById('modalStartBtn').innerText = "BAŞLAT"; document.getElementById('focusRoomModal').classList.add('hidden');
         };
@@ -428,7 +482,7 @@
         window.triggerToast = function(message, type = 'success') {
             const toast = document.getElementById('toastBox');
             document.getElementById('toastMessage').innerText = message;
-            toast.className = type === 'success' ? "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl bg-orange-500" : "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl bg-indigo-600";
+            toast.className = type === 'success' ? "fixed top-6 right-6 z-[9999] transform transition-all text-white font-bold text-xs px-6 py-4 rounded-xl bg-orange-500" : "fixed top-6 right-6 z-[9999] transform transition-all text-white font-bold text-xs px-6 py-4 rounded-xl bg-indigo-600";
             toast.classList.remove('translate-x-96', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-x-96', 'opacity-0'); }, 3000);
         };
