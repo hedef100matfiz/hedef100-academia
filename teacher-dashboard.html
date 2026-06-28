@@ -25,22 +25,22 @@
         /* Modern Checkbox */
         .attendance-check:checked + div { background-color: #10b981; border-color: #10b981; color: white; }
         .attendance-absent:checked + div { background-color: #f43f5e; border-color: #f43f5e; color: white; }
+        
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="h-screen flex relative overflow-hidden bg-slate-950">
 
     <div class="absolute inset-0 bg-neural-grid opacity-30 pointer-events-none z-0"></div>
 
-    <!-- MOBİL MENÜ BACKDROP -->
     <div id="sidebarBackdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-950/80 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
-    <!-- ANLIK BİLDİRİM TOAST KUTUSU -->
     <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-96 opacity-0 transition-all duration-400 bg-indigo-600 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl shadow-indigo-600/30 uppercase tracking-widest flex items-center gap-3">
         <svg class="w-5 h-5 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span id="toastMessage">İşlem Başarılı</span>
     </div>
 
-    <!-- ================= SOL EĞİTMEN NAVİGASYON BAR (SIDEBAR) ================= -->
     <aside id="sidebar" class="w-64 fixed inset-y-0 left-0 z-50 bg-slate-900/90 backdrop-blur-xl border-r border-slate-800 flex flex-col flex-shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 md:static text-slate-400 transition-transform duration-300 ease-in-out">
         <div class="h-20 flex items-center justify-between px-5 border-b border-slate-800 bg-slate-950/50">
             <div class="flex items-center gap-2.5">
@@ -75,7 +75,7 @@
             </button>
             <button onclick="switchSection('ayarlar')" id="nav-ayarlar" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
-                <span class="text-sm">Ayarlar</span>
+                <span class="text-sm">Ayarlar & Vizyon</span>
             </button>
         </nav>
 
@@ -87,7 +87,6 @@
         </div>
     </aside>
 
-    <!-- ================= ANA GÖVDE PANEL ALANI ================= -->
     <div class="flex-1 flex flex-col h-full relative z-10">
         
         <header class="bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-800 px-4 md:px-8 py-4 flex justify-between items-center relative">
@@ -106,9 +105,7 @@
 
         <main class="p-4 md:p-6 lg:p-8 flex-1 w-full max-w-7xl mx-auto overflow-y-auto">
             
-            <!-- ================= SEKMELER 1: YÖNETİM ÖZETİ ================= -->
             <div id="section-dashboard" class="section-active space-y-6">
-                <!-- 3D Eğitmen Kapsülü -->
                 <div class="glass-card rounded-[2rem] p-6 md:p-10 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row justify-between items-stretch gap-6">
                     <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-slate-900 to-indigo-600/10 pointer-events-none"></div>
                     <div class="flex-1 flex flex-col justify-between py-1 relative z-10">
@@ -122,14 +119,15 @@
                             <button onclick="switchSection('radar')" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Risk Radarı (2)</button>
                         </div>
                     </div>
-                    <!-- 3D Sinir Ağı Canvas -->
-                    <div class="w-full lg:w-[400px] h-56 lg:h-auto min-h-[220px] bg-slate-950/80 border border-slate-800/80 rounded-3xl relative overflow-hidden flex items-center justify-center shadow-inner">
-                        <div class="absolute top-4 left-5 text-[9px] font-mono text-slate-500 uppercase tracking-widest z-20">Öğrenci Bağlantı Ağı (Nöral)</div>
-                        <canvas id="teacherNetwork3D" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+                    
+                    <div class="w-full lg:w-[400px] h-56 lg:h-auto min-h-[220px] bg-slate-950/80 border border-slate-800/80 rounded-3xl relative overflow-hidden flex items-center justify-center shadow-inner group">
+                        <img src="teacher-hero.png" alt="Teacher Command Center" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                        <div class="absolute top-4 left-5 text-[9px] font-mono text-emerald-400 uppercase tracking-widest z-20 bg-slate-900/60 px-2 py-1 rounded">Nöral Bağlantı Ağı</div>
+                        <canvas id="teacherNetwork3D" class="absolute inset-0 w-full h-full pointer-events-none z-10"></canvas>
                     </div>
                 </div>
 
-                <!-- İstatistikler -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 border-l-4 border-l-indigo-500">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sorumlu Öğrenci</p>
@@ -150,7 +148,6 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 2: SINIFLAR VE YOKLAMA ================= -->
             <div id="section-attendance" class="section-hidden space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-2">
                     <div>
@@ -224,58 +221,61 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 3: ÖDEV & GÖREV MERKEZİ ================= -->
             <div id="section-assignments" class="section-hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
-                    <!-- Yeni Ödev Verme Formu -->
                     <div class="lg:col-span-1 glass-card p-6 rounded-[2rem]">
                         <h3 class="text-base font-black text-white mb-4 border-b border-slate-800 pb-3 flex items-center gap-2">📝 Yeni Görev Ata</h3>
                         <form onsubmit="event.preventDefault(); triggerToast('Görev öğrencilerin paneline başarıyla eklendi.'); this.reset();" class="space-y-4 text-left">
                             <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hedef Kitle</label><select class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500"><option>Tüm 12-A Sınıfı</option><option>Sadece Mert Başar (Bireysel)</option></select></div>
                             <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Görev Başlığı</label><input type="text" placeholder="Örn: Türev Çıkmış Sorular" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></div>
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Açıklama / Sayfa No</label><textarea rows="2" placeholder="Soru Bankası Sayfa 45-50 arası çözülecek." class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></textarea></div>
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Son Teslim Tarihi</label><input type="date" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></div>
+                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Açıklama / Sayfa No</label><textarea rows="2" placeholder="Soru Bankası Sayfa 45-50 arası çözülecek." class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500 resize-none" required></textarea></div>
+                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Son Teslim Tarihi</label><input type="date" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500 cursor-pointer" required></div>
                             <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-all text-xs uppercase shadow-md mt-2">Görevi Yayınla</button>
                         </form>
                     </div>
 
-                    <!-- Verilmiş Ödevler Takibi -->
                     <div class="lg:col-span-2 space-y-4">
-                        <div class="flex justify-between items-center bg-slate-900/50 p-4 rounded-[1rem] border border-slate-800">
-                            <span class="font-bold text-slate-300 text-sm">Aktif Görevler ve Tamamlanma Durumu</span>
+                        <div class="rounded-3xl border border-slate-800 overflow-hidden aspect-[21/9] relative shadow-2xl mb-4 group">
+                            <img src="teacher-class-bg.png" alt="Teacher Scheduler Desk" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=800&q=80'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+                            <div class="absolute bottom-6 left-6">
+                                <h3 class="text-xl font-black text-white">Aktif Görev Takibi</h3>
+                                <p class="text-xs text-slate-400">Gönderdiğin ödevlerin öğrencilerin takvimindeki durumu.</p>
+                            </div>
                         </div>
                         
-                        <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-indigo-500">
-                            <div class="flex-1">
-                                <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-indigo-500/20 mb-2 inline-block">12-A Sayısal</span>
-                                <h4 class="font-bold text-white text-base">Fizik: Elektromanyetizma Fasikülü</h4>
-                                <p class="text-xs text-slate-400 mt-1">Son Teslim: Yarın 23:59</p>
+                        <div class="space-y-3">
+                            <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-indigo-500">
+                                <div class="flex-1">
+                                    <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-indigo-500/20 mb-2 inline-block">12-A Sayısal</span>
+                                    <h4 class="font-bold text-white text-base">Fizik: Elektromanyetizma Fasikülü</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Son Teslim: Yarın 23:59</p>
+                                </div>
+                                <div class="w-full md:w-1/3">
+                                    <div class="flex justify-between text-[10px] font-bold mb-1"><span class="text-slate-400">Tamamlanma</span><span class="text-emerald-400">14/18 Öğrenci (%77)</span></div>
+                                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[77%]"></div></div>
+                                </div>
+                                <button onclick="triggerToast('Ödev yapmayan velilere otomatik hatırlatma SMS i gönderildi.')" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg border border-slate-600 transition-colors whitespace-nowrap">Yapmayanları Uyar</button>
                             </div>
-                            <div class="w-full md:w-1/3">
-                                <div class="flex justify-between text-[10px] font-bold mb-1"><span class="text-slate-400">Tamamlanma</span><span class="text-emerald-400">14/18 Öğrenci (%77)</span></div>
-                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[77%]"></div></div>
+                            
+                            <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-amber-500 opacity-70">
+                                <div class="flex-1">
+                                    <span class="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-amber-500/20 mb-2 inline-block">11-B Eşit Ağırlık</span>
+                                    <h4 class="font-bold text-white text-base">Matematik: Polinomlar Tekrar</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Teslim Edildi: Dün</p>
+                                </div>
+                                <div class="w-full md:w-1/3">
+                                    <div class="flex justify-between text-[10px] font-bold mb-1"><span class="text-slate-400">Tamamlanma</span><span class="text-emerald-400">24/24 Öğrenci (%100)</span></div>
+                                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[100%]"></div></div>
+                                </div>
+                                <button class="bg-slate-800 text-slate-500 text-[10px] font-bold px-4 py-2 rounded-lg border border-slate-700 cursor-not-allowed">Süresi Doldu</button>
                             </div>
-                            <button onclick="triggerToast('Ödev yapmayan velilere otomatik hatırlatma SMS i gönderildi.')" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg border border-slate-600 transition-colors whitespace-nowrap">Yapmayanları Uyar</button>
-                        </div>
-                        
-                        <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-amber-500 opacity-70">
-                            <div class="flex-1">
-                                <span class="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-amber-500/20 mb-2 inline-block">11-B Eşit Ağırlık</span>
-                                <h4 class="font-bold text-white text-base">Matematik: Polinomlar Tekrar</h4>
-                                <p class="text-xs text-slate-400 mt-1">Teslim Edildi: Dün</p>
-                            </div>
-                            <div class="w-full md:w-1/3">
-                                <div class="flex justify-between text-[10px] font-bold mb-1"><span class="text-slate-400">Tamamlanma</span><span class="text-emerald-400">24/24 Öğrenci (%100)</span></div>
-                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[100%]"></div></div>
-                            </div>
-                            <button class="bg-slate-800 text-slate-500 text-[10px] font-bold px-4 py-2 rounded-lg border border-slate-700 cursor-not-allowed">Süresi Doldu</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 4: RİSK RADARI (YAPAY ZEKA) ================= -->
             <div id="section-radar" class="section-hidden space-y-6">
                 <div class="bg-rose-500/10 border border-rose-500/20 rounded-[2rem] p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 relative overflow-hidden">
                     <div class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center font-black text-3xl shadow-inner relative z-10">⚠️</div>
@@ -286,7 +286,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Riskli Öğrenci Kartı -->
                     <div class="glass-card risk-glow rounded-[1.5rem] p-6 relative">
                         <div class="absolute top-4 right-4 bg-rose-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-lg animate-pulse">Kritik Düşüş</div>
                         <div class="flex items-center gap-4 mb-5 border-b border-slate-800 pb-4">
@@ -308,75 +307,193 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 5: ÇÖZÜM HAVUZU (HATA KUTUSU) ================= -->
             <div id="section-solutions" class="section-hidden space-y-6">
-                <div>
-                    <h2 class="text-xl md:text-2xl font-black text-white">Dijital Hata Kutusu (Soru Çözüm)</h2>
+                <div class="border-b border-slate-800 pb-4 mb-4">
+                    <h2 class="text-2xl font-black text-white">🔍 Dijital Hata Kutusu Komuta</h2>
                     <p class="text-xs text-slate-400 mt-1">Öğrencilerin çözemediği ve sisteme fotoğrafını yüklediği sorular. Çözümlerinizi göndererek öğrencilerin arşivine katkı sağlayın.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Soru Kartı -->
-                    <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-800 group">
-                        <!-- Soru Görseli Simülasyonu -->
-                        <div class="h-40 bg-slate-900 border-b border-slate-800 flex items-center justify-center relative">
-                            <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
-                            <span class="text-5xl opacity-50">📷</span>
-                            <div class="absolute bottom-2 right-2 bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow">Türev Sorusudur</div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-card rounded-3xl border border-slate-800 overflow-hidden">
+                        <div class="bg-slate-900/50 p-4 border-b border-slate-800 flex justify-between items-center">
+                            <h3 class="font-black text-sm text-white uppercase tracking-wide">📥 Çözüm Bekleyenler</h3>
+                            <span class="bg-rose-500 text-white text-[9px] px-2 py-0.5 rounded-full font-black animate-pulse">2 Soru</span>
                         </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-start mb-3">
-                                <div><h4 class="font-bold text-white text-sm">Can Yılmaz</h4><p class="text-[10px] text-slate-500">Dün, 21:45</p></div>
-                                <span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-bold px-2 py-1 rounded">Çözüm Bekliyor</span>
+                        <div class="p-4 space-y-3 max-h-[500px] overflow-y-auto">
+                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-700/60 cursor-pointer hover:border-emerald-500 transition-colors">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[10px] font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded uppercase tracking-widest">Fizik - Mekanik</span>
+                                    <span class="text-[9px] text-slate-500">Can Y.</span>
+                                </div>
+                                <p class="text-xs text-white font-medium mb-3">Hocam 3D yayınları sayfa 45 soru 3. Tork dengesini kuramadım.</p>
+                                <button onclick="triggerToast('Soru görseli ekrana alınıyor...', 'info')" class="w-full bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-2 rounded-lg transition-colors uppercase tracking-widest">Soruyu Görüntüle</button>
                             </div>
-                            <button onclick="triggerToast('Kamera / Dosya yükleme modülü açılıyor...')" class="w-full mt-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-2.5 rounded-xl text-xs transition-colors flex justify-center items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Çözümü Yükle
-                            </button>
+                            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-700/60 cursor-pointer hover:border-emerald-500 transition-colors">
+                                <div class="flex justify-between items-start mb-2">
+                                    <span class="text-[10px] font-black text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded uppercase tracking-widest">Matematik - Türev</span>
+                                    <span class="text-[9px] text-slate-500">Zeynep A.</span>
+                                </div>
+                                <p class="text-xs text-white font-medium mb-3">Bu parabolün teğet denklemi kısmında işlem hatası mı yapıyorum?</p>
+                                <button onclick="triggerToast('Soru görseli ekrana alınıyor...', 'info')" class="w-full bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-2 rounded-lg transition-colors uppercase tracking-widest">Soruyu Görüntüle</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="rounded-3xl border border-slate-800 overflow-hidden aspect-video relative shadow-2xl group">
+                            <img src="teacher-error-box.png" alt="Teacher Solving Problem" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1606326608606-aa0b62935f2b?auto=format&fit=crop&w=800&q=80'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+                            <div class="absolute bottom-6 left-6">
+                                <p class="text-xs text-white/90 italic font-medium">"Karanlıkta kalan tek bir soru bile kalmayacak."</p>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-card p-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/5">
+                            <h3 class="font-black text-white text-sm mb-4">✍️ Çözüm Videosu / Görseli Yükle</h3>
+                            <form onsubmit="event.preventDefault(); triggerToast('Çözüm videosu öğrenciye iletildi. ✅', 'success'); this.reset();" class="space-y-4">
+                                <div class="w-full h-24 border-2 border-dashed border-emerald-500/50 rounded-xl flex items-center justify-center text-slate-400 text-xs font-bold hover:bg-emerald-500/10 transition-colors cursor-pointer" onclick="triggerToast('Dosya yöneticisi açılıyor...', 'info')">
+                                    📸 Tablet Çözümünü Sürükle veya Tıkla
+                                </div>
+                                <textarea rows="2" placeholder="Öğrenciye çözüm notu ekle..." class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-emerald-500 resize-none" required></textarea>
+                                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl text-[11px] uppercase tracking-widest shadow-lg shadow-emerald-600/20 transition-all">
+                                    Çözümü Öğrenciye Gönder
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 6: AYARLAR ================= -->
             <div id="section-ayarlar" class="section-hidden space-y-6">
-                <div class="glass-card rounded-[2rem] p-6 md:p-10 max-w-2xl mx-auto">
-                    <h3 class="text-xl font-black text-white border-b border-slate-800 pb-4 mb-6">Eğitmen Profili ve Tercihler</h3>
-                    <form onsubmit="event.preventDefault(); triggerToast('Profil ayarlarınız güncellendi.');" class="space-y-5">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">İsim</label><input type="text" id="setFirstName" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none"></div>
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Soyisim</label><input type="text" id="setLastName" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none"></div>
+                <div class="border-b border-slate-800 pb-4 mb-4 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">⚙️ Eğitmen Vizyonu ve Ayarlar</h2>
+                        <p class="text-xs text-slate-400">Öğrencilerin vitrinde göreceği profilini, manifestonu ve sistem güvenlik ayarlarını yönet.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-[2rem] flex flex-col md:flex-row h-auto md:min-h-[65vh] overflow-hidden border border-slate-800 relative">
+                    <img src="teacher-settings-bg.png" alt="Settings Vision" class="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none" onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80'">
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/95 to-slate-950/80 pointer-events-none"></div>
+
+                    <div class="w-full md:w-72 border-b md:border-b-0 md:border-r border-slate-800/60 bg-slate-900/30 p-6 relative z-10 flex flex-col">
+                        <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Ayar Kategorileri</h3>
+                        <div class="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
+                            <button onclick="switchSettingsTab('profil')" id="tab-profil" class="text-left px-4 py-3.5 rounded-xl font-bold text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 transition-all shrink-0">
+                                👤 Profil & Kimlik
+                            </button>
+                            <button onclick="switchSettingsTab('guvenlik')" id="tab-guvenlik" class="text-left px-4 py-3.5 rounded-xl font-bold text-xs text-slate-400 hover:text-white border border-transparent hover:bg-slate-800/50 transition-all shrink-0">
+                                🔒 Güvenlik & Sistem
+                            </button>
                         </div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Uzmanlık Branşı</label><input type="text" id="setBranch" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none" disabled></div>
-                        <div class="pt-4 border-t border-slate-800">
-                            <div class="flex items-center justify-between">
-                                <div><p class="text-sm font-bold text-white">Soru Geldiğinde Bildirim Ver</p><p class="text-[10px] text-slate-500">Dijital hata kutusuna soru düştüğünde telefonuma bildir.</p></div>
-                                <input type="checkbox" checked class="w-10 h-5 bg-slate-700 checked:bg-emerald-500 rounded-full appearance-none cursor-pointer relative before:content-[''] before:absolute before:w-5 before:h-5 before:bg-white before:rounded-full before:transition-all checked:before:translate-x-5">
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto p-6 md:p-10 relative z-10">
+                        
+                        <div id="settings-profil" class="block space-y-8 max-w-2xl animate-fade-in">
+                            <div class="flex items-center gap-6 pb-6 border-b border-slate-800/60">
+                                <div class="relative group cursor-pointer" onclick="document.getElementById('profileImageUpload').click()">
+                                    <div class="w-24 h-24 bg-gradient-to-br from-slate-800 to-slate-900 rounded-full border-2 border-dashed border-slate-600 flex items-center justify-center text-3xl overflow-hidden shadow-xl group-hover:border-emerald-500 transition-colors">
+                                        <img id="profileImagePreview" src="" class="w-full h-full object-cover hidden">
+                                        <span id="profileImagePlaceholder" class="text-slate-500 group-hover:text-emerald-400 transition-colors">📷</span>
+                                    </div>
+                                    <div class="absolute inset-0 bg-slate-950/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <span class="text-[9px] font-black text-white uppercase tracking-widest">Değiştir</span>
+                                    </div>
+                                    <input type="file" class="hidden" id="profileImageUpload" accept="image/*" onchange="handleProfileUpload(event)">
+                                </div>
+                                <div>
+                                    <h3 class="font-black text-white text-xl">Eğitmen Vitrin Fotoğrafı</h3>
+                                    <p class="text-xs text-slate-400 mt-1">Öğrencilerin mentorluk ağında göreceği profesyonel portreniz.</p>
+                                </div>
                             </div>
+
+                            <form onsubmit="event.preventDefault(); triggerToast('Eğitmen profiliniz vitrinde güncellendi.', 'success');" class="space-y-5">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div><label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Adınız</label><input type="text" id="setFirstName" class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-emerald-500 font-semibold transition-colors"></div>
+                                    <div><label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Soyadınız</label><input type="text" id="setLastName" class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-emerald-500 font-semibold transition-colors"></div>
+                                </div>
+                                <div><label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Uzmanlık Branşı</label><input type="text" id="setBranch" class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-emerald-500 font-semibold transition-colors" disabled></div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Eğitmen Vizyonu / Manifestosu</label>
+                                    <textarea rows="3" placeholder="Öğrencilere ilham verecek vizyon cümlenizi buraya yazın..." class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-emerald-500 font-medium resize-none transition-colors">"Sınav sadece bir bilgi testi değil, stres ve strateji yönetimidir. Hedefin zirveyse, doğru yerdesin."</textarea>
+                                </div>
+                                <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 px-8 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-emerald-600/20 transition-all">Profili Yayına Al</button>
+                            </form>
                         </div>
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-4">Değişiklikleri İşle</button>
-                    </form>
+
+                        <div id="settings-guvenlik" class="hidden space-y-8 max-w-2xl animate-fade-in">
+                            <div class="pb-6 border-b border-slate-800/60">
+                                <h3 class="font-black text-white text-xl">Sistem Güvenliği & Bildirimler</h3>
+                            </div>
+
+                            <form onsubmit="event.preventDefault(); triggerToast('Güvenlik ayarları başarıyla kaydedildi.', 'success');" class="space-y-5">
+                                <div><label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Sistem E-Postası (Sabit)</label><input type="email" id="setEmail" class="w-full px-4 py-3.5 bg-slate-950 border border-slate-800/50 rounded-xl text-xs text-slate-500 cursor-not-allowed font-medium" disabled></div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div><label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Yeni Şifre</label><input type="password" placeholder="••••••••" class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-emerald-500 transition-colors" required minlength="6"></div>
+                                    <div><label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Yeni Şifre (Tekrar)</label><input type="password" placeholder="••••••••" class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-emerald-500 transition-colors" required minlength="6"></div>
+                                </div>
+                                
+                                <label class="flex items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-900/30 cursor-pointer hover:border-emerald-500/50 transition-colors mt-4 group">
+                                    <input type="checkbox" checked class="w-10 h-5 bg-slate-700 checked:bg-emerald-500 rounded-full appearance-none relative before:content-[''] before:absolute before:w-4 before:h-4 before:bg-white before:rounded-full before:transition-all checked:before:translate-x-5 before:top-0.5 before:left-0.5">
+                                    <div>
+                                        <p class="text-xs font-bold text-white group-hover:text-emerald-300 transition-colors">Anlık Hata Kutusu Bildirimi</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">Sisteme yeni bir soru yüklendiğinde bildirim gönder.</p>
+                                    </div>
+                                </label>
+
+                                <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white font-black py-3.5 px-8 rounded-xl text-xs uppercase tracking-widest transition-all border border-slate-700 hover:border-slate-500 mt-2">Değişiklikleri Uygula</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </main>
     </div>
 
-    <!-- ================= JAVASCRIPT MOTORU ================= -->
     <script>
         // Anlık Çalışan Toast Sistemi
-        window.triggerToast = function(message) {
+        window.triggerToast = function(message, type = 'success') {
             const toast = document.getElementById('toastBox');
             document.getElementById('toastMessage').innerText = message;
+            toast.className = type === 'success' 
+                ? "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl bg-emerald-600 shadow-emerald-600/30 uppercase tracking-widest flex items-center gap-3" 
+                : "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl bg-indigo-600 shadow-indigo-600/30 uppercase tracking-widest flex items-center gap-3";
             toast.classList.remove('translate-x-96', 'opacity-0');
             setTimeout(() => { toast.classList.add('translate-x-96', 'opacity-0'); }, 3000);
         };
 
+        // Ayarlar - Profil Yükleme Önizleme
+        window.handleProfileUpload = function(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImagePreview').src = e.target.result;
+                    document.getElementById('profileImagePreview').classList.remove('hidden');
+                    document.getElementById('profileImagePlaceholder').classList.add('hidden');
+                    triggerToast('Profil fotoğrafı başarıyla yüklendi!', 'success');
+                }
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // Ayarlar - Sekme Değiştirici
+        window.switchSettingsTab = function(tabId) {
+            document.querySelectorAll('[id^="settings-"]').forEach(el => el.classList.replace('block', 'hidden'));
+            document.getElementById('settings-' + tabId).classList.replace('hidden', 'block');
+            
+            document.querySelectorAll('[id^="tab-"]').forEach(el => { 
+                el.className = "text-left px-4 py-3.5 rounded-xl font-bold text-xs text-slate-400 hover:text-white border border-transparent hover:bg-slate-800/50 transition-all shrink-0"; 
+            });
+            document.getElementById('tab-' + tabId).className = "text-left px-4 py-3.5 rounded-xl font-bold text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 transition-all shrink-0";
+        };
+
         // Menü Gezinme Sistemi
         window.toggleMobileSidebar = function() {
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('sidebarBackdrop');
-            sidebar.classList.toggle('-translate-x-full');
-            backdrop.classList.toggle('hidden');
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebarBackdrop').classList.toggle('hidden');
         };
 
         window.switchSection = function(sectionId) {
@@ -388,9 +505,10 @@
             });
             const activeNav = document.getElementById('nav-' + sectionId);
             if(activeNav) {
-                // Aktif menü stili risk radarıysa kırmızı, diğerleriyse yeşil kalmalı
                 if(sectionId === 'radar') {
                     activeNav.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-rose-500/10 text-rose-400 rounded-xl font-bold transition-all text-left border-l-4 border-rose-500";
+                } else if(sectionId === 'solutions') {
+                    activeNav.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl font-bold transition-all text-left border-l-4 border-indigo-500";
                 } else {
                     activeNav.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl font-bold transition-all text-left border-l-4 border-emerald-500";
                 }
@@ -402,86 +520,80 @@
 
         // 3D Eğitmen Kapsülü - Nöral Sinir Ağı Canvas
         const canvas = document.getElementById('teacherNetwork3D');
-        const ctx = canvas.getContext('2d');
-        let nodes = [];
-        const numNodes = 45; // Sorumlu olunan öğrenci sayısı kadar node
+        if(canvas) {
+            const ctx = canvas.getContext('2d');
+            let nodes = [];
+            const numNodes = 45; // Sorumlu olunan öğrenci sayısı kadar node
 
-        function init3D() {
-            canvas.width = canvas.parentElement.offsetWidth;
-            canvas.height = canvas.parentElement.offsetHeight;
-            nodes = [];
-            for (let i = 0; i < numNodes; i++) {
-                nodes.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 0.5,
-                    vy: (Math.random() - 0.5) * 0.5,
-                    isCore: i === 0 // İlk node öğretmeni temsil etsin
+            function init3D() {
+                canvas.width = canvas.parentElement.offsetWidth;
+                canvas.height = canvas.parentElement.offsetHeight;
+                nodes = [];
+                for (let i = 0; i < numNodes; i++) {
+                    nodes.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5, isCore: i === 0 });
+                }
+            }
+
+            let mouse = { x: null, y: null };
+            canvas.addEventListener('mousemove', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top;
+            });
+            canvas.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+            function draw3D() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                nodes.forEach(node => {
+                    node.x += node.vx; node.y += node.vy;
+                    if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                    if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+                    if (mouse.x && mouse.y) {
+                        let dx = mouse.x - node.x, dy = mouse.y - node.y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 100) { node.x -= dx * 0.02; node.y -= dy * 0.02; }
+                    }
                 });
-            }
-        }
 
-        let mouse = { x: null, y: null };
-        canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            mouse.x = e.clientX - rect.left;
-            mouse.y = e.clientY - rect.top;
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        let dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
+                        let dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 80 || (nodes[i].isCore && dist < 150)) {
+                            ctx.beginPath();
+                            ctx.moveTo(nodes[i].x, nodes[i].y);
+                            ctx.lineTo(nodes[j].x, nodes[j].y);
+                            let alpha = 1 - (dist / (nodes[i].isCore ? 150 : 80));
+                            ctx.strokeStyle = nodes[i].isCore ? `rgba(16, 185, 129, ${alpha})` : `rgba(99, 102, 241, ${alpha * 0.5})`;
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                nodes.forEach(node => {
+                    ctx.beginPath();
+                    let r = node.isCore ? 6 : 2;
+                    ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+                    ctx.fillStyle = node.isCore ? '#10b981' : '#6366f1';
+                    if(node.isCore) { ctx.shadowBlur = 15; ctx.shadowColor = '#10b981'; } else { ctx.shadowBlur = 0; }
+                    ctx.fill();
+                });
+
+                requestAnimationFrame(draw3D);
+            }
+
+            setTimeout(() => { init3D(); draw3D(); }, 150);
+            window.addEventListener('resize', init3D);
+        }
+        
+        document.querySelectorAll('img').forEach(img => { 
+            img.addEventListener('error', function() { 
+                let src = this.getAttribute('src'); 
+                if (src && src.endsWith('.png')) this.src = src.replace('.png', '.PNG'); 
+            }); 
         });
-        canvas.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
-
-        function draw3D() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            nodes.forEach(node => {
-                node.x += node.vx; node.y += node.vy;
-                if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
-                if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
-
-                // Mouse etkileşimi (Eğitmen ilgisi)
-                if (mouse.x && mouse.y) {
-                    let dx = mouse.x - node.x, dy = mouse.y - node.y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 100) {
-                        node.x -= dx * 0.02; node.y -= dy * 0.02;
-                    }
-                }
-            });
-
-            // Bağlantıları Çiz
-            ctx.lineWidth = 0.5;
-            for (let i = 0; i < nodes.length; i++) {
-                for (let j = i + 1; j < nodes.length; j++) {
-                    let dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
-                    let dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 80 || (nodes[i].isCore && dist < 150)) { // Öğretmen (core) daha uzağa bağlanır
-                        ctx.beginPath();
-                        ctx.moveTo(nodes[i].x, nodes[i].y);
-                        ctx.lineTo(nodes[j].x, nodes[j].y);
-                        let alpha = 1 - (dist / (nodes[i].isCore ? 150 : 80));
-                        ctx.strokeStyle = nodes[i].isCore ? `rgba(16, 185, 129, ${alpha})` : `rgba(99, 102, 241, ${alpha * 0.5})`;
-                        ctx.stroke();
-                    }
-                }
-            }
-
-            // Nodları Çiz
-            nodes.forEach(node => {
-                ctx.beginPath();
-                let r = node.isCore ? 6 : 2;
-                ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
-                ctx.fillStyle = node.isCore ? '#10b981' : '#6366f1';
-                if(node.isCore) { ctx.shadowBlur = 15; ctx.shadowColor = '#10b981'; } else { ctx.shadowBlur = 0; }
-                ctx.fill();
-            });
-
-            requestAnimationFrame(draw3D);
-        }
-
-        setTimeout(() => { init3D(); draw3D(); }, 150);
-        window.addEventListener('resize', init3D);
     </script>
 
-    <!-- ================= FIREBASE AUTH VE VERİTABANI ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
@@ -505,21 +617,17 @@
                 const docSnap = await getDoc(doc(db, "users", user.uid));
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    
-                    // UI Güncellemeleri
                     const fullName = data.firstName + " " + data.lastName;
                     document.getElementById('teacherNameDisplay').innerText = fullName;
                     document.getElementById('welcomeName').innerText = data.firstName + " Hocam";
                     document.getElementById('teacherBranch').innerText = data.specialtyOrExam || "EĞİTMEN";
                     document.getElementById('teacherAvatar').innerText = (data.firstName.charAt(0) + data.lastName.charAt(0)).toUpperCase();
                     
-                    // Ayarlar Formu
                     document.getElementById('setFirstName').value = data.firstName;
                     document.getElementById('setLastName').value = data.lastName;
                     document.getElementById('setBranch').value = data.specialtyOrExam || "Belirtilmemiş";
                 }
             } else {
-                // Firebase aktif değilse / test ediyorsan varsayılan isimleri göster
                 document.getElementById('teacherNameDisplay').innerText = "Ahmet Kula";
                 document.getElementById('welcomeName').innerText = "Ahmet Hocam";
                 document.getElementById('teacherBranch').innerText = "Matematik & Fizik";
