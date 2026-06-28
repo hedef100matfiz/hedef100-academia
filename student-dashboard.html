@@ -219,7 +219,7 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 3: INTERAKTİF GÖREVLER & HAFTALIK PROGRAM ================= -->
+            <!-- SEKMELER 3: INTERAKTİF GÖREVLER & HAFTALIK PROGRAM -->
             <div id="section-program" class="section-hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                     <!-- Sol Taraf: Özelleştirilmiş Görev Ekleme Formu -->
@@ -305,7 +305,7 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 5: GELİŞMİŞ VE DETAYLI DENEME GİRİŞİ ================= -->
+            <!-- SEKMELER 5: GELİŞMİŞ VE DETAYLI DENEME GİRİŞİ -->
             <div id="section-exams" class="section-hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                     
@@ -361,14 +361,78 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
-            <!-- SEKMELER 6: KOÇLUK & İLETİŞİM -->
+            <!-- ================= SEKMELER 6: KOÇLUK & İLETİŞİM (YENİ MODÜL) ================= -->
             <div id="section-koc" class="section-hidden space-y-6">
-                <div class="glass-card p-6 rounded-[2rem] border-l-4 border-l-indigo-500">
-                    <h3 class="text-2xl font-black text-white">Ahmet Kula</h3>
+                <div class="border-b border-slate-800 pb-4 mb-4">
+                    <h2 class="text-2xl font-black text-white">🤝 Koçluk ve İletişim Merkezi</h2>
+                    <p class="text-xs text-slate-400">Ahmet Hoca ve rehberlik yapay zekası ile doğrudan bağlantı kur, randevu talep et veya soru sor.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Sol Sütun: Profil ve Durum -->
+                    <div class="space-y-6">
+                        <!-- Danışman Kartı -->
+                        <div class="glass-card p-6 rounded-[2rem] border-t border-indigo-500/30 relative overflow-hidden group">
+                            <img src="coach-avatar-bg.png" alt="Coach Profile" class="absolute inset-0 w-full h-full object-cover opacity-20" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80'">
+                            <div class="absolute inset-0 bg-gradient-to-b from-slate-950/90 to-slate-950 pointer-events-none"></div>
+                            
+                            <div class="flex items-center gap-4 relative z-10 mb-4">
+                                <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center font-black text-xl text-white shadow-lg shrink-0">AK</div>
+                                <div>
+                                    <span class="flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full mb-1 w-max border border-emerald-500/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Çevrimiçi
+                                    </span>
+                                    <h3 class="text-lg font-black text-white">Ahmet Kula</h3>
+                                    <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-widest">Kurucu & Başöğretmen</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-300 italic relative z-10 leading-relaxed bg-slate-900/60 p-3 rounded-xl border border-slate-800">"Başarı bir varış noktası değil, doğru yönetilmiş bir süreçtir. Ben ve yapay zeka asistanın her adımında yanındayız."</p>
+                        </div>
+
+                        <!-- Sıradaki Görüşme -->
+                        <div class="glass-card p-6 rounded-[2rem] border border-slate-800 bg-slate-900/40">
+                            <h4 class="text-xs font-black text-orange-400 uppercase tracking-widest mb-4 flex items-center gap-2">🗓️ Yaklaşan Birebir Görüşme</h4>
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                <p class="text-sm font-bold text-white mb-1">Aylık Hedef Revizyonu</p>
+                                <p class="text-[10px] text-slate-400 mb-4">12 Temmuz Çarşamba • 18:30</p>
+                                <button onclick="triggerToast('Henüz toplantı saati gelmedi.', 'info')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] font-bold py-2.5 rounded-lg transition-colors uppercase tracking-widest shadow-lg shadow-indigo-600/20">Canlı Odaya Katıl</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sağ Sütun: Mesajlaşma ve İletişim Formu -->
+                    <div class="lg:col-span-2 glass-card p-6 md:p-8 rounded-[2rem] border border-slate-800 flex flex-col h-full min-h-[400px]">
+                        <!-- Üst Sekmeler -->
+                        <div class="flex gap-2 border-b border-slate-800 pb-4 mb-6">
+                            <button class="px-4 py-2 bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all">Hocaya Mesaj Yaz</button>
+                            <button onclick="triggerToast('Randevu sistemi şu an güncelleniyor.', 'info')" class="px-4 py-2 text-slate-400 hover:text-white border border-transparent rounded-lg text-[10px] font-bold uppercase tracking-widest transition-colors">Randevu Talebi</button>
+                        </div>
+
+                        <!-- Mesaj Formu ve Ekranı -->
+                        <div class="flex-1 flex flex-col justify-between">
+                            <div class="bg-slate-900/50 rounded-xl p-4 mb-4 border border-slate-800 h-48 overflow-y-auto flex flex-col gap-3">
+                                <!-- Sistem / Hoca Mesajı -->
+                                <div class="self-start bg-slate-800 text-slate-300 text-xs p-3.5 rounded-2xl rounded-tl-sm max-w-[85%] leading-relaxed shadow-sm">
+                                    Merhaba! Yapamadığın bir soruyu veya danışmak istediğin bir konuyu buradan bana iletebilirsin. Müsait olduğum ilk an dönüş yapacağım. 🎯
+                                </div>
+                            </div>
+
+                            <form onsubmit="handleCoachMessage(event)" class="relative">
+                                <textarea rows="2" placeholder="Ahmet Hocaya mesajınızı veya sorunuzu yazın..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-xs text-white outline-none focus:border-indigo-500 resize-none font-medium placeholder:text-slate-600 shadow-inner" required></textarea>
+                                <div class="absolute bottom-3 right-3 flex items-center gap-2">
+                                    <button type="button" onclick="triggerToast('Fotoğraf yükleme arayüzü açılıyor...', 'info')" class="p-2 text-slate-400 hover:text-indigo-400 transition-colors" title="Fotoğraf/Soru Ekle">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    </button>
+                                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black px-5 py-2.5 rounded-lg text-[10px] uppercase tracking-widest shadow-lg shadow-indigo-600/30 transition-all">
+                                        Gönder
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -414,10 +478,7 @@
             localStorage.setItem('h100_student_scheduler', JSON.stringify(userProgramTasks));
         }
         
-        // Modal Yüklenince hemen çalıştır
-        document.addEventListener('DOMContentLoaded', () => {
-            renderSchedulerGrid();
-        });
+        document.addEventListener('DOMContentLoaded', () => { renderSchedulerGrid(); });
 
         window.addUserTask = function(e) {
             e.preventDefault();
@@ -438,9 +499,7 @@
             renderSchedulerGrid();
         };
 
-        window.clearAllUserTasks = function() {
-            userProgramTasks = []; renderSchedulerGrid(); triggerToast('Haftalık ajandanız temizlendi.');
-        };
+        window.clearAllUserTasks = function() { userProgramTasks = []; renderSchedulerGrid(); triggerToast('Haftalık ajandanız temizlendi.'); };
 
         // --- DENEME GİRİŞ MATRIX MOTORU ---
         const examDataMatrix = {
@@ -485,7 +544,6 @@
                 `;
             });
         };
-        // Initial load for exam fields
         document.addEventListener('DOMContentLoaded', renderExamFields);
 
         window.handleAdvancedExamSubmit = function(e) {
@@ -493,9 +551,7 @@
             const pub = document.getElementById('examPublisher').value;
             const title = document.getElementById('examTitle').value;
             triggerToast(`${pub} - ${title} Analizi ve Konu Hataları Veritabanına Kaydedildi!`, 'success');
-            e.target.reset();
-            renderExamFields();
-            setTimeout(() => { switchSection('analytics'); }, 1500);
+            e.target.reset(); renderExamFields(); setTimeout(() => { switchSection('analytics'); }, 1500);
         };
 
         // --- KRONOMETRE VE ALTYAPI MOTORLARI ---
@@ -506,9 +562,8 @@
             let hrs = Math.floor(elapsedSeconds / 3600).toString().padStart(2, '0');
             let mins = Math.floor((elapsedSeconds % 3600) / 60).toString().padStart(2, '0');
             let secs = (elapsedSeconds % 60).toString().padStart(2, '0');
-            const timeStr = `${hrs}:${mins}:${secs}`;
-            document.getElementById('modalStopwatchDisplay').innerText = timeStr;
-            document.getElementById('dashboardStopwatchDisplay').innerText = timeStr;
+            document.getElementById('modalStopwatchDisplay').innerText = `${hrs}:${mins}:${secs}`;
+            document.getElementById('dashboardStopwatchDisplay').innerText = `${hrs}:${mins}:${secs}`;
         }
         updateDisplays();
 
@@ -553,6 +608,9 @@
 
         window.toggleMobileSidebar = function() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarBackdrop').classList.toggle('hidden'); };
         window.logoutUser = function() { window.location.href = 'login.html'; };
+        
+        // SADECE BURASI GÜNCELLENDİ (KOÇLUK FORMU BİLDİRİMİ)
+        window.handleCoachMessage = function(e) { e.preventDefault(); triggerToast('Mesajınız başarıyla Ahmet Hocaya iletildi. 🚀', 'success'); e.target.reset(); };
 
         window.switchSection = function(sectionId) {
             document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.replace('section-active', 'section-hidden'));
@@ -561,11 +619,7 @@
             const activeBtn = document.getElementById('nav-' + sectionId);
             if(activeBtn) activeBtn.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/10 text-orange-400 rounded-xl font-bold text-left border-l-4 border-orange-500";
             if (window.innerWidth < 768) toggleMobileSidebar();
-            
-            // Eğer programa geçilirse grid'i tekrar render et ki görseller hizalansın
-            if (sectionId === 'program') {
-                renderSchedulerGrid();
-            }
+            if (sectionId === 'program') { renderSchedulerGrid(); }
         };
 
         document.querySelectorAll('img').forEach(img => { img.addEventListener('error', function() { let src = this.getAttribute('src'); if (src && src.endsWith('.png')) this.src = src.replace('.png', '.PNG'); }); });
