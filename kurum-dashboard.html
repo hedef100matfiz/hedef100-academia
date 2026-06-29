@@ -125,7 +125,7 @@
                             <button onclick="switchSection('accounting')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all">Finans Raporu</button>
                         </div>
                     </div>
-                    <div class="w-full lg:w-96 h-48 lg:h-auto min-h-[220px] rounded-3xl bg-slate-900/60 border border-slate-800 flex items-center justify-center relative overflow-hidden group shadow-inner">
+                    <div class="w-full lg:w-96 h-48 lg:h-auto min-h-[200px] rounded-3xl bg-slate-900/60 border border-slate-800 flex items-center justify-center relative overflow-hidden group shadow-inner">
                         <img src="academic-hero.png" alt="Command Center" class="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" onerror="this.style.display='none'; document.getElementById('matrix3D').style.opacity=1;">
                         <canvas id="matrix3D" class="absolute inset-0 w-full h-full pointer-events-none opacity-40 group-hover:opacity-100 transition-opacity"></canvas>
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
@@ -135,8 +135,8 @@
 
                 <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
                     <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 shadow-sm border-l-4 border-l-indigo-500"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Kurulu Sınıf</p><p class="text-2xl md:text-3xl font-black text-white">42</p></div>
-                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 shadow-sm border-l-4 border-l-emerald-500"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aktif Eğitmen</p><p class="text-2xl md:text-3xl font-black text-white">84</p></div>
-                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 shadow-sm border-l-4 border-l-amber-500"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aktif Öğrenci</p><p class="text-2xl md:text-3xl font-black text-white">1,250</p></div>
+                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 shadow-sm border-l-4 border-l-emerald-500"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aktif Eğitmen</p><p class="text-2xl md:text-3xl font-black text-white" id="statTeachers">...</p></div>
+                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 shadow-sm border-l-4 border-l-amber-500"><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Aktif Öğrenci</p><p class="text-2xl md:text-3xl font-black text-white" id="statStudents">...</p></div>
                     <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 shadow-sm border-l-4 border-l-rose-500"><p class="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Riskli Öğrenci</p><p class="text-2xl md:text-3xl font-black text-rose-500">12</p></div>
                     <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 shadow-sm border-l-4 border-l-emerald-600 bg-emerald-950/20"><p class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Taksit Tahsilat Oranı</p><p class="text-2xl md:text-3xl font-black text-emerald-400">%94.2</p></div>
                 </div>
@@ -183,7 +183,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="glass-card p-6 rounded-[2rem] border border-slate-800 space-y-4 self-start">
                         <h3 class="text-base font-black text-white border-b border-slate-800 pb-2 flex items-center gap-2">👨‍🏫 Yeni Eğitmen Ekle</h3>
-                        <form onsubmit="handleAddTeacher(event)" class="space-y-4">
+                        <form id="addTeacherForm" class="space-y-4">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Eğitmen Adı Soyadı</label>
                                 <input type="text" id="newTeacherName" placeholder="Örn: Ahmet Kula" class="form-input" required>
@@ -199,13 +199,7 @@
                     <div class="lg:col-span-2 glass-card p-6 rounded-[2rem] border border-slate-800 flex flex-col h-full min-h-[300px]">
                         <h3 class="text-base font-black text-white border-b border-slate-800 pb-2 mb-4">📋 Kayıtlı Eğitmenler Sarmalı</h3>
                         <div id="globalTeacherList" class="space-y-3 flex-1 overflow-y-auto pr-2">
-                            <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-xs">AK</div>
-                                    <div><p class="text-sm font-bold text-white">Ahmet Kula</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">Matematik & Fizik</p></div>
-                                </div>
-                                <button onclick="this.parentElement.remove(); triggerToast('Eğitmen sistemden çıkarıldı.');" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kadro Dışı</button>
-                            </div>
+                            <div class="text-center text-slate-500 text-xs py-4">Veritabanı senkronize ediliyor...</div>
                         </div>
                     </div>
                 </div>
@@ -220,7 +214,7 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="glass-card p-6 rounded-[2rem] border border-slate-800 space-y-4 self-start">
                         <h3 class="text-base font-black text-white border-b border-slate-800 pb-2 flex items-center gap-2">🎓 Yeni Öğrenci Kaydet</h3>
-                        <form onsubmit="handleAddStudent(event)" class="space-y-4">
+                        <form id="addStudentForm" class="space-y-4">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Öğrenci Adı Soyadı</label>
                                 <input type="text" id="newStudentName" placeholder="Örn: Can Yılmaz" class="form-input" required>
@@ -236,13 +230,7 @@
                     <div class="lg:col-span-2 glass-card p-6 rounded-[2rem] border border-slate-800 flex flex-col h-full min-h-[300px]">
                         <h3 class="text-base font-black text-white border-b border-slate-800 pb-2 mb-4">📋 Kayıtlı Öğrenci Matrisi</h3>
                         <div id="globalStudentList" class="space-y-3 flex-1 overflow-y-auto pr-2">
-                            <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-emerald-500/50 transition-colors">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-xs">CY</div>
-                                    <div><p class="text-sm font-bold text-white">Can Yılmaz</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">12-A Sayısal Derece</p></div>
-                                </div>
-                                <button onclick="this.parentElement.remove(); triggerToast('Öğrenci sistemden silindi.');" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kaydı Sil</button>
-                            </div>
+                            <div class="text-center text-slate-500 text-xs py-4">Veritabanı senkronize ediliyor...</div>
                         </div>
                     </div>
                 </div>
@@ -250,6 +238,7 @@
 
             <div id="section-parents" class="section-hidden space-y-6">
                 <div><h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">✉️ Veli İletişim & Toplu Bildirim Merkezi</h2><p class="text-slate-400 text-xs md:text-sm">Velilere anlık push bildirimleri, toplu SMS veya duyurular gönderin.</p></div>
+                
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="glass-card p-6 rounded-[2rem] space-y-4 border border-slate-800">
                         <h3 class="text-sm font-black text-white uppercase tracking-widest mb-2 flex items-center gap-2">📱 Toplu SMS / Bildirim Gönder</h3>
@@ -316,42 +305,12 @@
             </div>
 
             <div id="section-ayarlar" class="section-hidden space-y-6">
-                <div class="glass-card rounded-[2rem] p-6 md:p-10 max-w-2xl mx-auto shadow-md border border-slate-800 py-10 relative overflow-hidden group aspect-[16/8]">
+                <div class="glass-card rounded-[2rem] p-6 md:p-10 max-w-2xl mx-auto shadow-md border border-slate-800 text-center py-10 relative overflow-hidden group aspect-[16/6]">
                      <img src="academic-settings-bg.png" alt="Settings Vision" class="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none group-hover:scale-105 transition-transform" onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80'">
-                    <div class="absolute inset-0 bg-slate-950/80 pointer-events-none"></div>
-                    
-                    <div class="relative z-10 space-y-6">
-                        <h3 class="text-2xl font-black text-white mb-2 text-center border-b border-slate-800 pb-4">Kurumsal Parametreler & Ayarlar</h3>
-                        <form onsubmit="handleInstSettingsUpdate(event)" class="space-y-4 text-left">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Kurum Adı</label>
-                                    <input type="text" id="instName" value="Hedef100 Academia" class="form-input" required>
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Kurum İletişim / E-Posta</label>
-                                    <input type="email" value="admin@hedef100.com" class="form-input" required>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Aktif Eğitim Dönemi</label>
-                                <select class="form-input cursor-pointer">
-                                    <option>2025 - 2026 Eğitim Öğretim Yılı</option>
-                                    <option>2026 - 2027 Eğitim Öğretim Yılı</option>
-                                </select>
-                            </div>
-
-                            <label class="flex items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-900/50 cursor-pointer hover:border-indigo-500/50 transition-colors mt-4">
-                                <input type="checkbox" checked class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-indigo-500 focus:ring-indigo-500">
-                                <div>
-                                    <p class="text-xs font-bold text-white transition-colors">Yapay Zeka Otomatik Analiz</p>
-                                    <p class="text-[10px] text-slate-500 mt-0.5">Optik veriler yüklendiğinde otomatik AI kazanım analizini çalıştır.</p>
-                                </div>
-                            </label>
-
-                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 px-8 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-500/20 transition-all mt-4">Değişiklikleri Matrise İşle</button>
-                        </form>
+                    <div class="relative z-10 space-y-5">
+                        <h3 class="text-xl font-black text-white mb-4">Kurumsal Parametreler & Kimlik Ayarları</h3>
+                        <p class="text-slate-400 text-xs max-w-sm mx-auto">Kurum ismini, sarmal motoru ayarlarını ve güvenlik protokollerini buradan güncelleyebilirsiniz.</p>
+                        <button onclick="handleSettingsUpdate(event)" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-xl text-sm uppercase shadow-lg shadow-indigo-500/20">Değişiklikleri Matrise İşle</button>
                     </div>
                 </div>
             </div>
@@ -425,7 +384,25 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        // FIREBASE CONFİG
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
+            authDomain: "hedef100-academia.firebaseapp.com",
+            projectId: "hedef100-academia",
+            storageBucket: "hedef100-academia.firebasestorage.app",
+            messagingSenderId: "886084339971",
+            appId: "1:886084339971:web:ca31ab9d1575344d234136"
+        };
+
+        const app = initializeApp(firebaseConfig); 
+        const auth = getAuth(app); 
+        const db = getFirestore(app);
+
         // --- TOAST BİLDİRİM MOTORU ---
         window.triggerToast = function(message, type = 'success') {
             const toast = document.getElementById('toastBox');
@@ -434,6 +411,130 @@
             setTimeout(() => { toast.classList.add('translate-x-96', 'opacity-0'); }, 3000);
         };
 
+        // --- CANLI VERİTABANI YAZMA MOTORLARI (EĞİTMEN VE ÖĞRENCİ EKLEME) ---
+        document.getElementById('addTeacherForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('newTeacherName').value;
+            const branch = document.getElementById('newTeacherBranch').value;
+            
+            try {
+                await addDoc(collection(db, "teachers"), {
+                    name: name,
+                    branch: branch,
+                    createdAt: serverTimestamp()
+                });
+                window.triggerToast(name + ' akademik kadroya başarıyla eklendi!');
+                e.target.reset();
+            } catch (error) {
+                window.triggerToast("Kayıt Hatası: " + error.message, "error");
+            }
+        });
+
+        document.getElementById('addStudentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('newStudentName').value;
+            const sClass = document.getElementById('newStudentClass').value;
+            
+            try {
+                await addDoc(collection(db, "students"), {
+                    name: name,
+                    className: sClass,
+                    createdAt: serverTimestamp()
+                });
+                window.triggerToast(name + ' öğrenci matrisine dahil edildi!');
+                e.target.reset();
+            } catch (error) {
+                window.triggerToast("Kayıt Hatası: " + error.message, "error");
+            }
+        });
+
+        // --- CANLI VERİTABANI OKUMA MOTORLARI (ONSNAPSHOT) ---
+        // Eğitmenleri Canlı Dinle
+        const qTeachers = query(collection(db, "teachers"), orderBy("createdAt", "desc"));
+        onSnapshot(qTeachers, (snapshot) => {
+            const listEl = document.getElementById('globalTeacherList');
+            const statEl = document.getElementById('statTeachers');
+            listEl.innerHTML = '';
+            
+            if(snapshot.empty) {
+                listEl.innerHTML = '<p class="text-xs text-slate-500 text-center py-4 font-bold">Kayıtlı eğitmen bulunamadı.</p>';
+                if(statEl) statEl.innerText = "0";
+            } else {
+                if(statEl) statEl.innerText = snapshot.size;
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const initials = data.name.substring(0,2).toUpperCase();
+                    
+                    const html = `
+                    <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition-colors animate-fade-in">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-xs">${initials}</div>
+                            <div><p class="text-sm font-bold text-white">${data.name}</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">${data.branch}</p></div>
+                        </div>
+                        <button onclick="deleteRecord('teachers', '${id}')" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kadro Dışı</button>
+                    </div>`;
+                    listEl.insertAdjacentHTML('beforeend', html);
+                });
+            }
+        });
+
+        // Öğrencileri Canlı Dinle
+        const qStudents = query(collection(db, "students"), orderBy("createdAt", "desc"));
+        onSnapshot(qStudents, (snapshot) => {
+            const listEl = document.getElementById('globalStudentList');
+            const statEl = document.getElementById('statStudents');
+            listEl.innerHTML = '';
+            
+            if(snapshot.empty) {
+                listEl.innerHTML = '<p class="text-xs text-slate-500 text-center py-4 font-bold">Kayıtlı öğrenci bulunamadı.</p>';
+                if(statEl) statEl.innerText = "0";
+            } else {
+                if(statEl) statEl.innerText = snapshot.size;
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const id = docSnap.id;
+                    const initials = data.name.substring(0,2).toUpperCase();
+                    
+                    const html = `
+                    <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-emerald-500/50 transition-colors animate-fade-in">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-xs">${initials}</div>
+                            <div><p class="text-sm font-bold text-white">${data.name}</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">${data.className}</p></div>
+                        </div>
+                        <button onclick="deleteRecord('students', '${id}')" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kaydı Sil</button>
+                    </div>`;
+                    listEl.insertAdjacentHTML('beforeend', html);
+                });
+            }
+        });
+
+        // Veritabanından Kayıt Silme
+        window.deleteRecord = async function(collectionName, docId) {
+            if(confirm("Bu kaydı kalıcı olarak silmek istediğinize emin misiniz?")) {
+                try {
+                    await deleteDoc(doc(db, collectionName, docId));
+                    window.triggerToast('Kayıt başarıyla silindi.', 'success');
+                } catch(error) {
+                    window.triggerToast("Silme Hatası: " + error.message, "error");
+                }
+            }
+        };
+
+        // Oturum Yönetimi
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const docSnap = await getDoc(doc(db, "users", user.uid));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('headerInstName').innerText = data.institutionName || "Hedef100 Academia";
+                }
+            }
+        });
+
+    </script>
+
+    <script>
         // --- OPTİK VERİ MERKEZİ MOTORU ---
         document.getElementById('opticFileInput').addEventListener('change', function() {
             if(this.files.length > 0) {
@@ -474,51 +575,11 @@
             e.target.reset();
         }
 
-        // --- GLOBAL EĞİTMEN YÖNETİMİ MOTORU ---
-        window.handleAddTeacher = function(e) {
-            e.preventDefault();
-            const name = document.getElementById('newTeacherName').value;
-            const branch = document.getElementById('newTeacherBranch').value;
-            const initials = name.substring(0,2).toUpperCase();
-            
-            const html = `
-            <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition-colors animate-fade-in">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-xs">${initials}</div>
-                    <div><p class="text-sm font-bold text-white">${name}</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">${branch}</p></div>
-                </div>
-                <button onclick="this.parentElement.remove(); triggerToast('Eğitmen sistemden çıkarıldı.');" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kadro Dışı</button>
-            </div>`;
-            document.getElementById('globalTeacherList').insertAdjacentHTML('afterbegin', html);
-            e.target.reset();
-            triggerToast(name + ' akademik kadroya eklendi!', 'success');
-        };
-
-        // --- GLOBAL ÖĞRENCİ İZLEME MOTORU ---
-        window.handleAddStudent = function(e) {
-            e.preventDefault();
-            const name = document.getElementById('newStudentName').value;
-            const sClass = document.getElementById('newStudentClass').value;
-            const initials = name.substring(0,2).toUpperCase();
-            
-            const html = `
-            <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-emerald-500/50 transition-colors animate-fade-in">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-xs">${initials}</div>
-                    <div><p class="text-sm font-bold text-white">${name}</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">${sClass}</p></div>
-                </div>
-                <button onclick="this.parentElement.remove(); triggerToast('Öğrenci sistemden silindi.');" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kaydı Sil</button>
-            </div>`;
-            document.getElementById('globalStudentList').insertAdjacentHTML('afterbegin', html);
-            e.target.reset();
-            triggerToast(name + ' öğrenci matrisine dahil edildi!', 'success');
-        };
-
         // --- MODAL İÇİ ATAMA MOTORLARI ---
         window.assignTeacher = function() {
             const val = document.getElementById('teacherSelect').value;
             triggerToast(val + ' bu sınıfa atandı.');
-            const html = `<div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 animate-fade-in"><span class="text-sm text-white font-semibold flex items-center gap-2">👨‍🏫 ${val}</span><button onclick="this.parentElement.remove()" class="text-rose-400 text-[10px] font-bold hover:text-rose-300">ÇIKAR</button></div>`;
+            const html = `<div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 animate-fade-in"><span class="text-sm text-white font-semibold flex items-center gap-2">👨‍🏫 ${val}</span><button onclick="this.parentElement.remove()" class="text-rose-400 text-[10px] font-bold hover:text-rose-300">ÇI K AR</button></div>`;
             document.getElementById('teacherList').insertAdjacentHTML('beforeend', html);
         }
 
@@ -526,7 +587,7 @@
             const val = document.getElementById('studentInput').value.trim();
             if(!val) return;
             triggerToast(val + ' sınıf matrixine eklendi.');
-            const html = `<div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 animate-fade-in"><span class="text-sm text-white font-semibold flex items-center gap-2">🎓 ${val}</span><button onclick="this.parentElement.remove()" class="text-rose-400 text-[10px] font-bold hover:text-rose-300">ÇIKAR</button></div>`;
+            const html = `<div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 animate-fade-in"><span class="text-sm text-white font-semibold flex items-center gap-2">🎓 ${val}</span><button onclick="this.parentElement.remove()" class="text-rose-400 text-[10px] font-bold hover:text-rose-300">ÇI K AR</button></div>`;
             document.getElementById('studentList').insertAdjacentHTML('beforeend', html);
             document.getElementById('studentInput').value = '';
         }
@@ -540,13 +601,7 @@
             e.target.reset();
         }
 
-        // --- KURUM AYARLARI MOTORU ---
-        window.handleInstSettingsUpdate = function(e) {
-            e.preventDefault();
-            const instName = document.getElementById('instName').value;
-            document.getElementById('headerInstName').innerText = instName;
-            triggerToast('Kurumsal parametreler senkronize edildi!', 'success');
-        };
+        window.handleSettingsUpdate = function(e) { e.preventDefault(); triggerToast('Kurumsal parametreler matrise işlendi. Sistem senkronize edildi.'); }
 
         // --- MODAL & SIDEBAR & SEKME MOTORLARI ---
         window.switchSection = function(sectionId) {
@@ -558,7 +613,6 @@
             const activeNav = document.getElementById('nav-' + sectionId);
             if(activeNav) activeNav.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-indigo-600/20 text-indigo-400 rounded-xl font-bold transition-all text-left border-l-4 border-indigo-500 text-sm";
             if (window.innerWidth < 768) toggleMobileSidebar();
-            if (sectionId === 'dashboard') init3D();
         };
 
         window.openClassAdminModal = function(className) {
@@ -589,7 +643,7 @@
         };
         window.logoutUser = function() { window.location.href = 'login.html'; };
 
-        // --- 3D KUANTUM VERİ SARMALI MOTORU (%100 KORUNDU VE ÇALIŞIR) ---
+        // --- 3D KUANTUM VERİ SARMALI MOTORU ---
         const canvas = document.getElementById('matrix3D');
         const ctx = canvas.getContext('2d');
         let points = [], angle = 0;
