@@ -556,5 +556,34 @@
             }
         });
     </script>
+        <!-- FİREBASE MODÜLÜ -->
+    <script type="module">
+        import { listenAuthState, getUserProfile, logoutUser } from './firebase-shared.js';
+
+        window.logoutUser = logoutUser;
+
+        listenAuthState(async (user) => {
+            if (user) {
+                const data = await getUserProfile(user.uid);
+                if (data) {
+                    document.getElementById('teacherNameDisplay').innerText = data.firstName + " " + data.lastName;
+                    document.getElementById('welcomeName').innerText = data.firstName + " Hocam";
+                    document.getElementById('teacherBranch').innerText = data.specialtyOrExam;
+                    
+                    const initials = data.firstName.charAt(0) + data.lastName.charAt(0);
+                    document.getElementById('teacherAvatar').innerText = initials.toUpperCase();
+
+                    const fAd = document.getElementById('setFirstName');
+                    const fSoyad = document.getElementById('setLastName');
+                    const fBrans = document.getElementById('setBranch');
+                    if(fAd) fAd.value = data.firstName;
+                    if(fSoyad) fSoyad.value = data.lastName;
+                    if(fBrans) fBrans.value = data.specialtyOrExam;
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
 </body>
 </html>
