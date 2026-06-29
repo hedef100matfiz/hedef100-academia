@@ -298,39 +298,24 @@
             if (window.innerWidth < 768) toggleMobileSidebar();
         };
 
-        window.logoutUser = function() { window.location.href = 'login.html'; };
+           <!-- FİREBASE MODÜLÜ -->
+    <script type="module">
+        import { listenAuthState, getUserProfile, logoutUser } from './firebase-shared.js';
 
-        // ================= 3D VELİ CANLI HEDEF KAFESİ MOTORU =================
-        const canvas = document.getElementById('parentLattice3D');
-        const ctx = canvas.getContext('2d');
-        let points = [], angle = 0;
+        window.logoutUser = logoutUser;
 
-        function init3D() {
-            canvas.width = canvas.parentElement.offsetWidth;
-            canvas.height = canvas.parentElement.offsetHeight;
-            points = [];
-            // Fütüristik Geometrik Kafes Noktaları
-            for (let i = 0; i < 40; i++) {
-                points.push({
-                    x: (Math.random() - 0.5) * 100,
-                    y: (Math.random() - 0.5) * 100,
-                    z: (Math.random() - 0.5) * 100
-                });
+        listenAuthState(async (user) => {
+            if (user) {
+                const data = await getUserProfile(user.uid);
+                if (data) {
+                    document.getElementById('parentNameDisplay').innerText = data.firstName + " " + data.lastName;
+                    document.getElementById('studentName').innerText = data.firstName + " Jr. (" + (data.specialtyOrExam || "YKS") + ")";
+                }
+            } else {
+                window.location.href = 'login.html';
             }
-        }
-
-        function draw3D() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            angle += 0.006;
-            const cos = Math.cos(angle), sin = Math.sin(angle);
-            const cx = canvas.width / 2, cy = canvas.height / 2;
-
-            let transformed = points.map(p => {
-                let x1 = p.x * cos - p.z * sin;
-                let z1 = p.x * sin + p.z * cos;
-                let persp = 250 / (250 - z1);
-                return { x: x1 * persp + cx, y: p.y * persp + cy, z: z1 };
-            });
+        });
+    </script>
 
             // Noktaları Çiz
             transformed.forEach(p => {
