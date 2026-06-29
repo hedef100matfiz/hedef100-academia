@@ -720,41 +720,38 @@
         document.querySelectorAll('img').forEach(img => { img.addEventListener('error', function() { let src = this.getAttribute('src'); if (src && src.endsWith('.png')) this.src = src.replace('.png', '.PNG'); }); });
     </script>
 
-    <!-- ================= FIREBASE ENTEGRASYONU ================= -->
+       <!-- FİREBASE & VERİ TABANI -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { listenAuthState, getUserProfile, logoutUser } from './firebase-shared.js';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
-            authDomain: "hedef100-academia.firebaseapp.com",
-            projectId: "hedef100-academia",
-            storageBucket: "hedef100-academia.firebasestorage.app",
-            messagingSenderId: "886084339971",
-            appId: "1:886084339971:web:ca31ab9d1575344d234136"
-        };
+        // Güvenli çıkış fonksiyonunu butonların kullanabilmesi için window'a ekliyoruz
+        window.logoutUser = logoutUser;
 
-        const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-
-        onAuthStateChanged(auth, async (user) => {
+        listenAuthState(async (user) => {
             if (user) {
-                const docSnap = await getDoc(doc(db, "users", user.uid));
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
+                const data = await getUserProfile(user.uid);
+                
+                if (data) {
+                    // Profil Bilgilerini Doldur
                     document.getElementById('studentNameDisplay').innerText = data.firstName + " " + data.lastName;
                     document.getElementById('welcomeName').innerText = data.firstName;
-                    document.getElementById('hedefIdDisplay').innerText = data.hedefId || "H100-YOK";
-                    document.getElementById('targetExamBadge').innerText = (data.specialtyOrExam || "YKS") + " ADAYI";
-                    document.getElementById('avatarInitials').innerText = (data.firstName.charAt(0) + data.lastName.charAt(0)).toUpperCase();
+                    document.getElementById('hedefIdDisplay').innerText = data.hedefId || 'ID Bekleniyor';
+                    document.getElementById('targetExamBadge').innerText = data.specialtyOrExam || 'YKS';
                     
-                    document.getElementById('setFirstName').value = data.firstName;
-                    document.getElementById('setLastName').value = data.lastName;
-                    document.getElementById('setEmail').value = data.email;
+                    const initials = data.firstName.charAt(0) + data.lastName.charAt(0);
+                    document.getElementById('avatarInitials').innerText = initials.toUpperCase();
+
+                    // Ayarlar Formunu Doldur
+                    const sAd = document.getElementById('setFirstName');
+                    const sSoyad = document.getElementById('setLastName');
+                    const sEmail = document.getElementById('setEmail');
+                    if(sAd) sAd.value = data.firstName;
+                    if(sSoyad) sSoyad.value = data.lastName;
+                    if(sEmail) sEmail.value = data.email;
                 }
             } else {
-                document.getElementById('studentNameDisplay').innerText = "Can Yılmaz";
-                document.getElementById('welcomeName').innerText = "Can";
+                // Giriş yapmamışsa zorla login sayfasına gönder (Güvenlik Koruması)
+                window.location.href = 'login.html';
             }
         });
     </script>
