@@ -22,6 +22,8 @@
         .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .neon-text { text-shadow: 0 0 10px rgba(99, 102, 241, 0.5); }
         .animate-pulse-slow { animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .form-input { width: 100%; padding: 0.65rem 1rem; background-color: #020617; border: 1px solid #334155; border-radius: 0.75rem; color: #f1f5f9; font-size: 0.8rem; outline: none; transition: all; }
         .form-input:focus { border-color: #6366f1; box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1); }
@@ -92,17 +94,17 @@
 
     <div class="flex-1 flex flex-col h-full relative overflow-hidden">
         
-        <header class="bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-800 px-4 md:px-8 py-4 flex justify-between items-center relative z-10">
+        <header class="bg-white/90 backdrop-blur-md sticky top-0 z-40 border-b border-slate-200 shadow-sm px-4 md:px-8 py-4 flex justify-between items-center relative z-10">
             <div class="flex items-center gap-3">
-                <button onclick="toggleMobileSidebar()" class="md:hidden p-2 -ml-2 text-slate-400 focus:outline-none"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
-                <div class="text-xs font-black bg-slate-950/80 border border-slate-800 text-white px-4 py-2 rounded-xl tracking-widest uppercase shadow">HEDEF100 ACADEMIA COMMAND CENTER</div>
+                <button onclick="toggleMobileSidebar()" class="md:hidden p-2 -ml-2 text-slate-600 focus:outline-none"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                <span class="text-xs font-black bg-slate-900 text-white px-3 py-1.5 rounded-lg tracking-widest uppercase shadow">Kurumsal Merkez</span>
             </div>
             <div class="flex items-center space-x-4">
                 <div class="text-right hidden sm:block">
-                    <p id="headerInstName" class="text-sm font-bold text-white">Academia Kurumsal Merkez</p>
-                    <p class="text-[9px] text-indigo-400 font-black uppercase tracking-widest bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20 mt-1 inline-block">Sistem Yöneticisi</p>
+                    <p id="headerInstName" class="text-sm font-bold text-slate-900">Hedef100 Academia</p>
+                    <p class="text-[10px] text-indigo-600 font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 uppercase tracking-wider">Yönetici</p>
                 </div>
-                <div id="teacherAvatar" class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-800 text-white rounded-xl flex items-center justify-center font-bold shadow-md">Academia</div>
+                <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 text-white rounded-full flex items-center justify-center font-bold shadow-md">Academia</div>
             </div>
         </header>
 
@@ -173,18 +175,81 @@
             </div>
 
             <div id="section-teachers" class="section-hidden space-y-6">
-                <div><h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">🌍 Eğitmen Kadrosu ve Atamalar</h2><p class="text-slate-400 text-xs md:text-sm">Tüm eğitmen profillerini, uzmanlık branşlarını ve sınıf yüklerini sarmallayın.</p></div>
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center text-slate-600 font-bold shadow-inner">Kayıtlı eğitmen bulunamadı. Yapay zeka eğitmen entegrasyonunu başlatın.</div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">🌍 Eğitmen Kadrosu ve Atamalar</h2>
+                    <p class="text-slate-400 text-xs md:text-sm">Tüm eğitmen profillerini, uzmanlık branşlarını ve sınıf yüklerini sarmallayın.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="glass-card p-6 rounded-[2rem] border border-slate-800 space-y-4 self-start">
+                        <h3 class="text-base font-black text-white border-b border-slate-800 pb-2 flex items-center gap-2">👨‍🏫 Yeni Eğitmen Ekle</h3>
+                        <form onsubmit="handleAddTeacher(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Eğitmen Adı Soyadı</label>
+                                <input type="text" id="newTeacherName" placeholder="Örn: Ahmet Kula" class="form-input" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Uzmanlık Branşı</label>
+                                <input type="text" id="newTeacherBranch" placeholder="Örn: Matematik" class="form-input" required>
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3 rounded-xl transition-all text-xs uppercase shadow-md mt-2">Eğitmen Kaydını Tamamla</button>
+                        </form>
+                    </div>
+
+                    <div class="lg:col-span-2 glass-card p-6 rounded-[2rem] border border-slate-800 flex flex-col h-full min-h-[300px]">
+                        <h3 class="text-base font-black text-white border-b border-slate-800 pb-2 mb-4">📋 Kayıtlı Eğitmenler Sarmalı</h3>
+                        <div id="globalTeacherList" class="space-y-3 flex-1 overflow-y-auto pr-2">
+                            <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-xs">AK</div>
+                                    <div><p class="text-sm font-bold text-white">Ahmet Kula</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">Matematik & Fizik</p></div>
+                                </div>
+                                <button onclick="this.parentElement.remove(); triggerToast('Eğitmen sistemden çıkarıldı.');" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kadro Dışı</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="section-students" class="section-hidden space-y-6">
-                <div><h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">🎓 Öğrenci ve Veli Matrisi</h2><p class="text-slate-400 text-xs md:text-sm">Öğrenci gelişimlerini, yoklama durumlarını ve veli iletişim ağını denetleyin.</p></div>
-                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center text-slate-600 font-bold shadow-inner">Öğrenci veritabanı boş. Optik tarama veya manuel kayıt başlatın.</div>
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">🎓 Öğrenci ve Veli Matrisi</h2>
+                    <p class="text-slate-400 text-xs md:text-sm">Sisteme yeni öğrenciler kaydedin, gelişimlerini ve atandıkları grupları denetleyin.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="glass-card p-6 rounded-[2rem] border border-slate-800 space-y-4 self-start">
+                        <h3 class="text-base font-black text-white border-b border-slate-800 pb-2 flex items-center gap-2">🎓 Yeni Öğrenci Kaydet</h3>
+                        <form onsubmit="handleAddStudent(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Öğrenci Adı Soyadı</label>
+                                <input type="text" id="newStudentName" placeholder="Örn: Can Yılmaz" class="form-input" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Sınıf / Şube</label>
+                                <input type="text" id="newStudentClass" placeholder="Örn: 12-A Sayısal" class="form-input" required>
+                            </div>
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3 rounded-xl transition-all text-xs uppercase shadow-md mt-2">Öğrenciyi Sisteme Al</button>
+                        </form>
+                    </div>
+
+                    <div class="lg:col-span-2 glass-card p-6 rounded-[2rem] border border-slate-800 flex flex-col h-full min-h-[300px]">
+                        <h3 class="text-base font-black text-white border-b border-slate-800 pb-2 mb-4">📋 Kayıtlı Öğrenci Matrisi</h3>
+                        <div id="globalStudentList" class="space-y-3 flex-1 overflow-y-auto pr-2">
+                            <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-emerald-500/50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-xs">CY</div>
+                                    <div><p class="text-sm font-bold text-white">Can Yılmaz</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">12-A Sayısal Derece</p></div>
+                                </div>
+                                <button onclick="this.parentElement.remove(); triggerToast('Öğrenci sistemden silindi.');" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kaydı Sil</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div id="section-parents" class="section-hidden space-y-6">
                 <div><h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">✉️ Veli İletişim & Toplu Bildirim Merkezi</h2><p class="text-slate-400 text-xs md:text-sm">Velilere anlık push bildirimleri, toplu SMS veya duyurular gönderin.</p></div>
-                
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="glass-card p-6 rounded-[2rem] space-y-4 border border-slate-800">
                         <h3 class="text-sm font-black text-white uppercase tracking-widest mb-2 flex items-center gap-2">📱 Toplu SMS / Bildirim Gönder</h3>
@@ -251,12 +316,42 @@
             </div>
 
             <div id="section-ayarlar" class="section-hidden space-y-6">
-                <div class="glass-card rounded-[2rem] p-6 md:p-10 max-w-2xl mx-auto shadow-md border border-slate-800 text-center py-10 relative overflow-hidden group aspect-[16/6]">
+                <div class="glass-card rounded-[2rem] p-6 md:p-10 max-w-2xl mx-auto shadow-md border border-slate-800 py-10 relative overflow-hidden group aspect-[16/8]">
                      <img src="academic-settings-bg.png" alt="Settings Vision" class="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none group-hover:scale-105 transition-transform" onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80'">
-                    <div class="relative z-10 space-y-5">
-                        <h3 class="text-xl font-black text-white mb-4">Kurumsal Parametreler & Kimlik Ayarları</h3>
-                        <p class="text-slate-400 text-xs max-w-sm mx-auto">Kurum ismini, sarmal motoru ayarlarını ve güvenlik protokollerini buradan güncelleyebilirsiniz.</p>
-                        <button onclick="handleSettingsUpdate(event)" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-xl text-sm uppercase shadow-lg shadow-indigo-500/20">Değişiklikleri Matrise İşle</button>
+                    <div class="absolute inset-0 bg-slate-950/80 pointer-events-none"></div>
+                    
+                    <div class="relative z-10 space-y-6">
+                        <h3 class="text-2xl font-black text-white mb-2 text-center border-b border-slate-800 pb-4">Kurumsal Parametreler & Ayarlar</h3>
+                        <form onsubmit="handleInstSettingsUpdate(event)" class="space-y-4 text-left">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Kurum Adı</label>
+                                    <input type="text" id="instName" value="Hedef100 Academia" class="form-input" required>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Kurum İletişim / E-Posta</label>
+                                    <input type="email" value="admin@hedef100.com" class="form-input" required>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Aktif Eğitim Dönemi</label>
+                                <select class="form-input cursor-pointer">
+                                    <option>2025 - 2026 Eğitim Öğretim Yılı</option>
+                                    <option>2026 - 2027 Eğitim Öğretim Yılı</option>
+                                </select>
+                            </div>
+
+                            <label class="flex items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-900/50 cursor-pointer hover:border-indigo-500/50 transition-colors mt-4">
+                                <input type="checkbox" checked class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-indigo-500 focus:ring-indigo-500">
+                                <div>
+                                    <p class="text-xs font-bold text-white transition-colors">Yapay Zeka Otomatik Analiz</p>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Optik veriler yüklendiğinde otomatik AI kazanım analizini çalıştır.</p>
+                                </div>
+                            </label>
+
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-black py-3.5 px-8 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-indigo-500/20 transition-all mt-4">Değişiklikleri Matrise İşle</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -332,7 +427,7 @@
 
     <script>
         // --- TOAST BİLDİRİM MOTORU ---
-        window.triggerToast = function(message) {
+        window.triggerToast = function(message, type = 'success') {
             const toast = document.getElementById('toastBox');
             document.getElementById('toastMessage').innerText = message;
             toast.classList.remove('translate-x-96', 'opacity-0');
@@ -350,7 +445,7 @@
         });
 
         // --- VELİ İLETİŞİM MOTORU (SIMÜLASYON) ---
-        function handleVeliSms(e) {
+        window.handleVeliSms = function(e) {
             e.preventDefault();
             const target = document.getElementById('smsTarget').value;
             const msg = document.getElementById('smsMessage').value;
@@ -363,14 +458,14 @@
         document.getElementById('materialInput').addEventListener('change', function() {
             if(this.files.length > 0) {
                 const name = this.files[0].name; const size = (this.files[0].size / 1024 / 1024).toFixed(1);
-                const html = `<div class="bg-slate-900 border border-emerald-700 rounded-xl p-4 text-center animate-fade-in group"><p class="text-xs font-bold text-white mb-1 truncate">${name}</p><p class="text-[9px] text-emerald-400 mb-2">${size} MB</p><button onclick="triggerToast('Dosya İndiriliyor...')" class="text-indigo-400 text-xs font-bold underline group-hover:text-white Transition-colors">İndir</button></div>`;
+                const html = `<div class="bg-slate-900 border border-emerald-700 rounded-xl p-4 text-center animate-fade-in group"><p class="text-xs font-bold text-white mb-1 truncate">${name}</p><p class="text-[9px] text-emerald-400 mb-2">${size} MB</p><button onclick="triggerToast('Dosya İndiriliyor...')" class="text-indigo-400 text-xs font-bold underline group-hover:text-white transition-colors">İndir</button></div>`;
                 document.getElementById('materialList').insertAdjacentHTML('beforeend', html);
                 triggerToast(name + ' Akademik havuza eklendi.');
             }
         });
 
         // --- YENİ SINIF OLUŞTURMA MOTORU ---
-        function handleCreateClass(e) {
+        window.handleCreateClass = function(e) {
             e.preventDefault();
             const name = document.getElementById('newClassName').value; const initials = name.substring(0, 3).toUpperCase();
             triggerToast(name + ' Sınıfı Kuantum Matrisine Eklendi.');
@@ -379,24 +474,64 @@
             e.target.reset();
         }
 
+        // --- GLOBAL EĞİTMEN YÖNETİMİ MOTORU ---
+        window.handleAddTeacher = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('newTeacherName').value;
+            const branch = document.getElementById('newTeacherBranch').value;
+            const initials = name.substring(0,2).toUpperCase();
+            
+            const html = `
+            <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-indigo-500/50 transition-colors animate-fade-in">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-black text-xs">${initials}</div>
+                    <div><p class="text-sm font-bold text-white">${name}</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">${branch}</p></div>
+                </div>
+                <button onclick="this.parentElement.remove(); triggerToast('Eğitmen sistemden çıkarıldı.');" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kadro Dışı</button>
+            </div>`;
+            document.getElementById('globalTeacherList').insertAdjacentHTML('afterbegin', html);
+            e.target.reset();
+            triggerToast(name + ' akademik kadroya eklendi!', 'success');
+        };
+
+        // --- GLOBAL ÖĞRENCİ İZLEME MOTORU ---
+        window.handleAddStudent = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('newStudentName').value;
+            const sClass = document.getElementById('newStudentClass').value;
+            const initials = name.substring(0,2).toUpperCase();
+            
+            const html = `
+            <div class="flex justify-between items-center bg-slate-900/50 p-3.5 rounded-xl border border-slate-800 hover:border-emerald-500/50 transition-colors animate-fade-in">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-xs">${initials}</div>
+                    <div><p class="text-sm font-bold text-white">${name}</p><p class="text-[10px] text-slate-500 uppercase tracking-widest">${sClass}</p></div>
+                </div>
+                <button onclick="this.parentElement.remove(); triggerToast('Öğrenci sistemden silindi.');" class="bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors">Kaydı Sil</button>
+            </div>`;
+            document.getElementById('globalStudentList').insertAdjacentHTML('afterbegin', html);
+            e.target.reset();
+            triggerToast(name + ' öğrenci matrisine dahil edildi!', 'success');
+        };
+
         // --- MODAL İÇİ ATAMA MOTORLARI ---
-        function assignTeacher() {
+        window.assignTeacher = function() {
             const val = document.getElementById('teacherSelect').value;
             triggerToast(val + ' bu sınıfa atandı.');
-            const html = `<div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 animate-fade-in"><span class="text-sm text-white font-semibold flex items-center gap-2">👨‍🏫 ${val}</span><button onclick="this.parentElement.remove()" class="text-rose-400 text-[10px] font-bold hover:text-rose-300">ÇI K AR</button></div>`;
+            const html = `<div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 animate-fade-in"><span class="text-sm text-white font-semibold flex items-center gap-2">👨‍🏫 ${val}</span><button onclick="this.parentElement.remove()" class="text-rose-400 text-[10px] font-bold hover:text-rose-300">ÇIKAR</button></div>`;
             document.getElementById('teacherList').insertAdjacentHTML('beforeend', html);
         }
 
-        function addStudent() {
+        window.addStudent = function() {
             const val = document.getElementById('studentInput').value.trim();
             if(!val) return;
             triggerToast(val + ' sınıf matrixine eklendi.');
-            const html = `<div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 animate-fade-in"><span class="text-sm text-white font-semibold flex items-center gap-2">🎓 ${val}</span><button onclick="this.parentElement.remove()" class="text-rose-400 text-[10px] font-bold hover:text-rose-300">ÇI K AR</button></div>`;
+            const html = `<div class="flex justify-between items-center bg-slate-800 p-2.5 rounded-xl border border-slate-700 animate-fade-in"><span class="text-sm text-white font-semibold flex items-center gap-2">🎓 ${val}</span><button onclick="this.parentElement.remove()" class="text-rose-400 text-[10px] font-bold hover:text-rose-300">ÇIKAR</button></div>`;
             document.getElementById('studentList').insertAdjacentHTML('beforeend', html);
             document.getElementById('studentInput').value = '';
         }
 
-        function publishMessage(e) {
+        window.publishMessage = function(e) {
             e.preventDefault(); const val = document.getElementById('chatInput').value.trim();
             if(!val) return;
             triggerToast('Duyuru sarmala yayınlandı.');
@@ -405,7 +540,13 @@
             e.target.reset();
         }
 
-        function handleSettingsUpdate(e) { e.preventDefault(); triggerToast('Kurumsal parametreler matrise işlendi. Sistem senkronize edildi.'); }
+        // --- KURUM AYARLARI MOTORU ---
+        window.handleInstSettingsUpdate = function(e) {
+            e.preventDefault();
+            const instName = document.getElementById('instName').value;
+            document.getElementById('headerInstName').innerText = instName;
+            triggerToast('Kurumsal parametreler senkronize edildi!', 'success');
+        };
 
         // --- MODAL & SIDEBAR & SEKME MOTORLARI ---
         window.switchSection = function(sectionId) {
