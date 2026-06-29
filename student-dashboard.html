@@ -641,7 +641,6 @@
         document.addEventListener('DOMContentLoaded', renderExamFields);
 
         window.handleAdvancedExamSubmit = function(e) { e.preventDefault(); const pub = document.getElementById('examPublisher').value; const title = document.getElementById('examTitle').value; triggerToast(`${pub} - ${title} Analizi Kaydedildi!`, 'success'); e.target.reset(); renderExamFields(); setTimeout(() => { switchSection('analytics'); }, 1500); };
-        window.handleMentorshipRequest = function(e) { e.preventDefault(); triggerToast('Mentorluk talebiniz başarıyla iletildi. 🚀', 'success'); e.target.reset(); };
 
         // --- KRONOMETRE VE ALTYAPI MOTORLARI ---
         let stopwatchInterval; let isRunning = false; let elapsedSeconds = parseInt(localStorage.getItem('h100_focus_seconds')) || 0;
@@ -721,39 +720,66 @@
     </script>
 
        <!-- FİREBASE & VERİ TABANI -->
-    <script type="module">
-        import { listenAuthState, getUserProfile, logoutUser } from './firebase-shared.js';
+     <script type="module">
+        import { listenAuthState, getUserProfile, logoutUser, sendCoachingRequest } from './firebase-shared.js';
 
-        // Güvenli çıkış fonksiyonunu butonların kullanabilmesi için window'a ekliyoruz
         window.logoutUser = logoutUser;
+        let currentUserUid = null;
+        let currentUserName = "";
 
         listenAuthState(async (user) => {
             if (user) {
+                currentUserUid = user.uid;
                 const data = await getUserProfile(user.uid);
                 
                 if (data) {
-                    // Profil Bilgilerini Doldur
-                    document.getElementById('studentNameDisplay').innerText = data.firstName + " " + data.lastName;
+                    currentUserName = data.firstName + " " + data.lastName;
+                    
+                    document.getElementById('studentNameDisplay').innerText = currentUserName;
                     document.getElementById('welcomeName').innerText = data.firstName;
                     document.getElementById('hedefIdDisplay').innerText = data.hedefId || 'ID Bekleniyor';
                     document.getElementById('targetExamBadge').innerText = data.specialtyOrExam || 'YKS';
                     
                     const initials = data.firstName.charAt(0) + data.lastName.charAt(0);
                     document.getElementById('avatarInitials').innerText = initials.toUpperCase();
-
-                    // Ayarlar Formunu Doldur
-                    const sAd = document.getElementById('setFirstName');
-                    const sSoyad = document.getElementById('setLastName');
-                    const sEmail = document.getElementById('setEmail');
-                    if(sAd) sAd.value = data.firstName;
-                    if(sSoyad) sSoyad.value = data.lastName;
-                    if(sEmail) sEmail.value = data.email;
                 }
             } else {
-                // Giriş yapmamışsa zorla login sayfasına gönder (Güvenlik Koruması)
                 window.location.href = 'login.html';
             }
         });
+
+        // TALEBİ FİREBASE'E GÖNDEREN YENİ FONKSİYON
+        window.handleMentorshipRequest = async function(e) {
+            e.preventDefault();
+            if(!currentUserUid) return;
+
+            const textarea = e.target.querySelector('textarea');
+            const message = textarea.value;
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            
+            btn.innerText = "Gönderiliyor...";
+            btn.disabled = true;
+
+            const result = await sendCoachingRequest({
+                studentId: currentUserUid,
+                studentName: currentUserName,
+                // Not: Şimdilik test edebilmeniz için sabit bir eğitmen ID'si veriyoruz.
+                // İleride bu, öğrencinin seçtiği eğitmenin gerçek UID'si olacak.
+                teacherId: "TEST_OGRETMEN_001", 
+                message: message
+            });
+
+            if(result.success) {
+                if(window.triggerToast) triggerToast('Mentorluk talebiniz eğitmene iletildi! 🚀', 'success');
+                e.target.reset();
+            } else {
+                alert("Talep gönderilirken hata oluştu.");
+            }
+            
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        };
     </script>
 </body>
 </html>
