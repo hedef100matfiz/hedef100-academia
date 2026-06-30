@@ -2,7 +2,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { 
     getFirestore, doc, setDoc, getDoc, collection, addDoc, 
-    onSnapshot, query, where, serverTimestamp, orderBy, getDocs 
+    onSnapshot, query, where, serverTimestamp, orderBy, getDocs,
+    deleteDoc, updateDoc, arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
@@ -110,7 +111,6 @@ export function listenStudentCoachingRequests(studentId, callback) {
 
 export async function addCoachingMessage(requestId, messageObj) {
     try {
-        const { arrayUnion, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
         const docRef = doc(db, "coachingRequests", requestId);
         await updateDoc(docRef, {
             messages: arrayUnion({ ...messageObj, timestamp: Date.now() })
@@ -243,7 +243,6 @@ export async function toggleStudentTask(taskId, isDone) {
 
 export async function deleteStudentTask(taskId) {
     try {
-        const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
         await deleteDoc(doc(db, "studentTasks", taskId));
         return true;
     } catch (error) {
@@ -281,7 +280,6 @@ export async function getStudentsByClass(classId) {
 // Öğrencinin Kod ile Sınıfa Katılması
 export async function joinClassWithCode(studentId, code) {
     try {
-        const { getDocs } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
         const q = query(collection(db, "inviteCodes"), where("code", "==", code.toUpperCase().trim()));
         const snapshot = await getDocs(q);
         
@@ -391,3 +389,4 @@ export async function updateUserProfile(uid, data) {
         return false;
     }
 }
+
