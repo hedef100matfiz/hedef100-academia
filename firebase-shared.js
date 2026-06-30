@@ -390,3 +390,145 @@ export async function updateUserProfile(uid, data) {
     }
 }
 
+// ================= 7. KURUM PANELİ YÖNETİM FONKSİYONLARI =================
+
+// Hedef ID ile kullanıcıyı bul ve Kurum ağına ekle
+export async function addMemberByHedefId(kurumId, hedefId) {
+    try {
+        const q = query(collection(db, "users"), where("hedefId", "==", hedefId.toUpperCase().trim()));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            return { success: false, error: "Bu Hedef ID'ye ait kullanıcı bulunamadı." };
+        }
+        
+        let targetUser = null;
+        snapshot.forEach(doc => { targetUser = { id: doc.id, ...doc.data() }; });
+        
+        if(targetUser.kurumId === kurumId) {
+            return { success: false, error: "Bu kullanıcı zaten ağınızda." };
+        }
+
+        // Kullanıcıya kurumId ekle
+        await setDoc(doc(db, "users", targetUser.id), {
+            kurumId: kurumId,
+            kurumJoinedAt: serverTimestamp()
+        }, { merge: true });
+        
+        return { success: true, user: targetUser };
+    } catch (error) {
+        console.error("Üye eklenemedi:", error);
+        return { success: false, error: "Bağlantı hatası." };
+    }
+}
+
+// Kuruma ait üyeleri dinle (role: 'teacher' veya 'student')
+export function listenKurumMembers(kurumId, role, callback) {
+    const q = query(collection(db, "users"), where("kurumId", "==", kurumId), where("role", "==", role));
+    return onSnapshot(q, (snapshot) => {
+        const members = [];
+        snapshot.forEach((doc) => members.push({ id: doc.id, ...doc.data() }));
+        callback(members);
+    });
+}
+
+// Kurum için yeni sınıf oluştur
+export async function createKurumClass(kurumId, className, level) {
+    try {
+        const docRef = await addDoc(collection(db, "classes"), {
+            name: className,
+            level: level,
+            kurumId: kurumId,
+            assignedTeachers: [], // Kurum sonradan atayacak
+            createdAt: serverTimestamp()
+        });
+        return { success: true, id: docRef.id };
+    } catch (error) {
+        return { success: false, error };
+    }
+}
+
+export function listenKurumClasses(kurumId, callback) {
+    const q = query(collection(db, "classes"), where("kurumId", "==", kurumId));
+    return onSnapshot(q, (snapshot) => {
+        const classes = [];
+        snapshot.forEach((doc) => classes.push({ id: doc.id, ...doc.data() }));
+        classes.sort((a, b) => {
+            const tA = a.createdAt ? a.createdAt.toMillis() : 0;
+            const tB = b.createdAt ? b.createdAt.toMillis() : 0;
+            return tB - tA;
+        });
+        callback(classes);
+    });
+}
+
+export async function assignTeacherToClass(classId, teacherId, teacherName) {
+    try {
+        const docRef = doc(db, "classes", classId);
+        // add to assignedTeachers array
+        await updateDoc(docRef, {
+            assignedTeachers: arrayUnion({ id: teacherId, name: teacherName })
+        });
+        
+        // Eğitmenin profiline de eklenebilir veya eğitmen "classes" tablosunda assignedTeachers içinde kendi ID'si geçenleri dinleyebilir.
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+// Karne İşlemleri
+export async function createReportCard(kurumId, studentId, studentName, title, dataObj) {
+    try {
+        await addDoc(collection(db, "reportCards"), {
+            kurumId, studentId, studentName, title, ...dataObj,
+            createdAt: serverTimestamp()
+        });
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+export function listenReportCards(studentId, callback) {
+    const q = query(collection(db, "reportCards"), where("studentId", "==", studentId));
+    return onSnapshot(q, (snapshot) => {
+        const cards = [];
+        snapshot.forEach((doc) => cards.push({ id: doc.id, ...doc.data() }));
+        callback(cards);
+    });
+}
+
+// Toplu Mesaj (Duyuru) İşlemleri
+export async function createAnnouncement(kurumId, targetRole, message) {
+    try {
+        await addDoc(collection(db, "announcements"), {
+            kurumId: kurumId,
+            targetRole: targetRole, // 'all', 'teacher', 'student'
+            message: message,
+            createdAt: serverTimestamp()
+        });
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+export function listenAnnouncements(kurumId, role, callback) {
+    const q = query(collection(db, "announcements"), where("kurumId", "==", kurumId));
+    return onSnapshot(q, (snapshot) => {
+        const msgs = [];
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            if(data.targetRole === 'all' || data.targetRole === role) {
+                msgs.push({ id: doc.id, ...data });
+            }
+        });
+        msgs.sort((a, b) => {
+            const tA = a.createdAt ? a.createdAt.toMillis() : 0;
+            const tB = b.createdAt ? b.createdAt.toMillis() : 0;
+            return tB - tA; // en yeni en üstte
+        });
+        callback(msgs);
+    });
+}
