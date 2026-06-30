@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { 
     getFirestore, doc, setDoc, getDoc, collection, addDoc, 
-    onSnapshot, query, where, serverTimestamp, getDocs 
+    onSnapshot, query, where, serverTimestamp, orderBy, getDocs 
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 
@@ -16,6 +16,7 @@ const firebaseConfig = {
     appId: "1:886084339971:web:ca31ab9d1575344d234136"
 };
 
+// Uygulamayı ve servisleri başlat
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
@@ -29,7 +30,9 @@ export function listenAuthState(callback) {
 export async function getUserProfile(uid) {
     const docRef = doc(db, "users", uid);
     const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) return docSnap.data();
+    if (docSnap.exists()) {
+        return docSnap.data();
+    }
     return null;
 }
 
@@ -42,26 +45,36 @@ export async function logoutUser() {
     }
 }
 
-// 3. Koçluk Talebi Fonksiyonları
+// 3. Koçluk Talebi Fonksiyonları (Aşama 2 İçin)
 export async function sendCoachingRequest(data) {
     try {
         const docRef = await addDoc(collection(db, "coachingRequests"), {
-            ...data, status: 'pending', createdAt: serverTimestamp()
+            ...data,
+            status: 'pending',
+            createdAt: serverTimestamp()
         });
         return { success: true, id: docRef.id };
-    } catch (error) { return { success: false, error }; }
+    } catch (error) {
+        console.error("Talep gönderilemedi:", error);
+        return { success: false, error };
+    }
 }
 
 export function listenCoachingRequests(teacherId, callback) {
     const q = query(collection(db, "coachingRequests"));
+    
     return onSnapshot(q, (snapshot) => {
         const requests = [];
-        snapshot.forEach((doc) => requests.push({ id: doc.id, ...doc.data() }));
+        snapshot.forEach((doc) => {
+            requests.push({ id: doc.id, ...doc.data() });
+        });
+        
         requests.sort((a, b) => {
             const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
             const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
             return timeB - timeA;
         });
+        
         callback(requests);
     });
 }
@@ -71,31 +84,44 @@ export async function updateCoachingRequest(id, status) {
         const docRef = doc(db, "coachingRequests", id);
         await setDoc(docRef, { status: status, updatedAt: serverTimestamp() }, { merge: true });
         return true;
-    } catch (error) { return false; }
+    } catch (error) {
+        console.error("Durum güncellenemedi:", error);
+        return false;
+    }
 }
 
-// 4. AŞAMA 3 (GERÇEK VERİ HAVUZU) FONKSİYONLARI
+// ================= 4. AŞAMA 3 (GERÇEK VERİ HAVUZU) FONKSİYONLARI =================
 
-// 4.1 Yoklama
+// --- 4.1 Yoklama (Attendance) ---
 export async function saveAttendance(date, classId, teacherId, absentStudents) {
     try {
         await addDoc(collection(db, "attendance"), {
-            date, classId, teacherId, absentStudents, createdAt: serverTimestamp()
+            date, classId, teacherId, absentStudents,
+            createdAt: serverTimestamp()
         });
         return true;
-    } catch (error) { return false; }
+    } catch (error) {
+        console.error("Yoklama kaydedilemedi:", error);
+        return false;
+    }
 }
 
-// 4.2 Ödevler
+// --- 4.2 Ödev & Görev Merkezi (Assignments) ---
 export async function addAssignment(data) {
     try {
-        await addDoc(collection(db, "assignments"), { ...data, createdAt: serverTimestamp() });
+        await addDoc(collection(db, "assignments"), {
+            ...data, createdAt: serverTimestamp()
+        });
         return true;
-    } catch (error) { return false; }
+    } catch (error) {
+        console.error("Ödev eklenemedi:", error);
+        return false;
+    }
 }
 
 export function listenAssignments(targetClass, callback) {
     const q = query(collection(db, "assignments"));
+    
     return onSnapshot(q, (snapshot) => {
         const assignments = [];
         snapshot.forEach((doc) => {
@@ -104,29 +130,39 @@ export function listenAssignments(targetClass, callback) {
                 assignments.push({ id: doc.id, ...data });
             }
         });
+        
         assignments.sort((a, b) => {
             const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
             const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
             return timeB - timeA;
         });
+        
         callback(assignments);
     });
 }
 
-// 4.3 Hata Kutusu
+// --- 4.3 Dijital Hata Kutusu (Error Box & Storage) ---
 export async function uploadErrorBoxImage(file, studentId) {
     try {
         const fileRef = ref(storage, `errorBox/${studentId}/${Date.now()}_${file.name}`);
         await uploadBytes(fileRef, file);
         return await getDownloadURL(fileRef);
-    } catch (error) { return null; }
+    } catch (error) {
+        console.error("Resim yüklenemedi:", error);
+        return null;
+    }
 }
 
 export async function askQuestion(data) {
     try {
-        await addDoc(collection(db, "errorBox"), { ...data, status: 'pending', createdAt: serverTimestamp() });
+        await addDoc(collection(db, "errorBox"), {
+            ...data, status: 'pending', createdAt: serverTimestamp()
+        });
         return true;
-    } catch (error) { return false; }
+    } catch (error) {
+        console.error("Soru gönderilemedi:", error);
+        return false;
+    }
 }
 
 export function listenErrorBox(callback) {
@@ -134,19 +170,23 @@ export function listenErrorBox(callback) {
     return onSnapshot(q, (snapshot) => {
         const questions = [];
         snapshot.forEach((doc) => questions.push({ id: doc.id, ...doc.data() }));
+        
         questions.sort((a, b) => {
             const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
             const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
             return timeB - timeA;
         });
+        
         callback(questions);
     });
 }
 
-// 4.4 Öğrenci Görevleri
+// --- 4.4 Öğrenci Haftalık Görevleri (Student Tasks) ---
 export async function addStudentTask(studentId, taskData) {
     try {
-        await addDoc(collection(db, "studentTasks"), { studentId, ...taskData, createdAt: serverTimestamp() });
+        await addDoc(collection(db, "studentTasks"), {
+            studentId, ...taskData, createdAt: serverTimestamp()
+        });
         return true;
     } catch (e) { return false; }
 }
@@ -164,14 +204,28 @@ export async function toggleStudentTask(taskId, isDone) {
     await setDoc(doc(db, "studentTasks", taskId), { done: isDone }, { merge: true });
 }
 
+export async function deleteStudentTask(taskId) {
+    try {
+        const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
+        await deleteDoc(doc(db, "studentTasks", taskId));
+        return true;
+    } catch (error) {
+        console.error("Görev silinemedi:", error);
+        return false;
+    }
+}
+
+// --- 4.5 Deneme ve Risk Radarı (Exam Results) ---
 export async function saveExamResult(data) {
     try {
-        await addDoc(collection(db, "examResults"), { ...data, createdAt: serverTimestamp() });
+        await addDoc(collection(db, "examResults"), {
+            ...data, createdAt: serverTimestamp()
+        });
         return true;
     } catch (e) { return false; }
 }
 
-// 5. SINIF VE DAVET KODU YÖNETİMİ
+// Eğitmenin sınıfındaki öğrencileri çekmesi
 export async function getStudentsByClass(classId) {
     try {
         const q = query(collection(db, "users"), where("role", "==", "student"), where("classId", "==", classId));
@@ -179,54 +233,83 @@ export async function getStudentsByClass(classId) {
         const students = [];
         snapshot.forEach(doc => students.push({ id: doc.id, ...doc.data() }));
         return students;
-    } catch (e) { return []; }
+    } catch (e) {
+        console.error("Öğrenciler çekilemedi:", e);
+        return [];
+    }
 }
 
+// ================= 5. SINIF VE DAVET KODU YÖNETİMİ =================
+
+// Yeni Sınıf Oluştur
 export async function createClass(teacherId, className) {
     try {
         const docRef = await addDoc(collection(db, "classes"), {
-            name: className, teacherId: teacherId, createdAt: serverTimestamp()
+            name: className,
+            teacherId: teacherId,
+            createdAt: serverTimestamp()
         });
         return { success: true, id: docRef.id };
-    } catch (error) { return { success: false, error }; }
+    } catch (error) {
+        console.error("Sınıf oluşturulamadı:", error);
+        return { success: false, error };
+    }
 }
 
+// Eğitmenin kendi oluşturduğu sınıfları dinlemesi
 export function listenClasses(teacherId, callback) {
     const q = query(collection(db, "classes"), where("teacherId", "==", teacherId));
     return onSnapshot(q, (snapshot) => {
         const classes = [];
         snapshot.forEach((doc) => classes.push({ id: doc.id, ...doc.data() }));
+        
         classes.sort((a, b) => {
             const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
             const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
-            return timeA - timeB;
+            return timeA - timeB; 
         });
+        
         callback(classes);
     });
 }
 
+// Davet Kodu Üret (Bir sınıfa ait)
 export async function createInviteCode(teacherId, classId, className, customCode) {
     try {
         const code = customCode ? customCode.toUpperCase() : Math.random().toString(36).substring(2, 8).toUpperCase();
+        
         const checkQ = query(collection(db, "inviteCodes"), where("code", "==", code));
         const checkSnap = await getDocs(checkQ);
-        if (!checkSnap.empty) return { success: false, error: "Bu kod kullanımda, başka deneyin." };
+        if (!checkSnap.empty) {
+            return { success: false, error: "Bu kod zaten kullanımda, lütfen başka bir tane deneyin." };
+        }
 
         await addDoc(collection(db, "inviteCodes"), {
-            code: code, role: "student", classId: classId, className: className,
-            createdBy: teacherId, createdAt: serverTimestamp()
+            code: code,
+            role: "student",
+            classId: classId,
+            className: className,
+            createdBy: teacherId,
+            createdAt: serverTimestamp()
         });
         return { success: true, code: code };
-    } catch (error) { return { success: false, error }; }
+    } catch (error) {
+        console.error("Davet kodu üretilemedi:", error);
+        return { success: false, error };
+    }
 }
 
-// 6. PROFİL GÜNCELLEME VE FOTOĞRAF YÜKLEME
+// ================= 6. PROFİL GÜNCELLEME VE FOTOĞRAF =================
+
 export async function uploadProfilePhoto(file, userId) {
     try {
         const fileRef = ref(storage, `profilePhotos/${userId}/${Date.now()}_${file.name}`);
         await uploadBytes(fileRef, file);
         return await getDownloadURL(fileRef);
-    } catch (error) { return null; }
+    } catch (error) {
+        console.error("Profil fotoğrafı yüklenemedi:", error);
+        return null;
+    }
 }
 
 export async function updateUserProfile(uid, data) {
@@ -234,5 +317,8 @@ export async function updateUserProfile(uid, data) {
         const docRef = doc(db, "users", uid);
         await setDoc(docRef, { ...data, updatedAt: serverTimestamp() }, { merge: true });
         return true;
-    } catch (error) { return false; }
+    } catch (error) {
+        console.error("Profil güncellenemedi:", error);
+        return false;
+    }
 }
