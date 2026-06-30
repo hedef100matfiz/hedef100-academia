@@ -293,6 +293,34 @@ export async function createClass(teacherId, className) {
     }
 }
 
+// Öğrencinin Kod ile Sınıfa Katılması
+export async function joinClassWithCode(studentId, code) {
+    try {
+        const { getDocs } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
+        const q = query(collection(db, "inviteCodes"), where("code", "==", code.toUpperCase().trim()));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            return { success: false, error: "Geçersiz davet kodu! Lütfen eğitmeninizden doğru kodu isteyin." };
+        }
+        
+        let inviteData = null;
+        snapshot.forEach(doc => inviteData = doc.data());
+        
+        // Öğrencinin classId bilgisini güncelle
+        const docRef = doc(db, "users", studentId);
+        await setDoc(docRef, {
+            classId: inviteData.classId,
+            className: inviteData.className,
+            updatedAt: serverTimestamp()
+        }, { merge: true });
+        
+        return { success: true, className: inviteData.className };
+    } catch (error) {
+        console.error("Sınıfa katılamadı:", error);
+        return { success: false, error: "Sunucu bağlantı hatası." };
+    }
+}
 // Eğitmenin kendi oluşturduğu sınıfları dinlemesi
 export function listenClasses(teacherId, callback) {
     const q = query(collection(db, "classes"), where("teacherId", "==", teacherId));
