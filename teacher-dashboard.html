@@ -911,8 +911,8 @@
                                             chatHtml += `
                                                 <div class="${align} mb-2">
                                                     <span class="text-[9px] text-slate-500 font-bold uppercase block mb-0.5">${name}</span>
-                                                    <div class="inline-block ${bg} border px-3 py-1.5 rounded-lg text-xs text-white max-w-[85%]">
-                                                        ${m.text}
+                                                    <div class="inline-block ${bg} border px-3 py-1.5 rounded-lg text-xs text-white max-w-[85%] break-words">
+                                                        ${m.text || m.message || ''}
                                                     </div>
                                                 </div>
                                             `;
@@ -994,10 +994,12 @@
             if(!user) return;
             
             input.disabled = true;
+            const teacherName = document.getElementById('teacherNameDisplay') ? document.getElementById('teacherNameDisplay').innerText : 'Eğitmen';
             const success = await addCoachingMessage(reqId, {
                 text: text,
+                message: text, // Geriye dönük uyumluluk için
                 senderId: user.uid,
-                senderName: 'Eğitmen'
+                senderName: teacherName
             });
             if(success) {
                 input.value = '';
