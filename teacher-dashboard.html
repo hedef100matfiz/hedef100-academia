@@ -162,9 +162,10 @@
                         <h2 class="text-xl md:text-2xl font-black text-white">Dijital Yoklama Sistemi</h2>
                         <p class="text-xs text-slate-400 mt-1">Sınıfı seçin, yoka basın. Veriler anında kuruma ve veliye SMS olarak iletilir.</p>
                     </div>
-                    <select class="bg-slate-900 border border-slate-700 text-white text-sm font-bold rounded-xl px-4 py-2.5 outline-none focus:border-emerald-500 w-full md:w-auto shadow-md cursor-pointer">
-                        <option>12-A Sayısal Derece</option>
-                        <option>11-B Eşit Ağırlık</option>
+                    <select id="classSelectAttendance" class="bg-slate-900 border border-slate-700 text-white text-sm font-bold rounded-xl px-4 py-2.5 outline-none focus:border-emerald-500 w-full md:w-auto shadow-md cursor-pointer">
+                        <option value="12-A Sayısal Derece">12-A Sayısal Derece</option>
+                        <option value="11-B Eşit Ağırlık">11-B Eşit Ağırlık</option>
+                        <option value="Mezun Grubu">Mezun Grubu</option>
                     </select>
                 </div>
 
@@ -179,42 +180,9 @@
                                     <th class="p-4 text-right pr-8">Bugünkü Yoklama (Tıkla)</th>
                                 </tr>
                             </thead>
-                            <form onsubmit="event.preventDefault(); triggerToast('Yoklama verileri buluta kaydedildi ve velilere iletildi.');">
-                                <tbody class="divide-y divide-slate-800/50 font-medium text-slate-300">
-                                    <tr class="hover:bg-slate-800/30 transition-colors">
-                                        <td class="p-4 text-center font-mono text-slate-500">101</td>
-                                        <td class="p-4 font-bold text-white">Can Yılmaz</td>
-                                        <td class="p-4 text-center"><span class="text-[10px] text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded">Kusursuz Devam</span></td>
-                                        <td class="p-4 text-right pr-6">
-                                            <div class="inline-flex bg-slate-900 rounded-lg p-1 border border-slate-700">
-                                                <label class="cursor-pointer">
-                                                    <input type="radio" name="att_can" value="here" class="hidden attendance-check" checked>
-                                                    <div class="px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-all">Burada</div>
-                                                </label>
-                                                <label class="cursor-pointer">
-                                                    <input type="radio" name="att_can" value="absent" class="hidden attendance-absent">
-                                                    <div class="px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-all text-slate-500">Yok</div>
-                                                </label>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-800/30 transition-colors">
-                                        <td class="p-4 text-center font-mono text-slate-500">102</td>
-                                        <td class="p-4 font-bold text-white">Mert Başar</td>
-                                        <td class="p-4 text-center"><span class="text-[10px] text-amber-400 bg-amber-400/10 px-2 py-1 rounded">Geçen Hafta Yoktu</span></td>
-                                        <td class="p-4 text-right pr-6">
-                                            <div class="inline-flex bg-slate-900 rounded-lg p-1 border border-slate-700">
-                                                <label class="cursor-pointer">
-                                                    <input type="radio" name="att_mert" value="here" class="hidden attendance-check">
-                                                    <div class="px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-all text-slate-500">Burada</div>
-                                                </label>
-                                                <label class="cursor-pointer">
-                                                    <input type="radio" name="att_mert" value="absent" class="hidden attendance-absent" checked>
-                                                    <div class="px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-all">Yok</div>
-                                                </label>
-                                            </div>
-                                        </td>
-                                    </tr>
+                            <form id="attendanceForm">
+                                <tbody id="attendanceTableBody" class="divide-y divide-slate-800/50 font-medium text-slate-300">
+                                    <!-- Dinamik olarak javascriptten yüklenecek -->
                                 </tbody>
                                 <tfoot>
                                     <tr>
@@ -236,46 +204,21 @@
                     <!-- Yeni Ödev Verme Formu -->
                     <div class="lg:col-span-1 glass-card p-6 rounded-[2rem]">
                         <h3 class="text-base font-black text-white mb-4 border-b border-slate-800 pb-3 flex items-center gap-2">📝 Yeni Görev Ata</h3>
-                        <form onsubmit="event.preventDefault(); triggerToast('Görev öğrencilerin paneline başarıyla eklendi.'); this.reset();" class="space-y-4 text-left">
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hedef Kitle</label><select class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500"><option>Tüm 12-A Sınıfı</option><option>Sadece Mert Başar (Bireysel)</option></select></div>
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Görev Başlığı</label><input type="text" placeholder="Örn: Türev Çıkmış Sorular" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></div>
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Açıklama / Sayfa No</label><textarea rows="2" placeholder="Soru Bankası Sayfa 45-50 arası çözülecek." class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></textarea></div>
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Son Teslim Tarihi</label><input type="date" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></div>
+                        <form id="newAssignmentForm" class="space-y-4 text-left">
+                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hedef Kitle (Sınıf)</label><select id="assignClass" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500"><option value="12-A Sayısal Derece">12-A Sayısal Derece</option><option value="11-B Eşit Ağırlık">11-B Eşit Ağırlık</option><option value="Mezun Grubu">Mezun Grubu</option><option value="all">Tüm Sınıflar</option></select></div>
+                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Görev Başlığı</label><input type="text" id="assignTitle" placeholder="Örn: Türev Çıkmış Sorular" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></div>
+                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Açıklama / Sayfa No</label><textarea id="assignDesc" rows="2" placeholder="Soru Bankası Sayfa 45-50 arası çözülecek." class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></textarea></div>
+                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Son Teslim Tarihi</label><input type="date" id="assignDeadline" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></div>
                             <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-all text-xs uppercase shadow-md mt-2">Görevi Yayınla</button>
                         </form>
                     </div>
 
                     <!-- Verilmiş Ödevler Takibi -->
-                    <div class="lg:col-span-2 space-y-4">
+                    <div id="assignmentsList" class="lg:col-span-2 space-y-4">
                         <div class="flex justify-between items-center bg-slate-900/50 p-4 rounded-[1rem] border border-slate-800">
                             <span class="font-bold text-slate-300 text-sm">Aktif Görevler ve Tamamlanma Durumu</span>
                         </div>
-                        
-                        <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-indigo-500">
-                            <div class="flex-1">
-                                <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-indigo-500/20 mb-2 inline-block">12-A Sayısal</span>
-                                <h4 class="font-bold text-white text-base">Fizik: Elektromanyetizma Fasikülü</h4>
-                                <p class="text-xs text-slate-400 mt-1">Son Teslim: Yarın 23:59</p>
-                            </div>
-                            <div class="w-full md:w-1/3">
-                                <div class="flex justify-between text-[10px] font-bold mb-1"><span class="text-slate-400">Tamamlanma</span><span class="text-emerald-400">14/18 Öğrenci (%77)</span></div>
-                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[77%]"></div></div>
-                            </div>
-                            <button onclick="triggerToast('Ödev yapmayan velilere otomatik hatırlatma SMS i gönderildi.')" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg border border-slate-600 transition-colors whitespace-nowrap">Yapmayanları Uyar</button>
-                        </div>
-                        
-                        <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-amber-500 opacity-70">
-                            <div class="flex-1">
-                                <span class="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-amber-500/20 mb-2 inline-block">11-B Eşit Ağırlık</span>
-                                <h4 class="font-bold text-white text-base">Matematik: Polinomlar Tekrar</h4>
-                                <p class="text-xs text-slate-400 mt-1">Teslim Edildi: Dün</p>
-                            </div>
-                            <div class="w-full md:w-1/3">
-                                <div class="flex justify-between text-[10px] font-bold mb-1"><span class="text-slate-400">Tamamlanma</span><span class="text-emerald-400">24/24 Öğrenci (%100)</span></div>
-                                <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[100%]"></div></div>
-                            </div>
-                            <button class="bg-slate-800 text-slate-500 text-[10px] font-bold px-4 py-2 rounded-lg border border-slate-700 cursor-not-allowed">Süresi Doldu</button>
-                        </div>
+                        <p class="text-slate-500 text-sm italic p-4">Yükleniyor...</p>
                     </div>
                 </div>
             </div>
@@ -320,25 +263,8 @@
                     <p class="text-xs text-slate-400 mt-1">Öğrencilerin çözemediği ve sisteme fotoğrafını yüklediği sorular. Çözümlerinizi göndererek öğrencilerin arşivine katkı sağlayın.</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- Soru Kartı -->
-                    <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-800 group">
-                        <!-- Soru Görseli Simülasyonu -->
-                        <div class="h-40 bg-slate-900 border-b border-slate-800 flex items-center justify-center relative">
-                            <div class="absolute inset-0 opacity-20 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmYiLz48L3N2Zz4=')]"></div>
-                            <span class="text-5xl opacity-50">📷</span>
-                            <div class="absolute bottom-2 right-2 bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow">Türev Sorusudur</div>
-                        </div>
-                        <div class="p-5">
-                            <div class="flex justify-between items-start mb-3">
-                                <div><h4 class="font-bold text-white text-sm">Can Yılmaz</h4><p class="text-[10px] text-slate-500">Dün, 21:45</p></div>
-                                <span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-bold px-2 py-1 rounded">Çözüm Bekliyor</span>
-                            </div>
-                            <button onclick="triggerToast('Kamera / Dosya yükleme modülü açılıyor...')" class="w-full mt-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-2.5 rounded-xl text-xs transition-colors flex justify-center items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg> Çözümü Yükle
-                            </button>
-                        </div>
-                    </div>
+                <div id="solutionsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <p class="text-slate-500 text-sm italic col-span-full">Sorular yükleniyor...</p>
                 </div>
             </div>
 
@@ -500,7 +426,7 @@
 
     <!-- ================= FIREBASE AUTH VE VERİTABANI ================= -->
     <script type="module">
-        import { auth, listenAuthState, getUserProfile, listenCoachingRequests, updateCoachingRequest } from './firebase-shared.js';
+        import { auth, listenAuthState, getUserProfile, listenCoachingRequests, updateCoachingRequest, getStudentsByClass, saveAttendance, addAssignment, listenAssignments, listenErrorBox } from './firebase-shared.js';
 
         listenAuthState(async (user) => {
             if (user) {
@@ -516,6 +442,139 @@
                     document.getElementById('setLastName').value = data.lastName;
                     document.getElementById('setBranch').value = data.specialtyOrExam || "Belirtilmemiş";
 
+                    // === 1. YOKLAMA SİSTEMİ DİNAMİKLEŞTİRME ===
+                    const classSelect = document.getElementById('classSelectAttendance');
+                    const attendanceBody = document.getElementById('attendanceTableBody');
+
+                    async function loadStudentsForAttendance() {
+                        if(!classSelect || !attendanceBody) return;
+                        const classId = classSelect.value;
+                        const students = await getStudentsByClass(classId);
+                        
+                        attendanceBody.innerHTML = '';
+                        if(students.length === 0) {
+                            attendanceBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Bu sınıfta kayıtlı öğrenci bulunamadı. Lütfen sisteme öğrenci kayıt edin.</td></tr>`;
+                            return;
+                        }
+                        
+                        students.forEach((student, index) => {
+                            attendanceBody.innerHTML += `
+                                <tr class="hover:bg-slate-800/30 transition-colors">
+                                    <td class="p-4 text-center font-mono text-slate-500">${index + 1}</td>
+                                    <td class="p-4 font-bold text-white">${student.firstName} ${student.lastName}</td>
+                                    <td class="p-4 text-center">-</td>
+                                    <td class="p-4 text-right pr-6">
+                                        <div class="inline-flex bg-slate-900 rounded-lg p-1 border border-slate-700">
+                                            <label class="cursor-pointer">
+                                                <input type="radio" name="att_${student.uid}" value="here" class="hidden attendance-check" checked>
+                                                <div class="px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-all">Burada</div>
+                                            </label>
+                                            <label class="cursor-pointer">
+                                                <input type="radio" name="att_${student.uid}" value="absent" class="hidden attendance-absent">
+                                                <div class="px-3 py-1.5 text-[10px] font-bold uppercase rounded-md transition-all text-slate-500">Yok</div>
+                                            </label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    }
+
+                    if(classSelect) {
+                        classSelect.addEventListener('change', loadStudentsForAttendance);
+                        loadStudentsForAttendance(); // İlk yükleme
+                    }
+
+                    const attForm = document.getElementById('attendanceForm');
+                    if(attForm) {
+                        attForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const absentStudents = [];
+                            const formData = new FormData(attForm);
+                            for(let [key, value] of formData.entries()) {
+                                if(value === 'absent') absentStudents.push(key.replace('att_', ''));
+                            }
+                            
+                            triggerToast("Yoklama kaydediliyor...");
+                            const success = await saveAttendance(new Date().toISOString(), classSelect.value, user.uid, absentStudents);
+                            if(success) triggerToast("Yoklama başarıyla kaydedildi!");
+                            else triggerToast("Yoklama kaydedilirken hata oluştu.");
+                        });
+                    }
+
+                    // === 2. ÖDEV SİSTEMİ DİNAMİKLEŞTİRME ===
+                    const assignForm = document.getElementById('newAssignmentForm');
+                    if(assignForm) {
+                        assignForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const targetClass = document.getElementById('assignClass').value;
+                            const title = document.getElementById('assignTitle').value;
+                            const desc = document.getElementById('assignDesc').value;
+                            const deadline = document.getElementById('assignDeadline').value;
+                            
+                            triggerToast("Ödev gönderiliyor...");
+                            const success = await addAssignment({ teacherId: user.uid, targetClass, title, description: desc, deadline });
+                            if(success) {
+                                triggerToast("Görev öğrencilere iletildi!");
+                                assignForm.reset();
+                            }
+                        });
+                    }
+
+                    listenAssignments("all", (assignments) => {
+                        const list = document.getElementById('assignmentsList');
+                        if(!list) return;
+                        
+                        list.innerHTML = `<div class="flex justify-between items-center bg-slate-900/50 p-4 rounded-[1rem] border border-slate-800"><span class="font-bold text-slate-300 text-sm">Aktif Görevler ve Tamamlanma Durumu</span></div>`;
+                        
+                        if(assignments.length === 0) list.innerHTML += '<p class="text-slate-500 text-sm italic p-4">Henüz verilmiş bir görev yok.</p>';
+
+                        assignments.forEach(task => {
+                            list.innerHTML += `
+                                <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-indigo-500 mb-3">
+                                    <div class="flex-1">
+                                        <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-indigo-500/20 mb-2 inline-block">${task.targetClass}</span>
+                                        <h4 class="font-bold text-white text-base">${task.title}</h4>
+                                        <p class="text-xs text-slate-400 mt-1">Son Teslim: ${task.deadline}</p>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    });
+
+                    // === 3. HATA KUTUSU (ÇÖZÜM HAVUZU) DİNAMİKLEŞTİRME ===
+                    listenErrorBox((questions) => {
+                        const grid = document.getElementById('solutionsGrid');
+                        if(!grid) return;
+                        grid.innerHTML = '';
+                        
+                        if(questions.length === 0) {
+                            grid.innerHTML = '<p class="text-slate-500 text-sm italic col-span-full">Şu an hata kutusunda bekleyen soru yok.</p>';
+                            return;
+                        }
+                        
+                        questions.forEach(q => {
+                            const timeStr = q.createdAt ? new Date(q.createdAt.toDate()).toLocaleString() : 'Az önce';
+                            grid.innerHTML += `
+                                <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-800 group">
+                                    <div class="h-40 bg-slate-900 border-b border-slate-800 flex items-center justify-center relative overflow-hidden">
+                                        ${q.imageUrl ? `<img src="${q.imageUrl}" class="absolute inset-0 w-full h-full object-cover opacity-80" alt="Soru">` : '<span class="text-5xl opacity-50">📷</span>'}
+                                        <div class="absolute bottom-2 right-2 bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow">${q.subject || 'Soru'}</div>
+                                    </div>
+                                    <div class="p-5">
+                                        <div class="flex justify-between items-start mb-3">
+                                            <div><h4 class="font-bold text-white text-sm">${q.studentName || 'Bilinmiyor'}</h4><p class="text-[10px] text-slate-500">${timeStr}</p></div>
+                                            <span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-bold px-2 py-1 rounded">Çözüm Bekliyor</span>
+                                        </div>
+                                        <button onclick="triggerToast('Çözüm yükleme özelliği (Faz 4) çok yakında!')" class="w-full mt-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-2.5 rounded-xl text-xs transition-colors">
+                                            Çözümü Yükle
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    });
+
                     // === GERÇEK ZAMANLI KOÇLUK TALEBİ DİNLEME ===
                     listenCoachingRequests(user.uid, (requests) => {
                         const listContainer = document.getElementById('coachingRequestList');
@@ -527,7 +586,7 @@
 
                             requests.forEach(req => {
                                 if(req.status === 'pending') pendingCount++;
-
+                                
                                 const statusHtml = req.status === 'pending' 
                                     ? `<span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-bold px-2 py-1 rounded">Onay Bekliyor</span>`
                                     : req.status === 'accepted'
