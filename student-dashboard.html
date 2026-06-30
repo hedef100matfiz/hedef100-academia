@@ -103,6 +103,14 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 <span class="text-sm">Deneme Girişi</span>
             </button>
+            <button onclick="switchSection('reportcards')" id="nav-reportcards" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="text-sm">Karnelerim</span>
+            </button>
+            <button onclick="switchSection('announcements')" id="nav-announcements" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+                <span class="text-sm">Kurum Duyuruları</span>
+            </button>
             <button onclick="switchSection('koc')" id="nav-koc" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 <span class="text-sm">Koçluk & İletişim</span>
@@ -338,6 +346,30 @@
                 </div>
             </div>
 
+            <div id="section-reportcards" class="section-hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4 mb-4">
+                    <h2 class="text-2xl font-black text-white">📝 Kurumsal Karnelerim</h2>
+                    <p class="text-xs text-slate-400">Bağlı olduğunuz kurum tarafından yayınlanan değerlendirmeleriniz.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="reportCardList">
+                    <div class="glass-card p-6 rounded-2xl flex items-center justify-center border-dashed border border-slate-800">
+                        <p class="text-slate-500 text-sm font-bold">Karneniz bulunmuyor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-announcements" class="section-hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4 mb-4">
+                    <h2 class="text-2xl font-black text-white">📢 Kurum Duyuruları</h2>
+                    <p class="text-xs text-slate-400">Kurumunuzdan gelen güncel duyurular ve mesajlar.</p>
+                </div>
+                <div class="max-w-2xl space-y-4" id="announcementList">
+                    <div class="glass-card p-6 rounded-2xl flex items-center justify-center border-dashed border border-slate-800">
+                        <p class="text-slate-500 text-sm font-bold">Yeni duyuru yok.</p>
+                    </div>
+                </div>
+            </div>
+
             <div id="section-koc" class="section-hidden space-y-6">
                 <div class="border-b border-slate-800 pb-4 mb-4">
                     <h2 class="text-2xl font-black text-white">🌍 Global Mentorlük ve Eğitmen Ağı</h2>
@@ -349,6 +381,18 @@
                             <div class="flex items-center gap-3">
                                 <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shrink-0">AK</div>
                                 <div><h4 class="text-sm font-black text-white">Ahmet Kula</h4><p class="text-[9px] text-orange-400 uppercase tracking-widest font-bold">Matematik & Fizik</p></div>
+                            </div>
+                        </div>
+                        <div onclick="triggerToast('Elif Hocanın profili yükleniyor...', 'info')" class="glass-card p-4 rounded-2xl border border-slate-800 hover:border-slate-600 cursor-pointer transition-all opacity-70 hover:opacity-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shrink-0">EY</div>
+                                <div><h4 class="text-sm font-black text-white">Elif Yılmaz</h4><p class="text-[9px] text-slate-400 uppercase tracking-widest font-bold">Türkçe & Edebiyat</p></div>
+                            </div>
+                        </div>
+                        <div onclick="triggerToast('Burak Hocanın profili yükleniyor...', 'info')" class="glass-card p-4 rounded-2xl border border-slate-800 hover:border-slate-600 cursor-pointer transition-all opacity-70 hover:opacity-100">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shrink-0">BA</div>
+                                <div><h4 class="text-sm font-black text-white">Burak Arslan</h4><p class="text-[9px] text-slate-400 uppercase tracking-widest font-bold">Fen Bilimleri</p></div>
                             </div>
                         </div>
                     </div>
@@ -541,7 +585,7 @@
             addStudentTask, listenStudentTasks, toggleStudentTask, deleteStudentTask,
             saveExamResult, uploadProfilePhoto, updateUserProfile,
             logoutUser as firebaseLogout, listenStudentCoachingRequests, addCoachingMessage,
-            joinClassWithCode
+            joinClassWithCode, listenReportCards, listenAnnouncements
         } from './firebase-shared.js';
 
         let currentStudentInfo = null;
@@ -591,6 +635,55 @@
                     listenStudentCoachingRequests(user.uid, (requests) => {
                         renderCoachingRequests(requests);
                     });
+
+                    // Kurum Entegrasyonları: Karne ve Duyurular
+                    if(data.kurumId) {
+                        listenReportCards(user.uid, (cards) => {
+                            const container = document.getElementById('reportCardList');
+                            if(cards.length > 0) {
+                                container.innerHTML = '';
+                                cards.forEach(c => {
+                                    container.innerHTML += `
+                                        <div class="glass-card p-6 rounded-2xl shadow-lg border border-slate-800 hover:border-indigo-500 transition-colors">
+                                            <div class="flex justify-between items-start mb-4">
+                                                <h3 class="text-lg font-black text-white">${c.title}</h3>
+                                                <span class="text-[10px] font-bold bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded">KARNE</span>
+                                            </div>
+                                            <div class="mb-4">
+                                                <p class="text-xs text-slate-500 uppercase font-bold tracking-widest mb-1">Kurum Notu / Puan</p>
+                                                <p class="text-3xl font-black text-emerald-400 font-mono">${c.score}</p>
+                                            </div>
+                                            <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                                                <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Eğitmen Görüşü</p>
+                                                <p class="text-xs text-slate-300 italic">"${c.feedback}"</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+                            }
+                        });
+
+                        listenAnnouncements(data.kurumId, 'student', (msgs) => {
+                            const container = document.getElementById('announcementList');
+                            if(msgs.length > 0) {
+                                container.innerHTML = '';
+                                msgs.forEach(m => {
+                                    const timeStr = m.createdAt ? new Date(m.createdAt.toDate()).toLocaleString() : 'Az önce';
+                                    container.innerHTML += `
+                                        <div class="glass-card p-5 rounded-2xl border-l-4 border-orange-500 shadow-md transition-transform hover:scale-[1.01]">
+                                            <div class="flex justify-between items-start mb-2">
+                                                <h4 class="font-bold text-white text-sm">Kurum Duyurusu</h4>
+                                                <span class="text-[10px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded">${timeStr}</span>
+                                            </div>
+                                            <p class="text-xs text-slate-300 leading-relaxed">${m.message}</p>
+                                        </div>
+                                    `;
+                                });
+                                // Butonda yeni duyuru bildirimi gösterebiliriz (basitçe toast)
+                            }
+                        });
+                    }
+
                 } else {
                     window.location.href = 'login.html';
                 }
@@ -1047,4 +1140,3 @@
     </script>
 </body>
 </html>
-
