@@ -61,18 +61,22 @@ export async function sendCoachingRequest(data) {
 }
 
 export function listenCoachingRequests(teacherId, callback) {
-    // Şimdilik demo ve test amaçlı WHERE filtresini kaldırdık. 
-    // Böylece öğrencinin attığı istek herhangi bir öğretmenin paneline anında düşecek.
-    const q = query(
-        collection(db, "coachingRequests"), 
-        orderBy("createdAt", "desc")
-    );
+    // Tüm koçluk taleplerini çekip istemci tarafında tarihe göre sıralıyoruz (Firebase Index hatasını önlemek için)
+    const q = query(collection(db, "coachingRequests"));
     
     return onSnapshot(q, (snapshot) => {
         const requests = [];
         snapshot.forEach((doc) => {
             requests.push({ id: doc.id, ...doc.data() });
         });
+        
+        // Frontend Sıralama (En yeniden eskiye)
+        requests.sort((a, b) => {
+            const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
+            const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
+            return timeB - timeA;
+        });
+        
         callback(requests);
     });
 }
@@ -118,14 +122,26 @@ export async function addAssignment(data) {
 }
 
 export function listenAssignments(targetClass, callback) {
-    const q = query(
-        collection(db, "assignments"),
-        where("targetClass", "in", [targetClass, "all"]),
-        orderBy("createdAt", "desc")
-    );
+    // Firebase Composite Index hatasını önlemek için filtreleme ve sıralamayı frontend'de yapıyoruz
+    const q = query(collection(db, "assignments"));
+    
     return onSnapshot(q, (snapshot) => {
         const assignments = [];
-        snapshot.forEach((doc) => assignments.push({ id: doc.id, ...doc.data() }));
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            // Sadece ilgili sınıfın veya tüm sınıfların ödevlerini al
+            if (data.targetClass === targetClass || data.targetClass === "all" || targetClass === "all") {
+                assignments.push({ id: doc.id, ...data });
+            }
+        });
+        
+        // Frontend Sıralama
+        assignments.sort((a, b) => {
+            const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
+            const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
+            return timeB - timeA;
+        });
+        
         callback(assignments);
     });
 }
@@ -155,10 +171,19 @@ export async function askQuestion(data) {
 }
 
 export function listenErrorBox(callback) {
-    const q = query(collection(db, "errorBox"), orderBy("createdAt", "desc"));
+    // Index hatasını engellemek için orderBy kaldırıldı, frontend'de sıralanıyor
+    const q = query(collection(db, "errorBox"));
     return onSnapshot(q, (snapshot) => {
         const questions = [];
         snapshot.forEach((doc) => questions.push({ id: doc.id, ...doc.data() }));
+        
+        // Frontend Sıralama
+        questions.sort((a, b) => {
+            const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
+            const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
+            return timeB - timeA;
+        });
+        
         callback(questions);
     });
 }
