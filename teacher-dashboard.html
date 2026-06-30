@@ -57,6 +57,10 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 <span class="text-sm">Yönetim Özeti</span>
             </button>
+            <button onclick="switchSection('classes')" id="nav-classes" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+    <span class="text-sm">Sınıflar & Davetler</span>
+</button>
             <button onclick="switchSection('attendance')" id="nav-attendance" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                 <span class="text-sm">Sınıflar & Yoklama</span>
@@ -155,6 +159,65 @@
                 </div>
             </div>
 
+                        <!-- ================= SEKMELER YENİ: SINIF & DAVET YÖNETİMİ ================= -->
+            <div id="section-classes" class="section-hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Sınıf Oluşturma Formu -->
+                    <div class="glass-card rounded-[2rem] p-6 md:p-8 border-l-4 border-indigo-500">
+                        <h3 class="text-lg font-black text-white mb-4 border-b border-slate-800 pb-3 flex items-center gap-2">🏫 Yeni Sınıf Oluştur</h3>
+                        <form id="createClassForm" class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Sınıf Adı</label>
+                                <input type="text" id="newClassName" placeholder="Örn: 12-A Sayısal Derece" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required>
+                            </div>
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 rounded-xl transition-all text-xs uppercase shadow-md">Sınıfı Kaydet</button>
+                        </form>
+                    </div>
+
+                    <!-- Öğrenci Davet Kodu Üretme Formu -->
+                    <div class="glass-card rounded-[2rem] p-6 md:p-8 border-l-4 border-emerald-500">
+                        <h3 class="text-lg font-black text-white mb-4 border-b border-slate-800 pb-3 flex items-center gap-2">🎫 Öğrenci Davet Kodu Üret</h3>
+                        <form id="createInviteCodeForm" class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hangi Sınıf İçin?</label>
+                                <select id="inviteClassSelect" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-emerald-500 cursor-pointer" required>
+                                    <option value="">Önce sınıf oluşturun...</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Özel Kod (İsteğe Bağlı)</label>
+                                <input type="text" id="customInviteCode" placeholder="Boş bırakırsanız rastgele üretilir" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-emerald-500 uppercase">
+                            </div>
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition-all text-xs uppercase shadow-md">Kodu Üret</button>
+                        </form>
+                        <div id="generatedCodeDisplay" class="mt-4 hidden bg-slate-900/80 border border-emerald-500/30 p-4 rounded-xl text-center">
+                            <p class="text-[10px] text-slate-400 uppercase font-bold mb-1">Öğrenci Kayıt Kodu</p>
+                            <p id="generatedCodeText" class="text-2xl font-black text-emerald-400 tracking-widest select-all"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mevcut Sınıflar Listesi -->
+                <div class="glass-card rounded-[1.5rem] border border-slate-800 overflow-hidden">
+                    <div class="p-4 bg-slate-900/50 border-b border-slate-800">
+                        <h3 class="font-bold text-white text-sm">Oluşturduğunuz Sınıflar</h3>
+                    </div>
+                    <div class="w-full overflow-x-auto">
+                        <table class="w-full text-left text-xs md:text-sm min-w-[500px]">
+                            <thead class="bg-slate-900/80 text-slate-400 uppercase font-bold text-[10px] border-b border-slate-800">
+                                <tr>
+                                    <th class="p-4">Sınıf Adı</th>
+                                    <th class="p-4 text-center">Kayıtlı Öğrenci</th>
+                                    <th class="p-4 text-right pr-6">İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody id="classesTableBody" class="divide-y divide-slate-800/50 font-medium text-slate-300">
+                                <tr><td colspan="3" class="p-4 text-center text-slate-500 italic">Yükleniyor...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <!-- ================= SEKMELER 2: SINIFLAR VE YOKLAMA ================= -->
             <div id="section-attendance" class="section-hidden space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-2">
@@ -425,8 +488,13 @@
     </script>
 
     <!-- ================= FIREBASE AUTH VE VERİTABANI ================= -->
+       <!-- ================= FIREBASE AUTH VE VERİTABANI ================= -->
     <script type="module">
-        import { auth, listenAuthState, getUserProfile, listenCoachingRequests, updateCoachingRequest, getStudentsByClass, saveAttendance, addAssignment, listenAssignments, listenErrorBox } from './firebase-shared.js';
+        import { 
+            auth, listenAuthState, getUserProfile, listenCoachingRequests, updateCoachingRequest, 
+            getStudentsByClass, saveAttendance, addAssignment, listenAssignments, listenErrorBox,
+            createClass, listenClasses, createInviteCode, uploadProfilePhoto, updateUserProfile
+        } from './firebase-shared.js';
 
         listenAuthState(async (user) => {
             if (user) {
@@ -436,27 +504,193 @@
                     document.getElementById('teacherNameDisplay').innerText = fullName;
                     document.getElementById('welcomeName').innerText = data.firstName + " Hocam";
                     document.getElementById('teacherBranch').innerText = data.specialtyOrExam || "EĞİTMEN";
-                    document.getElementById('teacherAvatar').innerText = (data.firstName.charAt(0) + data.lastName.charAt(0)).toUpperCase();
                     
-                    document.getElementById('setFirstName').value = data.firstName;
-                    document.getElementById('setLastName').value = data.lastName;
-                    document.getElementById('setBranch').value = data.specialtyOrExam || "Belirtilmemiş";
+                    const avatarDiv = document.getElementById('teacherAvatar');
+                    const settingsInitial = document.getElementById('settingsAvatarInitial');
+                    const settingsPreview = document.getElementById('settingsAvatarPreview');
+                    
+                    if(data.photoURL) {
+                        avatarDiv.innerHTML = `<img src="${data.photoURL}" class="w-full h-full object-cover rounded-xl" alt="Profil">`;
+                        if(settingsInitial) settingsInitial.classList.add('hidden');
+                        
+                        let currentImg = document.getElementById('settingsCurrentPhoto');
+                        if(!currentImg && settingsPreview) {
+                            currentImg = document.createElement('img');
+                            currentImg.className = 'absolute inset-0 w-full h-full object-cover z-10';
+                            currentImg.id = 'settingsCurrentPhoto';
+                            settingsPreview.appendChild(currentImg);
+                        }
+                        if(currentImg) currentImg.src = data.photoURL;
+                    } else {
+                        const initial = (data.firstName.charAt(0) + data.lastName.charAt(0)).toUpperCase();
+                        avatarDiv.innerHTML = initial;
+                        if(settingsInitial) settingsInitial.innerText = initial;
+                    }
+                    
+                    document.getElementById('setFirstName').value = data.firstName || '';
+                    document.getElementById('setLastName').value = data.lastName || '';
+                    document.getElementById('setBranch').value = data.specialtyOrExam || '';
+
+                    // === 0. SINIF YÖNETİMİ VE DİNAMİK LİSTELER ===
+                    const classSelectAttendance = document.getElementById('classSelectAttendance');
+                    const assignClassSelect = document.getElementById('assignClass');
+                    const inviteClassSelect = document.getElementById('inviteClassSelect');
+                    const classesTableBody = document.getElementById('classesTableBody');
+                    
+                    listenClasses(user.uid, (classes) => {
+                        let optionsHTML = classes.length === 0 ? '<option value="">Önce sınıf oluşturun...</option>' : '';
+                        classes.forEach(c => { optionsHTML += `<option value="${c.id}">${c.name}</option>`; });
+                        
+                        if(classSelectAttendance) {
+                            classSelectAttendance.innerHTML = optionsHTML;
+                            loadStudentsForAttendance(); 
+                        }
+                        if(inviteClassSelect) inviteClassSelect.innerHTML = optionsHTML;
+                        if(assignClassSelect) assignClassSelect.innerHTML = '<option value="all">Tüm Sınıflar</option>' + optionsHTML;
+
+                        if(classesTableBody) {
+                            if(classes.length === 0) {
+                                classesTableBody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500 italic">Henüz oluşturduğunuz bir sınıf yok.</td></tr>';
+                            } else {
+                                classesTableBody.innerHTML = '';
+                                classes.forEach(async (c) => {
+                                    const tr = document.createElement('tr');
+                                    tr.className = 'hover:bg-slate-800/30 transition-colors';
+                                    tr.innerHTML = `
+                                        <td class="p-4 font-bold text-white">${c.name}</td>
+                                        <td class="p-4 text-center"><span class="bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded text-[10px] uppercase font-bold border border-indigo-500/20 shadow-sm">Yükleniyor</span></td>
+                                        <td class="p-4 text-right pr-6"><button onclick="triggerToast('Öğrenci Listesi Yakında!')" class="text-slate-400 hover:text-white transition-colors text-xs font-bold uppercase">Görüntüle</button></td>
+                                    `;
+                                    classesTableBody.appendChild(tr);
+                                    
+                                    const stuCount = (await getStudentsByClass(c.id)).length;
+                                    tr.children[1].innerHTML = `<span class="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded text-[10px] uppercase font-bold border border-emerald-500/20 shadow-sm">${stuCount} Öğrenci</span>`;
+                                });
+                            }
+                        }
+                    });
+
+                    // Sınıf Oluşturma Formu Tetikleyicisi
+                    const createClassForm = document.getElementById('createClassForm');
+                    if(createClassForm) {
+                        createClassForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const className = document.getElementById('newClassName').value.trim();
+                            triggerToast('Sınıf oluşturuluyor...');
+                            const res = await createClass(user.uid, className);
+                            if(res.success) {
+                                triggerToast('Sınıf başarıyla oluşturuldu!');
+                                createClassForm.reset();
+                            } else triggerToast('Hata oluştu.');
+                        });
+                    }
+
+                    // Davet Kodu Üretme Formu Tetikleyicisi
+                    const createInviteForm = document.getElementById('createInviteCodeForm');
+                    if(createInviteForm) {
+                        createInviteForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const select = document.getElementById('inviteClassSelect');
+                            const classId = select.value;
+                            const className = select.options[select.selectedIndex]?.text;
+                            const customCode = document.getElementById('customInviteCode').value.trim();
+                            
+                            if(!classId) return triggerToast('Önce bir sınıf seçmelisiniz.');
+                            triggerToast('Davet kodu üretiliyor...');
+                            const res = await createInviteCode(user.uid, classId, className, customCode);
+                            
+                            if(res.success) {
+                                triggerToast('Kod başarıyla üretildi!');
+                                document.getElementById('generatedCodeDisplay').classList.remove('hidden');
+                                document.getElementById('generatedCodeText').innerText = res.code;
+                                createInviteForm.reset();
+                            } else triggerToast(res.error || 'Hata oluştu.');
+                        });
+                    }
+
+                    // Ayarlar Formu ve Profil Fotoğrafı Tetikleyicisi
+                    let newPhotoFile = null;
+                    const photoInput = document.getElementById('profilePhotoInput');
+                    if(photoInput) {
+                        photoInput.addEventListener('change', (e) => {
+                            if(e.target.files && e.target.files[0]) {
+                                newPhotoFile = e.target.files[0];
+                                document.getElementById('photoUploadStatus').classList.remove('hidden');
+                                
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    if(settingsInitial) settingsInitial.classList.add('hidden');
+                                    let currentImg = document.getElementById('settingsCurrentPhoto');
+                                    if(!currentImg && settingsPreview) {
+                                        currentImg = document.createElement('img');
+                                        currentImg.id = 'settingsCurrentPhoto';
+                                        currentImg.className = 'absolute inset-0 w-full h-full object-cover z-10';
+                                        settingsPreview.appendChild(currentImg);
+                                    }
+                                    if(currentImg) currentImg.src = e.target.result;
+                                }
+                                reader.readAsDataURL(newPhotoFile);
+                            }
+                        });
+                    }
+
+                    const profileForm = document.getElementById('profileSettingsForm');
+                    if(profileForm) {
+                        profileForm.addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const btn = document.getElementById('saveProfileBtn');
+                            btn.disabled = true;
+                            btn.innerHTML = `Kaydediliyor...`;
+                            
+                            let updateData = {
+                                firstName: document.getElementById('setFirstName').value,
+                                lastName: document.getElementById('setLastName').value,
+                                specialtyOrExam: document.getElementById('setBranch').value,
+                            };
+
+                            if(newPhotoFile) {
+                                triggerToast("Fotoğraf yükleniyor...");
+                                const photoURL = await uploadProfilePhoto(newPhotoFile, user.uid);
+                                if(photoURL) {
+                                    updateData.photoURL = photoURL;
+                                    avatarDiv.innerHTML = `<img src="${photoURL}" class="w-full h-full object-cover rounded-xl" alt="Profil">`;
+                                }
+                            }
+
+                            const success = await updateUserProfile(user.uid, updateData);
+                            if(success) {
+                                triggerToast('Profil başarıyla güncellendi!');
+                                document.getElementById('photoUploadStatus').classList.add('hidden');
+                                document.getElementById('teacherNameDisplay').innerText = updateData.firstName + " " + updateData.lastName;
+                                document.getElementById('welcomeName').innerText = updateData.firstName + " Hocam";
+                                document.getElementById('teacherBranch').innerText = updateData.specialtyOrExam;
+                                newPhotoFile = null;
+                            } else triggerToast('Hata oluştu.');
+                            
+                            btn.disabled = false;
+                            btn.innerHTML = `<span>Değişiklikleri İşle</span>`;
+                        });
+                    }
 
                     // === 1. YOKLAMA SİSTEMİ DİNAMİKLEŞTİRME ===
-                    const classSelect = document.getElementById('classSelectAttendance');
                     const attendanceBody = document.getElementById('attendanceTableBody');
 
                     async function loadStudentsForAttendance() {
-                        if(!classSelect || !attendanceBody) return;
-                        const classId = classSelect.value;
+                        if(!classSelectAttendance || !attendanceBody) return;
+                        const classId = classSelectAttendance.value;
+                        if(!classId) {
+                            attendanceBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Lütfen önce bir sınıf seçin veya oluşturun.</td></tr>`;
+                            return;
+                        }
+                        
                         const students = await getStudentsByClass(classId);
                         
                         attendanceBody.innerHTML = '';
                         if(students.length === 0) {
-                            attendanceBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Bu sınıfta kayıtlı öğrenci bulunamadı. Lütfen sisteme öğrenci kayıt edin.</td></tr>`;
+                            attendanceBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Bu sınıfta kayıtlı öğrenci bulunamadı. Lütfen sisteme öğrenci davet edin.</td></tr>`;
                             return;
                         }
-                        
+
                         students.forEach((student, index) => {
                             attendanceBody.innerHTML += `
                                 <tr class="hover:bg-slate-800/30 transition-colors">
@@ -480,15 +714,16 @@
                         });
                     }
 
-                    if(classSelect) {
-                        classSelect.addEventListener('change', loadStudentsForAttendance);
-                        loadStudentsForAttendance(); // İlk yükleme
+                    if(classSelectAttendance) {
+                        classSelectAttendance.addEventListener('change', loadStudentsForAttendance);
                     }
 
                     const attForm = document.getElementById('attendanceForm');
                     if(attForm) {
                         attForm.addEventListener('submit', async (e) => {
                             e.preventDefault();
+                            if(!classSelectAttendance.value) return triggerToast("Lütfen bir sınıf seçin!");
+                            
                             const absentStudents = [];
                             const formData = new FormData(attForm);
                             for(let [key, value] of formData.entries()) {
@@ -496,151 +731,137 @@
                             }
                             
                             triggerToast("Yoklama kaydediliyor...");
-                            const success = await saveAttendance(new Date().toISOString(), classSelect.value, user.uid, absentStudents);
+                            const success = await saveAttendance(new Date().toISOString(), classSelectAttendance.value, user.uid, absentStudents);
                             if(success) triggerToast("Yoklama başarıyla kaydedildi!");
                             else triggerToast("Yoklama kaydedilirken hata oluştu.");
                         });
                     }
 
                     // === 2. ÖDEV SİSTEMİ DİNAMİKLEŞTİRME ===
-                    const assignForm = document.getElementById('newAssignmentForm');
-                    if(assignForm) {
-                        assignForm.addEventListener('submit', async (e) => {
-                            e.preventDefault();
-                            const targetClass = document.getElementById('assignClass').value;
-                            const title = document.getElementById('assignTitle').value;
-                            const desc = document.getElementById('assignDesc').value;
-                            const deadline = document.getElementById('assignDeadline').value;
-                            
-                            triggerToast("Ödev gönderiliyor...");
-                            const success = await addAssignment({ teacherId: user.uid, targetClass, title, description: desc, deadline });
-                            if(success) {
-                                triggerToast("Görev öğrencilere iletildi!");
-                                assignForm.reset();
-                            }
-                        });
-                    }
-
                     listenAssignments("all", (assignments) => {
-                        const list = document.getElementById('assignmentsList');
-                        if(!list) return;
+                        const tbody = document.getElementById('assignmentsTableBody');
+                        if (!tbody) return;
                         
-                        list.innerHTML = `<div class="flex justify-between items-center bg-slate-900/50 p-4 rounded-[1rem] border border-slate-800"><span class="font-bold text-slate-300 text-sm">Aktif Görevler ve Tamamlanma Durumu</span></div>`;
-                        
-                        if(assignments.length === 0) list.innerHTML += '<p class="text-slate-500 text-sm italic p-4">Henüz verilmiş bir görev yok.</p>';
-
-                        assignments.forEach(task => {
-                            list.innerHTML += `
-                                <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-indigo-500 mb-3">
-                                    <div class="flex-1">
-                                        <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-indigo-500/20 mb-2 inline-block">${task.targetClass}</span>
-                                        <h4 class="font-bold text-white text-base">${task.title}</h4>
-                                        <p class="text-xs text-slate-400 mt-1">Son Teslim: ${task.deadline}</p>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    });
-
-                    // === 3. HATA KUTUSU (ÇÖZÜM HAVUZU) DİNAMİKLEŞTİRME ===
-                    listenErrorBox((questions) => {
-                        const grid = document.getElementById('solutionsGrid');
-                        if(!grid) return;
-                        grid.innerHTML = '';
-                        
-                        if(questions.length === 0) {
-                            grid.innerHTML = '<p class="text-slate-500 text-sm italic col-span-full">Şu an hata kutusunda bekleyen soru yok.</p>';
+                        tbody.innerHTML = '';
+                        if(assignments.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Henüz aktif görev bulunmuyor.</td></tr>`;
                             return;
                         }
+
+                        assignments.forEach(task => {
+                            let statusBadge = '';
+                            if(task.status === 'active') statusBadge = '<span class="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded text-[10px] uppercase font-bold border border-emerald-500/20">Aktif</span>';
+                            else if(task.status === 'completed') statusBadge = '<span class="bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded text-[10px] uppercase font-bold border border-indigo-500/20">Tamamlandı</span>';
+                            
+                            tbody.innerHTML += `
+                                <tr class="hover:bg-slate-800/30 transition-colors">
+                                    <td class="p-4 font-bold text-white">${task.title} <br> <span class="text-[10px] font-normal text-slate-500">${task.description}</span></td>
+                                    <td class="p-4 text-center"><span class="bg-slate-800 px-2 py-1 rounded text-xs border border-slate-700">${task.targetClass === 'all' ? 'Tüm Sınıflar' : task.targetClass}</span></td>
+                                    <td class="p-4 text-center">${statusBadge}</td>
+                                    <td class="p-4 text-right pr-6"><span class="text-orange-400 font-bold text-xs">${task.deadline}</span></td>
+                                </tr>
+                            `;
+                        });
+                    });
+
+                    document.getElementById('newAssignmentForm').addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        const data = {
+                            teacherId: user.uid,
+                            targetClass: document.getElementById('assignClass').value,
+                            title: document.getElementById('assignTitle').value,
+                            description: document.getElementById('assignDesc').value,
+                            deadline: document.getElementById('assignDeadline').value,
+                            status: 'active'
+                        };
+                        triggerToast("Görev atanıyor...");
+                        const success = await addAssignment(data);
+                        if(success) {
+                            triggerToast("Görev başarıyla atandı!");
+                            e.target.reset();
+                        } else triggerToast("Görev atanamadı.");
+                    });
+
+                    // === 3. HATA KUTUSU (Gelen Sorular) ===
+                    listenErrorBox((questions) => {
+                        const tbody = document.getElementById('errorBoxTableBody');
+                        if (!tbody) return;
+
+                        tbody.innerHTML = '';
+                        if(questions.length === 0) {
+                            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Cevaplanmamış soru bulunmuyor.</td></tr>`;
+                            return;
+                        }
+
+                        questions.forEach((q, i) => {
+                            tbody.innerHTML += `
+                                <tr class="hover:bg-slate-800/30 transition-colors">
+                                    <td class="p-4 text-center font-mono text-slate-500">${i + 1}</td>
+                                    <td class="p-4 font-bold text-white">Öğrenci #${q.studentId.substring(0,4)}<br><span class="text-[10px] font-normal text-slate-500">${new Date(q.createdAt?.toDate()).toLocaleDateString() || 'Yeni'}</span></td>
+                                    <td class="p-4">
+                                        <p class="text-sm line-clamp-1 mb-1">${q.questionText}</p>
+                                        ${q.imageUrl ? `<a href="${q.imageUrl}" target="_blank" class="text-[10px] text-emerald-400 hover:text-emerald-300 underline font-bold">Görseli Görüntüle ↗</a>` : ''}
+                                    </td>
+                                    <td class="p-4 text-right pr-6"><button onclick="triggerToast('Yanıt ekranı açılıyor')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-md">Yanıtla</button></td>
+                                </tr>
+                            `;
+                        });
+                    });
+
+                    // === 4. KOÇLUK TALEPLERİ ===
+                    listenCoachingRequests(user.uid, (requests) => {
+                        const list = document.getElementById('coachingRequestsList');
+                        const countBadge = document.getElementById('coachingCountBadge');
+                        if (!list) return;
+
+                        list.innerHTML = '';
+                        const pendingRequests = requests.filter(r => r.status === 'pending');
                         
-                        questions.forEach(q => {
-                            const timeStr = q.createdAt ? new Date(q.createdAt.toDate()).toLocaleString() : 'Az önce';
-                            grid.innerHTML += `
-                                <div class="glass-card rounded-[1.5rem] overflow-hidden border border-slate-800 group">
-                                    <div class="h-40 bg-slate-900 border-b border-slate-800 flex items-center justify-center relative overflow-hidden">
-                                        ${q.imageUrl ? `<img src="${q.imageUrl}" class="absolute inset-0 w-full h-full object-cover opacity-80" alt="Soru">` : '<span class="text-5xl opacity-50">📷</span>'}
-                                        <div class="absolute bottom-2 right-2 bg-indigo-600 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow">${q.subject || 'Soru'}</div>
-                                    </div>
-                                    <div class="p-5">
-                                        <div class="flex justify-between items-start mb-3">
-                                            <div><h4 class="font-bold text-white text-sm">${q.studentName || 'Bilinmiyor'}</h4><p class="text-[10px] text-slate-500">${timeStr}</p></div>
-                                            <span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-bold px-2 py-1 rounded">Çözüm Bekliyor</span>
+                        if(countBadge) countBadge.innerText = pendingRequests.length;
+
+                        if (pendingRequests.length === 0) {
+                            list.innerHTML = `<div class="p-6 text-center text-slate-500 italic text-sm">Bekleyen koçluk talebi yok. Harika!</div>`;
+                            return;
+                        }
+
+                        pendingRequests.forEach(req => {
+                            list.innerHTML += `
+                                <div class="p-4 bg-slate-900/50 rounded-xl border border-slate-700 hover:border-slate-600 transition-colors" id="req-${req.id}">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h4 class="font-bold text-white text-sm">Öğrenci Adı Soyadı (ID: ${req.studentId.substring(0,4)})</h4>
+                                            <p class="text-xs text-slate-400 mt-1">${req.message}</p>
                                         </div>
-                                        <button onclick="triggerToast('Çözüm yükleme özelliği (Faz 4) çok yakında!')" class="w-full mt-2 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white font-bold py-2.5 rounded-xl text-xs transition-colors">
-                                            Çözümü Yükle
-                                        </button>
+                                        <span class="bg-orange-500/10 text-orange-400 px-2 py-1 rounded text-[10px] font-black uppercase tracking-wider border border-orange-500/20">YENİ</span>
+                                    </div>
+                                    <div class="flex gap-2 mt-3">
+                                        <button onclick="handleCoaching('${req.id}', 'accepted')" class="flex-1 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-600/30 font-bold py-2 rounded-lg transition-all text-xs">Kabul Et</button>
+                                        <button onclick="handleCoaching('${req.id}', 'rejected')" class="flex-1 bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 border border-rose-600/30 font-bold py-2 rounded-lg transition-all text-xs">Reddet</button>
                                     </div>
                                 </div>
                             `;
                         });
                     });
-
-                    // === GERÇEK ZAMANLI KOÇLUK TALEBİ DİNLEME ===
-                    listenCoachingRequests(user.uid, (requests) => {
-                        const listContainer = document.getElementById('coachingRequestList');
-                        const countBadge = document.getElementById('coachingRequestCount');
-                        
-                        if(listContainer) {
-                            listContainer.innerHTML = '';
-                            let pendingCount = 0;
-
-                            requests.forEach(req => {
-                                if(req.status === 'pending') pendingCount++;
-                                
-                                const statusHtml = req.status === 'pending' 
-                                    ? `<span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-bold px-2 py-1 rounded">Onay Bekliyor</span>`
-                                    : req.status === 'accepted'
-                                    ? `<span class="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[9px] font-bold px-2 py-1 rounded">Kabul Edildi</span>`
-                                    : `<span class="bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[9px] font-bold px-2 py-1 rounded">Reddedildi</span>`;
-
-                                const actionsHtml = req.status === 'pending' ? `
-                                    <div class="mt-3 flex gap-2 w-full">
-                                        <button onclick="handleRequest('${req.id}', 'accepted')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-xl text-xs transition-colors">Kabul Et</button>
-                                        <button onclick="handleRequest('${req.id}', 'rejected')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold py-2 rounded-xl text-xs transition-colors">Reddet</button>
-                                    </div>
-                                ` : '';
-
-                                listContainer.innerHTML += `
-                                    <div class="glass-card rounded-[1.5rem] border border-slate-800 p-5 group">
-                                        <div class="flex justify-between items-start mb-3">
-                                            <div>
-                                                <h4 class="font-bold text-white text-sm">Öğrenci: ${req.studentName || 'Bilinmiyor'}</h4>
-                                                <p class="text-[10px] text-slate-500 mt-1">${req.createdAt ? new Date(req.createdAt.toDate()).toLocaleString() : 'Az önce'}</p>
-                                            </div>
-                                            ${statusHtml}
-                                        </div>
-                                        <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/50 mb-3">
-                                            <p class="text-xs text-slate-300 italic">"${req.message}"</p>
-                                        </div>
-                                        ${actionsHtml}
-                                    </div>
-                                `;
-                            });
-
-                            if(countBadge) {
-                                countBadge.innerText = pendingCount + " Yeni";
-                                if(pendingCount > 0) countBadge.classList.add('animate-pulse');
-                                else countBadge.classList.remove('animate-pulse');
-                            }
-                            
-                            if(requests.length === 0) {
-                                listContainer.innerHTML = `<p class="text-slate-500 text-sm italic col-span-full">Şu an bekleyen bir koçluk talebiniz bulunmuyor.</p>`;
-                            }
-                        }
-                    });
-                } else {
-                    window.location.href = 'login.html';
                 }
             } else {
                 window.location.href = 'login.html';
             }
         });
 
-        window.handleRequest = async function(reqId, status) {
-            const success = await updateCoachingRequest(reqId, status);
+        window.handleCoaching = async (id, status) => {
+            triggerToast("İşlem yapılıyor...");
+            const success = await updateCoachingRequest(id, status);
             if(success) {
-                triggerToast(status === 'accepted' ? 'Talep kabul edildi!' : 'Talep reddedildi.');
+                document.getElementById(`req-${id}`).remove();
+                triggerToast(status === 'accepted' ? "Talep kabul edildi!" : "Talep reddedildi.");
+            } else {
+                triggerToast("İşlem sırasında hata oluştu.");
             }
+        };
+
+        window.logout = async () => {
+            await auth.signOut();
+            window.location.href = 'login.html';
         };
     </script>
 </body>
