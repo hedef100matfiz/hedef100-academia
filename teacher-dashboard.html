@@ -86,6 +86,10 @@
                 <span class="text-sm">Gelen Talepler</span>
                 <span id="coachingRequestCount" class="ml-auto bg-amber-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-black shadow-md">0</span>
             </button>
+            <button onclick="switchSection('active-coaching')" id="nav-active-coaching" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent text-emerald-400 hover:text-emerald-300">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
+                <span class="text-sm">Aktif Koçluklar</span>
+            </button>
         </nav>
 
         <div class="p-4 border-t border-slate-800 bg-slate-950/50">
@@ -334,11 +338,26 @@
             <div id="section-requests" class="section-hidden space-y-6">
                 <div class="border-b border-slate-800 pb-4 mb-4">
                     <h2 class="text-xl md:text-2xl font-black text-white">Öğrenci Koçluk & Mentorluk Talepleri</h2>
-                    <p class="text-xs text-slate-400 mt-1">Öğrencilerden gelen mentorluk taleplerini buradan onaylayabilir veya reddedebilirsiniz.</p>
+                    <p class="text-xs text-slate-400 mt-1">Öğrencilerden gelen beklemedeki talepler burada görünür. Onayladıklarınız "Aktif Koçluklar" sekmesine taşınır.</p>
                 </div>
 
                 <div id="coachingRequestList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <p class="text-slate-500 text-sm italic col-span-full">Talepler yükleniyor...</p>
+                </div>
+            </div>
+
+            <!-- ================= SEKMELER 8: AKTİF KOÇLUKLAR ================= -->
+            <div id="section-active-coaching" class="section-hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4 mb-4 flex items-start sm:items-center gap-4">
+                    <div class="w-12 h-12 bg-emerald-500/20 text-emerald-500 rounded-xl flex items-center justify-center font-black text-2xl shadow-inner shrink-0">💬</div>
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-black text-white">Aktif Koçluklar & Mesajlaşma</h2>
+                        <p class="text-xs text-slate-400 mt-1">Kabul ettiğiniz öğrencilerle anlık olarak mesajlaşın, gelişimlerini takip edin.</p>
+                    </div>
+                </div>
+
+                <div id="activeCoachingList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <p class="text-slate-500 text-sm italic col-span-full">Henüz aktif bir koçluk kabul etmediniz.</p>
                 </div>
             </div>
 
@@ -512,7 +531,7 @@
         import { 
             auth, listenAuthState, getUserProfile, listenCoachingRequests, updateCoachingRequest, 
             getStudentsByClass, saveAttendance, addAssignment, listenAssignments, listenErrorBox,
-            createClass, listenClasses, createInviteCode, uploadProfilePhoto, updateUserProfile
+            createClass, listenClasses, createInviteCode, uploadProfilePhoto, updateUserProfile, addCoachingMessage
         } from './firebase-shared.js';
 
         listenAuthState(async (user) => {
@@ -832,43 +851,89 @@
                     // === GERÇEK ZAMANLI KOÇLUK TALEBİ DİNLEME ===
                     listenCoachingRequests(user.uid, (requests) => {
                         const listContainer = document.getElementById('coachingRequestList');
+                        const activeContainer = document.getElementById('activeCoachingList');
                         const countBadge = document.getElementById('coachingRequestCount');
                         
-                        if(listContainer) {
+                        if(listContainer && activeContainer) {
                             listContainer.innerHTML = '';
+                            activeContainer.innerHTML = '';
                             let pendingCount = 0;
+                            let activeCount = 0;
 
                             requests.forEach(req => {
-                                if(req.status === 'pending') pendingCount++;
+                                // Reddedilenleri hiçbir listede gösterme
+                                if(req.status === 'rejected') return;
 
-                                const statusHtml = req.status === 'pending' 
-                                    ? `<span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-bold px-2 py-1 rounded">Onay Bekliyor</span>`
-                                    : req.status === 'accepted'
-                                    ? `<span class="bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[9px] font-bold px-2 py-1 rounded">Kabul Edildi</span>`
-                                    : `<span class="bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[9px] font-bold px-2 py-1 rounded">Reddedildi</span>`;
+                                const isPending = req.status === 'pending';
+                                if(isPending) pendingCount++;
+                                else activeCount++;
 
-                                const actionsHtml = req.status === 'pending' ? `
-                                    <div class="mt-3 flex gap-2 w-full">
-                                        <button onclick="handleRequest('${req.id}', 'accepted')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-xl text-xs transition-colors">Kabul Et</button>
-                                        <button onclick="handleRequest('${req.id}', 'rejected')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold py-2 rounded-xl text-xs transition-colors">Reddet</button>
-                                    </div>
-                                ` : '';
-
-                                listContainer.innerHTML += `
-                                    <div class="glass-card rounded-[1.5rem] border border-slate-800 p-5 group">
-                                        <div class="flex justify-between items-start mb-3">
-                                            <div>
-                                                <h4 class="font-bold text-white text-sm">Öğrenci: ${req.studentName || 'Bilinmiyor'}</h4>
-                                                <p class="text-[10px] text-slate-500 mt-1">${req.createdAt ? new Date(req.createdAt.toDate()).toLocaleString() : 'Az önce'}</p>
+                                const timeStr = req.createdAt ? new Date(req.createdAt.toDate()).toLocaleString() : 'Az önce';
+                                
+                                if (isPending) {
+                                    // SADECE BEKLEYEN TALEPLER (GELEN TALEPLER SEKMESİ İÇİN)
+                                    listContainer.innerHTML += `
+                                        <div class="glass-card rounded-[1.5rem] border border-slate-800 p-5 group">
+                                            <div class="flex justify-between items-start mb-3">
+                                                <div>
+                                                    <h4 class="font-bold text-white text-sm">Öğrenci: ${req.studentName || 'Bilinmiyor'}</h4>
+                                                    <p class="text-[10px] text-slate-500 mt-1">${timeStr}</p>
+                                                </div>
+                                                <span class="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-bold px-2 py-1 rounded">Onay Bekliyor</span>
                                             </div>
-                                            ${statusHtml}
+                                            <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/50 mb-3">
+                                                <p class="text-xs text-slate-300 italic">"${req.message}"</p>
+                                            </div>
+                                            <div class="mt-3 flex gap-2 w-full">
+                                                <button onclick="handleRequest('${req.id}', 'accepted')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-xl text-xs transition-colors">Kabul Et</button>
+                                                <button onclick="handleRequest('${req.id}', 'rejected')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold py-2 rounded-xl text-xs transition-colors">Reddet</button>
+                                            </div>
                                         </div>
-                                        <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800/50 mb-3">
-                                            <p class="text-xs text-slate-300 italic">"${req.message}"</p>
+                                    `;
+                                } else {
+                                    // KABUL EDİLEN TALEPLER (AKTİF KOÇLUKLAR SEKMESİ İÇİN)
+                                    let chatHtml = '';
+                                    if(req.messages && req.messages.length > 0) {
+                                        req.messages.forEach(m => {
+                                            const align = m.senderId === user.uid ? 'text-right' : 'text-left';
+                                            const bg = m.senderId === user.uid ? 'bg-emerald-600/20 border-emerald-500/30' : 'bg-slate-800 border-slate-700';
+                                            const name = m.senderId === user.uid ? 'Siz' : (req.studentName || 'Öğrenci');
+                                            chatHtml += `
+                                                <div class="${align} mb-2">
+                                                    <span class="text-[9px] text-slate-500 font-bold uppercase block mb-0.5">${name}</span>
+                                                    <div class="inline-block ${bg} border px-3 py-1.5 rounded-lg text-xs text-white max-w-[85%]">
+                                                        ${m.text}
+                                                    </div>
+                                                </div>
+                                            `;
+                                        });
+                                    } else {
+                                        chatHtml = `<p class="text-xs text-slate-500 italic text-center py-2">Henüz mesaj yok. İlk mesajı siz gönderin.</p>`;
+                                    }
+
+                                    activeContainer.innerHTML += `
+                                        <div class="glass-card rounded-[1.5rem] border border-emerald-500/30 p-5 group flex flex-col h-80">
+                                            <div class="flex justify-between items-start mb-3 shrink-0 border-b border-slate-800 pb-3">
+                                                <div>
+                                                    <h4 class="font-bold text-white text-sm">👤 ${req.studentName || 'Bilinmiyor'}</h4>
+                                                    <p class="text-[10px] text-slate-500 mt-1">Başlangıç: ${timeStr}</p>
+                                                </div>
+                                                <button onclick="handleRequest('${req.id}', 'rejected')" title="Koçluğu Sonlandır" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 border border-rose-500/20 text-[9px] font-bold px-2 py-1 rounded transition-colors">Sonlandır</button>
+                                            </div>
+                                            
+                                            <!-- Sohbet Geçmişi Alanı -->
+                                            <div class="flex-1 overflow-y-auto pr-1 mb-3 space-y-1 custom-scrollbar" id="chat_${req.id}">
+                                                ${chatHtml}
+                                            </div>
+
+                                            <!-- Mesaj Gönderme Formu -->
+                                            <form onsubmit="sendChat(event, '${req.id}')" class="flex gap-2 shrink-0 pt-2 border-t border-slate-800">
+                                                <input type="text" placeholder="Cevap yaz..." class="flex-1 bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-3 py-2 outline-none focus:border-emerald-500" required>
+                                                <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] px-4 py-2 rounded-xl transition-colors uppercase">Gönder</button>
+                                            </form>
                                         </div>
-                                        ${actionsHtml}
-                                    </div>
-                                `;
+                                    `;
+                                }
                             });
 
                             if(countBadge) {
@@ -877,9 +942,20 @@
                                 else countBadge.classList.remove('animate-pulse');
                             }
                             
-                            if(requests.length === 0) {
+                            if(pendingCount === 0) {
                                 listContainer.innerHTML = `<p class="text-slate-500 text-sm italic col-span-full">Şu an bekleyen bir koçluk talebiniz bulunmuyor.</p>`;
                             }
+                            if(activeCount === 0) {
+                                activeContainer.innerHTML = `<p class="text-slate-500 text-sm italic col-span-full">Henüz aktif bir koçluk kabul etmediniz.</p>`;
+                            }
+
+                            // Mesaj geldiğinde scroll'u en alta indir
+                            requests.forEach(req => {
+                                if(req.status === 'accepted') {
+                                    const chatDiv = document.getElementById('chat_' + req.id);
+                                    if(chatDiv) chatDiv.scrollTop = chatDiv.scrollHeight;
+                                }
+                            });
                         }
                     });
                 } else {
@@ -893,9 +969,31 @@
         window.handleRequest = async function(reqId, status) {
             const success = await updateCoachingRequest(reqId, status);
             if(success) {
-                triggerToast(status === 'accepted' ? 'Talep kabul edildi!' : 'Talep reddedildi.');
+                if(status === 'accepted') triggerToast('Talep onaylandı! Aktif Koçluklar sekmesine taşındı.');
+                else triggerToast('Talep reddedildi ve listeden kaldırıldı.');
             }
+        };
+
+        window.sendChat = async function(e, reqId) {
+            e.preventDefault();
+            const input = e.target.querySelector('input');
+            const text = input.value.trim();
+            if(!text) return;
+            
+            const user = auth.currentUser;
+            if(!user) return;
+            
+            input.disabled = true;
+            const success = await addCoachingMessage(reqId, user.uid, text);
+            if(success) {
+                input.value = '';
+            } else {
+                triggerToast('Mesaj gönderilemedi!');
+            }
+            input.disabled = false;
+            input.focus();
         };
     </script>
 </body>
 </html>
+
