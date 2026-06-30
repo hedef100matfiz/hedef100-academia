@@ -57,7 +57,20 @@
             </div>
         </div>
     </div>
+        <!-- Sınıfa Katılma Modalı -->
+    <div id="joinClassModal" class="fixed inset-0 z-[99999] hidden bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center p-6">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl w-full max-w-md shadow-2xl relative">
+            <button onclick="document.getElementById('joinClassModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
+            <h3 class="text-xl font-black text-white mb-2">Sınıfa Katıl</h3>
+            <p class="text-xs text-slate-400 mb-6">Eğitmeninizin verdiği davet kodunu girerek sınıfınıza dahil olun.</p>
+            <form onsubmit="handleJoinClass(event)" class="space-y-4">
+                <input type="text" id="inviteCodeInput" placeholder="Örn: X7A9K" class="w-full p-4 bg-slate-950 border border-slate-700 rounded-xl text-lg text-center font-mono font-black text-white outline-none focus:border-orange-500 uppercase tracking-widest" required>
+                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-4 rounded-xl shadow-lg transition-all uppercase tracking-widest text-xs">Katıl</button>
+            </form>
+        </div>
+    </div>
 
+    
     <aside id="sidebar" class="w-64 fixed inset-y-0 left-0 z-50 bg-slate-900/90 backdrop-blur-xl border-r border-slate-800 flex flex-col flex-shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 md:static text-slate-400 transition-transform duration-300 ease-in-out">
         <div class="h-20 flex items-center justify-between px-5 border-b border-slate-800 bg-slate-950/50">
             <div class="flex items-center gap-2.5">
@@ -154,7 +167,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                               <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 border border-orange-500/20 bg-orange-500/5">
                         <p class="text-[10px] font-bold text-orange-400 uppercase tracking-widest flex items-center gap-1">⏱️ Aktif Çalışma Süresi</p>
                         <div class="flex items-end justify-between">
@@ -162,23 +175,25 @@
                             <button onclick="openFocusRoom('etut')" class="bg-slate-800 hover:bg-slate-700 text-white text-[9px] px-2.5 py-1.5 rounded-lg font-bold uppercase border border-slate-700 transition-all">Odaya Gir</button>
                         </div>
                     </div>
+                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 border-l-4 border-l-indigo-500">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sınıfım / Ekibim</p>
+                        <div id="classStatusPanel">
+                            <p class="text-sm font-black text-white" id="classNameDisplay">Sınıfa Katılmadınız</p>
+                            <button onclick="document.getElementById('joinClassModal').classList.remove('hidden')" class="mt-2 text-[10px] bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded font-bold transition-colors">Kod ile Katıl</button>
+                        </div>
+                    </div>
                     <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28">
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Net Ortalaması</p>
-                        <div><p class="text-2xl font-black text-white">74.5</p><p class="text-[10px] text-emerald-400 font-bold mt-0.5">▲ Hedef Çizgisinde</p></div>
-                    </div>
-                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 border-l-4 border-l-indigo-500">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sıradaki Canlı Ders</p>
-                        <div><p class="text-sm font-black text-indigo-400 leading-tight">İntegral Soru Çöz.</p><p class="text-[10px] text-slate-400 font-bold mt-0.5">Bugün, 19:30</p></div>
+                        <div><p class="text-2xl font-black text-white" id="netAvgDisplay">0.0</p><p class="text-[10px] text-emerald-400 font-bold mt-0.5">Yapay Zeka İzlemede</p></div>
                     </div>
                     <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 bg-emerald-500/10 border border-emerald-500/20">
                         <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Görev Durumu</p>
                         <div>
-                            <p class="text-2xl font-black text-emerald-400">%80</p>
-                            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2"><div class="bg-emerald-500 h-1.5 rounded-full w-[80%] shadow-[0_0_10px_#10b981]"></div></div>
+                            <p class="text-2xl font-black text-emerald-400" id="taskPercentText">%0</p>
+                            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2"><div id="taskPercentBar" class="bg-emerald-500 h-1.5 rounded-full w-[0%] shadow-[0_0_10px_#10b981] transition-all duration-1000"></div></div>
                         </div>
                     </div>
                 </div>
-            </div>
 
             <div id="section-focusroom" class="section-hidden space-y-6">
                 <div class="border-b border-slate-800 pb-4 mb-4">
@@ -532,6 +547,34 @@
     </div>
 
     <script type="module">
+                import { 
+            auth, listenAuthState, getUserProfile, sendCoachingRequest, 
+            addStudentTask, listenStudentTasks, toggleStudentTask, deleteStudentTask,
+            saveExamResult, uploadProfilePhoto, updateUserProfile,
+            logoutUser as firebaseLogout, listenStudentCoachingRequests, addCoachingMessage,
+            joinClassWithCode // YENİ EKLENEN IMPORT
+        } from './firebase-shared.js';
+
+
+        // YENİ EKLENEN SINIF FONKSİYONLARI (Kullanıcı Verileri Yüklendikten Sonra Çalışır)
+        window.handleJoinClass = async function(e) {
+            e.preventDefault();
+            const input = document.getElementById('inviteCodeInput');
+            const code = input.value;
+            
+            triggerToast('Sınıfa katılma talebi işleniyor...', 'info');
+            const result = await joinClassWithCode(currentStudentInfo.uid, code);
+            
+            if(result.success) {
+                triggerToast(`${result.className} sınıfına başarıyla katıldınız!`, 'success');
+                document.getElementById('joinClassModal').classList.add('hidden');
+                document.getElementById('classNameDisplay').innerText = result.className;
+                document.getElementById('classNameDisplay').classList.add('text-indigo-400');
+                document.getElementById('classNameDisplay').nextElementSibling.classList.add('hidden');
+            } else {
+                triggerToast(result.error || 'Katılım sağlanamadı.', 'error');
+            }
+        };
         import { 
             auth, listenAuthState, getUserProfile, sendCoachingRequest, 
             addStudentTask, listenStudentTasks, toggleStudentTask, deleteStudentTask,
@@ -568,6 +611,12 @@
                         // Üst menü profil resmini de güncelle (varsa)
                         const avatarBox = document.getElementById('avatarInitials');
                         avatarBox.innerHTML = `<img src="${data.profilePhotoUrl}" class="w-full h-full object-cover rounded-xl">`;
+                    }
+                                        // Sınıf Bilgisi Gösterimi
+                    if(data.className) {
+                        document.getElementById('classNameDisplay').innerText = data.className;
+                        document.getElementById('classNameDisplay').classList.add('text-indigo-400');
+                        document.getElementById('classNameDisplay').nextElementSibling.classList.add('hidden'); // Katıl butonunu gizle
                     }
 
                     // Firebase'den Görevleri Dinle
