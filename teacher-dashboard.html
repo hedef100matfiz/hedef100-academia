@@ -9,20 +9,15 @@
     <style>
         body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #0f172a; color: #f8fafc; }
         .bg-neural-grid { background-image: radial-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px); background-size: 30px 30px; }
-        
         .section-hidden { display: none; }
         .section-active { display: block; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
-
         .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(148, 163, 184, 0.1); }
         .risk-glow { box-shadow: 0 0 20px rgba(244, 63, 94, 0.2); border-color: rgba(244, 63, 94, 0.4); }
-        
-        /* Modern Checkbox */
         .attendance-check:checked + div { background-color: #10b981; border-color: #10b981; color: white; }
         .attendance-absent:checked + div { background-color: #f43f5e; border-color: #f43f5e; color: white; }
     </style>
@@ -30,17 +25,14 @@
 <body class="h-screen flex relative overflow-hidden bg-slate-950">
 
     <div class="absolute inset-0 bg-neural-grid opacity-30 pointer-events-none z-0"></div>
-
-    <!-- MOBİL MENÜ BACKDROP -->
     <div id="sidebarBackdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-950/80 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
-    <!-- ANLIK BİLDİRİM TOAST KUTUSU -->
     <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-96 opacity-0 transition-all duration-400 bg-indigo-600 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl shadow-indigo-600/30 uppercase tracking-widest flex items-center gap-3">
         <svg class="w-5 h-5 text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span id="toastMessage">İşlem Başarılı</span>
     </div>
 
-    <!-- ================= SOL EĞİTMEN NAVİGASYON BAR (SIDEBAR) ================= -->
+    <!-- SIDEBAR -->
     <aside id="sidebar" class="w-64 fixed inset-y-0 left-0 z-50 bg-slate-900/90 backdrop-blur-xl border-r border-slate-800 flex flex-col flex-shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 md:static text-slate-400 transition-transform duration-300 ease-in-out">
         <div class="h-20 flex items-center justify-between px-5 border-b border-slate-800 bg-slate-950/50">
             <div class="flex items-center gap-2.5">
@@ -58,9 +50,9 @@
                 <span class="text-sm">Yönetim Özeti</span>
             </button>
             <button onclick="switchSection('classes')" id="nav-classes" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
-    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-    <span class="text-sm">Sınıflar & Davetler</span>
-</button>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span class="text-sm">Sınıflar & Davetler</span>
+            </button>
             <button onclick="switchSection('attendance')" id="nav-attendance" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
                 <span class="text-sm">Sınıflar & Yoklama</span>
@@ -96,9 +88,8 @@
         </div>
     </aside>
 
-    <!-- ================= ANA GÖVDE PANEL ALANI ================= -->
+    <!-- ANA GÖVDE PANEL ALANI -->
     <div class="flex-1 flex flex-col h-full relative z-10">
-        
         <header class="bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-800 px-4 md:px-8 py-4 flex justify-between items-center relative">
             <div class="flex items-center gap-3">
                 <button onclick="toggleMobileSidebar()" class="md:hidden p-2 -ml-2 text-slate-400 focus:outline-none"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
@@ -109,13 +100,15 @@
                     <p id="teacherNameDisplay" class="text-sm font-bold text-white">Yükleniyor...</p>
                     <p id="teacherBranch" class="text-[9px] text-emerald-400 font-black uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 mt-1 inline-block">BRANŞ</p>
                 </div>
-                <div id="teacherAvatar" class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-black text-sm shadow-lg shadow-emerald-600/30">?</div>
+                <div id="teacherAvatar" class="w-10 h-10 bg-emerald-600 text-white rounded-xl flex items-center justify-center font-black text-sm shadow-lg shadow-emerald-600/30 overflow-hidden relative">
+                    <span id="teacherAvatarInitials">?</span>
+                </div>
             </div>
         </header>
 
         <main class="p-4 md:p-6 lg:p-8 flex-1 w-full max-w-7xl mx-auto overflow-y-auto">
             
-            <!-- ================= SEKMELER 1: YÖNETİM ÖZETİ ================= -->
+            <!-- SEKMELER 1: YÖNETİM ÖZETİ -->
             <div id="section-dashboard" class="section-active space-y-6">
                 <!-- 3D Eğitmen Kapsülü -->
                 <div class="glass-card rounded-[2rem] p-6 md:p-10 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row justify-between items-stretch gap-6">
@@ -159,7 +152,7 @@
                 </div>
             </div>
 
-                        <!-- ================= SEKMELER YENİ: SINIF & DAVET YÖNETİMİ ================= -->
+            <!-- SEKMELER YENİ: SINIF & DAVET YÖNETİMİ -->
             <div id="section-classes" class="section-hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Sınıf Oluşturma Formu -->
@@ -218,7 +211,8 @@
                     </div>
                 </div>
             </div>
-            <!-- ================= SEKMELER 2: SINIFLAR VE YOKLAMA ================= -->
+
+            <!-- SEKMELER 2: SINIFLAR VE YOKLAMA -->
             <div id="section-attendance" class="section-hidden space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-2">
                     <div>
@@ -226,9 +220,7 @@
                         <p class="text-xs text-slate-400 mt-1">Sınıfı seçin, yoka basın. Veriler anında kuruma ve veliye SMS olarak iletilir.</p>
                     </div>
                     <select id="classSelectAttendance" class="bg-slate-900 border border-slate-700 text-white text-sm font-bold rounded-xl px-4 py-2.5 outline-none focus:border-emerald-500 w-full md:w-auto shadow-md cursor-pointer">
-                        <option value="12-A Sayısal Derece">12-A Sayısal Derece</option>
-                        <option value="11-B Eşit Ağırlık">11-B Eşit Ağırlık</option>
-                        <option value="Mezun Grubu">Mezun Grubu</option>
+                        <option value="">Yükleniyor...</option>
                     </select>
                 </div>
 
@@ -260,15 +252,14 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 3: ÖDEV & GÖREV MERKEZİ ================= -->
+            <!-- SEKMELER 3: ÖDEV & GÖREV MERKEZİ -->
             <div id="section-assignments" class="section-hidden space-y-6">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     
-                    <!-- Yeni Ödev Verme Formu -->
                     <div class="lg:col-span-1 glass-card p-6 rounded-[2rem]">
                         <h3 class="text-base font-black text-white mb-4 border-b border-slate-800 pb-3 flex items-center gap-2">📝 Yeni Görev Ata</h3>
                         <form id="newAssignmentForm" class="space-y-4 text-left">
-                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hedef Kitle (Sınıf)</label><select id="assignClass" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500"><option value="12-A Sayısal Derece">12-A Sayısal Derece</option><option value="11-B Eşit Ağırlık">11-B Eşit Ağırlık</option><option value="Mezun Grubu">Mezun Grubu</option><option value="all">Tüm Sınıflar</option></select></div>
+                            <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hedef Kitle (Sınıf)</label><select id="assignClass" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500"><option value="all">Tüm Sınıflar</option></select></div>
                             <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Görev Başlığı</label><input type="text" id="assignTitle" placeholder="Örn: Türev Çıkmış Sorular" class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></div>
                             <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Açıklama / Sayfa No</label><textarea id="assignDesc" rows="2" placeholder="Soru Bankası Sayfa 45-50 arası çözülecek." class="w-full bg-slate-900 border border-slate-700 text-white text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></textarea></div>
                             <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Son Teslim Tarihi</label><input type="date" id="assignDeadline" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-4 py-3 outline-none focus:border-indigo-500" required></div>
@@ -276,7 +267,6 @@
                         </form>
                     </div>
 
-                    <!-- Verilmiş Ödevler Takibi -->
                     <div id="assignmentsList" class="lg:col-span-2 space-y-4">
                         <div class="flex justify-between items-center bg-slate-900/50 p-4 rounded-[1rem] border border-slate-800">
                             <span class="font-bold text-slate-300 text-sm">Aktif Görevler ve Tamamlanma Durumu</span>
@@ -286,7 +276,7 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 4: RİSK RADARI (YAPAY ZEKA) ================= -->
+            <!-- SEKMELER 4: RİSK RADARI -->
             <div id="section-radar" class="section-hidden space-y-6">
                 <div class="bg-rose-500/10 border border-rose-500/20 rounded-[2rem] p-6 md:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 relative overflow-hidden">
                     <div class="w-16 h-16 bg-rose-500/20 text-rose-500 rounded-2xl flex items-center justify-center font-black text-3xl shadow-inner relative z-10">⚠️</div>
@@ -297,7 +287,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Riskli Öğrenci Kartı -->
                     <div class="glass-card risk-glow rounded-[1.5rem] p-6 relative">
                         <div class="absolute top-4 right-4 bg-rose-500 text-white text-[10px] font-black uppercase px-2 py-1 rounded shadow-lg animate-pulse">Kritik Düşüş</div>
                         <div class="flex items-center gap-4 mb-5 border-b border-slate-800 pb-4">
@@ -319,7 +308,7 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 5: ÇÖZÜM HAVUZU (HATA KUTUSU) ================= -->
+            <!-- SEKMELER 5: ÇÖZÜM HAVUZU -->
             <div id="section-solutions" class="section-hidden space-y-6">
                 <div>
                     <h2 class="text-xl md:text-2xl font-black text-white">Dijital Hata Kutusu (Soru Çözüm)</h2>
@@ -331,35 +320,55 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 7: GELEN TALEPLER ================= -->
+            <!-- SEKMELER 7: GELEN TALEPLER -->
             <div id="section-requests" class="section-hidden space-y-6">
                 <div class="border-b border-slate-800 pb-4 mb-4">
                     <h2 class="text-xl md:text-2xl font-black text-white">Öğrenci Koçluk & Mentorluk Talepleri</h2>
                     <p class="text-xs text-slate-400 mt-1">Öğrencilerden gelen mentorluk taleplerini buradan onaylayabilir veya reddedebilirsiniz.</p>
                 </div>
 
-                <div id="coachingRequestList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div id="coachingRequestsList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <p class="text-slate-500 text-sm italic col-span-full">Talepler yükleniyor...</p>
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 6: AYARLAR ================= -->
+            <!-- SEKMELER 6: AYARLAR -->
             <div id="section-ayarlar" class="section-hidden space-y-6">
                 <div class="glass-card rounded-[2rem] p-6 md:p-10 max-w-2xl mx-auto">
                     <h3 class="text-xl font-black text-white border-b border-slate-800 pb-4 mb-6">Eğitmen Profili ve Tercihler</h3>
-                    <form onsubmit="event.preventDefault(); triggerToast('Profil ayarlarınız güncellendi.');" class="space-y-5">
+                    <form id="profileSettingsForm" class="space-y-5">
+                        
+                        <div class="flex items-center gap-6 mb-6">
+                            <div class="relative group cursor-pointer">
+                                <div id="settingsAvatarPreview" class="w-20 h-20 bg-slate-800 text-slate-400 border border-slate-700 rounded-2xl flex items-center justify-center font-black text-2xl shadow-lg overflow-hidden relative">
+                                    <span id="settingsAvatarInitial">?</span>
+                                </div>
+                                <div class="absolute inset-0 bg-slate-900/80 flex items-center justify-center rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                </div>
+                                <input type="file" id="profilePhotoInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30">
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-white mb-1">Profil Fotoğrafı</p>
+                                <p class="text-[10px] text-slate-500">JPG, PNG veya GIF. Maksimum 2MB.</p>
+                                <p id="photoUploadStatus" class="text-xs text-emerald-400 font-bold mt-2 hidden">Hazır (Kaydetmek için aşağıdaki butona basın)</p>
+                            </div>
+                        </div>
+
                         <div class="grid grid-cols-2 gap-4">
                             <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">İsim</label><input type="text" id="setFirstName" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none"></div>
                             <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Soyisim</label><input type="text" id="setLastName" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none"></div>
                         </div>
-                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Uzmanlık Branşı</label><input type="text" id="setBranch" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none" disabled></div>
+                        <div><label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Uzmanlık Branşı</label><input type="text" id="setBranch" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none"></div>
                         <div class="pt-4 border-t border-slate-800">
                             <div class="flex items-center justify-between">
                                 <div><p class="text-sm font-bold text-white">Soru Geldiğinde Bildirim Ver</p><p class="text-[10px] text-slate-500">Dijital hata kutusuna soru düştüğünde telefonuma bildir.</p></div>
                                 <input type="checkbox" checked class="w-10 h-5 bg-slate-700 checked:bg-emerald-500 rounded-full appearance-none cursor-pointer relative before:content-[''] before:absolute before:w-5 before:h-5 before:bg-white before:rounded-full before:transition-all checked:before:translate-x-5">
                             </div>
                         </div>
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-4">Değişiklikleri İşle</button>
+                        <button type="submit" id="saveProfileBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-3.5 rounded-xl transition-all text-xs uppercase shadow-md mt-4 flex items-center justify-center gap-2">
+                            <span>Değişiklikleri İşle</span>
+                        </button>
                     </form>
                 </div>
             </div>
@@ -367,9 +376,8 @@
         </main>
     </div>
 
-    <!-- ================= JAVASCRIPT MOTORU ================= -->
+    <!-- JAVASCRIPT MOTORU -->
     <script>
-        // Anlık Çalışan Toast Sistemi
         window.triggerToast = function(message) {
             const toast = document.getElementById('toastBox');
             document.getElementById('toastMessage').innerText = message;
@@ -377,7 +385,6 @@
             setTimeout(() => { toast.classList.add('translate-x-96', 'opacity-0'); }, 3000);
         };
 
-        // Menü Gezinme Sistemi
         window.toggleMobileSidebar = function() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebarBackdrop');
@@ -394,23 +401,16 @@
             });
             const activeNav = document.getElementById('nav-' + sectionId);
             if(activeNav) {
-                // Aktif menü stili risk radarıysa kırmızı, diğerleriyse yeşil kalmalı
-                if(sectionId === 'radar') {
-                    activeNav.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-rose-500/10 text-rose-400 rounded-xl font-bold transition-all text-left border-l-4 border-rose-500";
-                } else {
-                    activeNav.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl font-bold transition-all text-left border-l-4 border-emerald-500";
-                }
+                if(sectionId === 'radar') activeNav.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-rose-500/10 text-rose-400 rounded-xl font-bold transition-all text-left border-l-4 border-rose-500";
+                else activeNav.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl font-bold transition-all text-left border-l-4 border-emerald-500";
             }
             if (window.innerWidth < 768) toggleMobileSidebar();
         };
 
-        window.logoutUser = function() { window.location.href = 'login.html'; };
-
-        // 3D Eğitmen Kapsülü - Nöral Sinir Ağı Canvas
         const canvas = document.getElementById('teacherNetwork3D');
         const ctx = canvas.getContext('2d');
         let nodes = [];
-        const numNodes = 45; // Sorumlu olunan öğrenci sayısı kadar node
+        const numNodes = 45; 
 
         function init3D() {
             canvas.width = canvas.parentElement.offsetWidth;
@@ -422,7 +422,7 @@
                     y: Math.random() * canvas.height,
                     vx: (Math.random() - 0.5) * 0.5,
                     vy: (Math.random() - 0.5) * 0.5,
-                    isCore: i === 0 // İlk node öğretmeni temsil etsin
+                    isCore: i === 0
                 });
             }
         }
@@ -443,23 +443,19 @@
                 if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
                 if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
 
-                // Mouse etkileşimi (Eğitmen ilgisi)
                 if (mouse.x && mouse.y) {
                     let dx = mouse.x - node.x, dy = mouse.y - node.y;
                     let dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 100) {
-                        node.x -= dx * 0.02; node.y -= dy * 0.02;
-                    }
+                    if (dist < 100) { node.x -= dx * 0.02; node.y -= dy * 0.02; }
                 }
             });
 
-            // Bağlantıları Çiz
             ctx.lineWidth = 0.5;
             for (let i = 0; i < nodes.length; i++) {
                 for (let j = i + 1; j < nodes.length; j++) {
                     let dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y;
                     let dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 80 || (nodes[i].isCore && dist < 150)) { // Öğretmen (core) daha uzağa bağlanır
+                    if (dist < 80 || (nodes[i].isCore && dist < 150)) {
                         ctx.beginPath();
                         ctx.moveTo(nodes[i].x, nodes[i].y);
                         ctx.lineTo(nodes[j].x, nodes[j].y);
@@ -470,7 +466,6 @@
                 }
             }
 
-            // Nodları Çiz
             nodes.forEach(node => {
                 ctx.beginPath();
                 let r = node.isCore ? 6 : 2;
@@ -487,8 +482,7 @@
         window.addEventListener('resize', init3D);
     </script>
 
-    <!-- ================= FIREBASE AUTH VE VERİTABANI ================= -->
-       <!-- ================= FIREBASE AUTH VE VERİTABANI ================= -->
+    <!-- FIREBASE İŞLEMLERİ -->
     <script type="module">
         import { 
             auth, listenAuthState, getUserProfile, listenCoachingRequests, updateCoachingRequest, 
@@ -510,7 +504,7 @@
                     const settingsPreview = document.getElementById('settingsAvatarPreview');
                     
                     if(data.photoURL) {
-                        avatarDiv.innerHTML = `<img src="${data.photoURL}" class="w-full h-full object-cover rounded-xl" alt="Profil">`;
+                        avatarDiv.innerHTML = `<img src="${data.photoURL}" class="absolute inset-0 w-full h-full object-cover" alt="Profil">`;
                         if(settingsInitial) settingsInitial.classList.add('hidden');
                         
                         let currentImg = document.getElementById('settingsCurrentPhoto');
@@ -523,7 +517,7 @@
                         if(currentImg) currentImg.src = data.photoURL;
                     } else {
                         const initial = (data.firstName.charAt(0) + data.lastName.charAt(0)).toUpperCase();
-                        avatarDiv.innerHTML = initial;
+                        document.getElementById('teacherAvatarInitials').innerText = initial;
                         if(settingsInitial) settingsInitial.innerText = initial;
                     }
                     
@@ -531,7 +525,7 @@
                     document.getElementById('setLastName').value = data.lastName || '';
                     document.getElementById('setBranch').value = data.specialtyOrExam || '';
 
-                    // === 0. SINIF YÖNETİMİ VE DİNAMİK LİSTELER ===
+                    // SINIF LİSTELERİ
                     const classSelectAttendance = document.getElementById('classSelectAttendance');
                     const assignClassSelect = document.getElementById('assignClass');
                     const inviteClassSelect = document.getElementById('inviteClassSelect');
@@ -550,7 +544,7 @@
 
                         if(classesTableBody) {
                             if(classes.length === 0) {
-                                classesTableBody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500 italic">Henüz oluşturduğunuz bir sınıf yok.</td></tr>';
+                                classesTableBody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500 italic">Henüz sınıfınız yok.</td></tr>';
                             } else {
                                 classesTableBody.innerHTML = '';
                                 classes.forEach(async (c) => {
@@ -562,7 +556,6 @@
                                         <td class="p-4 text-right pr-6"><button onclick="triggerToast('Öğrenci Listesi Yakında!')" class="text-slate-400 hover:text-white transition-colors text-xs font-bold uppercase">Görüntüle</button></td>
                                     `;
                                     classesTableBody.appendChild(tr);
-                                    
                                     const stuCount = (await getStudentsByClass(c.id)).length;
                                     tr.children[1].innerHTML = `<span class="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded text-[10px] uppercase font-bold border border-emerald-500/20 shadow-sm">${stuCount} Öğrenci</span>`;
                                 });
@@ -570,7 +563,7 @@
                         }
                     });
 
-                    // Sınıf Oluşturma Formu Tetikleyicisi
+                    // SINIF OLUŞTURMA
                     const createClassForm = document.getElementById('createClassForm');
                     if(createClassForm) {
                         createClassForm.addEventListener('submit', async (e) => {
@@ -585,7 +578,7 @@
                         });
                     }
 
-                    // Davet Kodu Üretme Formu Tetikleyicisi
+                    // DAVET KODU
                     const createInviteForm = document.getElementById('createInviteCodeForm');
                     if(createInviteForm) {
                         createInviteForm.addEventListener('submit', async (e) => {
@@ -608,7 +601,7 @@
                         });
                     }
 
-                    // Ayarlar Formu ve Profil Fotoğrafı Tetikleyicisi
+                    // FOTOĞRAF VE AYARLAR
                     let newPhotoFile = null;
                     const photoInput = document.getElementById('profilePhotoInput');
                     if(photoInput) {
@@ -616,7 +609,6 @@
                             if(e.target.files && e.target.files[0]) {
                                 newPhotoFile = e.target.files[0];
                                 document.getElementById('photoUploadStatus').classList.remove('hidden');
-                                
                                 const reader = new FileReader();
                                 reader.onload = (e) => {
                                     if(settingsInitial) settingsInitial.classList.add('hidden');
@@ -639,8 +631,7 @@
                         profileForm.addEventListener('submit', async (e) => {
                             e.preventDefault();
                             const btn = document.getElementById('saveProfileBtn');
-                            btn.disabled = true;
-                            btn.innerHTML = `Kaydediliyor...`;
+                            btn.disabled = true; btn.innerHTML = `Kaydediliyor...`;
                             
                             let updateData = {
                                 firstName: document.getElementById('setFirstName').value,
@@ -653,7 +644,7 @@
                                 const photoURL = await uploadProfilePhoto(newPhotoFile, user.uid);
                                 if(photoURL) {
                                     updateData.photoURL = photoURL;
-                                    avatarDiv.innerHTML = `<img src="${photoURL}" class="w-full h-full object-cover rounded-xl" alt="Profil">`;
+                                    avatarDiv.innerHTML = `<img src="${photoURL}" class="absolute inset-0 w-full h-full object-cover" alt="Profil">`;
                                 }
                             }
 
@@ -667,14 +658,12 @@
                                 newPhotoFile = null;
                             } else triggerToast('Hata oluştu.');
                             
-                            btn.disabled = false;
-                            btn.innerHTML = `<span>Değişiklikleri İşle</span>`;
+                            btn.disabled = false; btn.innerHTML = `<span>Değişiklikleri İşle</span>`;
                         });
                     }
 
-                    // === 1. YOKLAMA SİSTEMİ DİNAMİKLEŞTİRME ===
+                    // YOKLAMA SİSTEMİ
                     const attendanceBody = document.getElementById('attendanceTableBody');
-
                     async function loadStudentsForAttendance() {
                         if(!classSelectAttendance || !attendanceBody) return;
                         const classId = classSelectAttendance.value;
@@ -684,7 +673,6 @@
                         }
                         
                         const students = await getStudentsByClass(classId);
-                        
                         attendanceBody.innerHTML = '';
                         if(students.length === 0) {
                             attendanceBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Bu sınıfta kayıtlı öğrenci bulunamadı. Lütfen sisteme öğrenci davet edin.</td></tr>`;
@@ -714,9 +702,7 @@
                         });
                     }
 
-                    if(classSelectAttendance) {
-                        classSelectAttendance.addEventListener('change', loadStudentsForAttendance);
-                    }
+                    if(classSelectAttendance) classSelectAttendance.addEventListener('change', loadStudentsForAttendance);
 
                     const attForm = document.getElementById('attendanceForm');
                     if(attForm) {
@@ -737,90 +723,57 @@
                         });
                     }
 
-                    // === 2. ÖDEV SİSTEMİ DİNAMİKLEŞTİRME ===
+                    // DİĞER MODÜLLER
                     listenAssignments("all", (assignments) => {
-                        const tbody = document.getElementById('assignmentsTableBody');
-                        if (!tbody) return;
-                        
-                        tbody.innerHTML = '';
-                        if(assignments.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Henüz aktif görev bulunmuyor.</td></tr>`;
-                            return;
-                        }
+                        const list = document.getElementById('assignmentsList');
+                        if(!list) return;
+                        list.innerHTML = `<div class="flex justify-between items-center bg-slate-900/50 p-4 rounded-[1rem] border border-slate-800"><span class="font-bold text-slate-300 text-sm">Aktif Görevler ve Tamamlanma Durumu</span></div>`;
+                        if(assignments.length === 0) list.innerHTML += '<p class="text-slate-500 text-sm italic p-4">Henüz verilmiş bir görev yok.</p>';
 
                         assignments.forEach(task => {
-                            let statusBadge = '';
-                            if(task.status === 'active') statusBadge = '<span class="bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded text-[10px] uppercase font-bold border border-emerald-500/20">Aktif</span>';
-                            else if(task.status === 'completed') statusBadge = '<span class="bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded text-[10px] uppercase font-bold border border-indigo-500/20">Tamamlandı</span>';
-                            
-                            tbody.innerHTML += `
-                                <tr class="hover:bg-slate-800/30 transition-colors">
-                                    <td class="p-4 font-bold text-white">${task.title} <br> <span class="text-[10px] font-normal text-slate-500">${task.description}</span></td>
-                                    <td class="p-4 text-center"><span class="bg-slate-800 px-2 py-1 rounded text-xs border border-slate-700">${task.targetClass === 'all' ? 'Tüm Sınıflar' : task.targetClass}</span></td>
-                                    <td class="p-4 text-center">${statusBadge}</td>
-                                    <td class="p-4 text-right pr-6"><span class="text-orange-400 font-bold text-xs">${task.deadline}</span></td>
-                                </tr>
+                            list.innerHTML += `
+                                <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-indigo-500 mb-3">
+                                    <div class="flex-1">
+                                        <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-indigo-500/20 mb-2 inline-block">${task.targetClass}</span>
+                                        <h4 class="font-bold text-white text-base">${task.title}</h4>
+                                        <p class="text-xs text-slate-400 mt-1">Son Teslim: ${task.deadline}</p>
+                                    </div>
+                                </div>
                             `;
                         });
                     });
 
-                    document.getElementById('newAssignmentForm').addEventListener('submit', async (e) => {
-                        e.preventDefault();
-                        const data = {
-                            teacherId: user.uid,
-                            targetClass: document.getElementById('assignClass').value,
-                            title: document.getElementById('assignTitle').value,
-                            description: document.getElementById('assignDesc').value,
-                            deadline: document.getElementById('assignDeadline').value,
-                            status: 'active'
-                        };
-                        triggerToast("Görev atanıyor...");
-                        const success = await addAssignment(data);
-                        if(success) {
-                            triggerToast("Görev başarıyla atandı!");
-                            e.target.reset();
-                        } else triggerToast("Görev atanamadı.");
-                    });
-
-                    // === 3. HATA KUTUSU (Gelen Sorular) ===
                     listenErrorBox((questions) => {
-                        const tbody = document.getElementById('errorBoxTableBody');
+                        const tbody = document.getElementById('solutionsGrid');
                         if (!tbody) return;
-
                         tbody.innerHTML = '';
-                        if(questions.length === 0) {
-                            tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500 italic">Cevaplanmamış soru bulunmuyor.</td></tr>`;
-                            return;
-                        }
-
+                        if(questions.length === 0) { tbody.innerHTML = `<p class="text-slate-500 text-sm italic col-span-full">Çözüm bekleyen soru yok.</p>`; return; }
                         questions.forEach((q, i) => {
                             tbody.innerHTML += `
-                                <tr class="hover:bg-slate-800/30 transition-colors">
-                                    <td class="p-4 text-center font-mono text-slate-500">${i + 1}</td>
-                                    <td class="p-4 font-bold text-white">Öğrenci #${q.studentId.substring(0,4)}<br><span class="text-[10px] font-normal text-slate-500">${new Date(q.createdAt?.toDate()).toLocaleDateString() || 'Yeni'}</span></td>
-                                    <td class="p-4">
-                                        <p class="text-sm line-clamp-1 mb-1">${q.questionText}</p>
-                                        ${q.imageUrl ? `<a href="${q.imageUrl}" target="_blank" class="text-[10px] text-emerald-400 hover:text-emerald-300 underline font-bold">Görseli Görüntüle ↗</a>` : ''}
-                                    </td>
-                                    <td class="p-4 text-right pr-6"><button onclick="triggerToast('Yanıt ekranı açılıyor')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold transition-all shadow-md">Yanıtla</button></td>
-                                </tr>
+                                <div class="glass-card p-5 rounded-2xl border-t-4 border-emerald-500 flex flex-col">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="text-xs font-bold text-slate-400">#${q.studentId.substring(0,4)}</span>
+                                        <span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-1 rounded">Yeni</span>
+                                    </div>
+                                    <p class="text-sm text-white mb-4 flex-1">${q.questionText}</p>
+                                    ${q.imageUrl ? `<a href="${q.imageUrl}" target="_blank" class="text-emerald-400 text-xs font-bold mb-4 block underline">Resmi Büyüt</a>` : ''}
+                                    <button onclick="triggerToast('Yanıt ekranı yakında!')" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-xs font-bold transition-all">Yanıt Yaz</button>
+                                </div>
                             `;
                         });
                     });
 
-                    // === 4. KOÇLUK TALEPLERİ ===
                     listenCoachingRequests(user.uid, (requests) => {
                         const list = document.getElementById('coachingRequestsList');
-                        const countBadge = document.getElementById('coachingCountBadge');
+                        const countBadge = document.getElementById('coachingRequestCount');
                         if (!list) return;
 
                         list.innerHTML = '';
                         const pendingRequests = requests.filter(r => r.status === 'pending');
-                        
                         if(countBadge) countBadge.innerText = pendingRequests.length;
 
                         if (pendingRequests.length === 0) {
-                            list.innerHTML = `<div class="p-6 text-center text-slate-500 italic text-sm">Bekleyen koçluk talebi yok. Harika!</div>`;
+                            list.innerHTML = `<p class="text-slate-500 text-sm italic col-span-full">Bekleyen koçluk talebi yok.</p>`;
                             return;
                         }
 
@@ -829,7 +782,7 @@
                                 <div class="p-4 bg-slate-900/50 rounded-xl border border-slate-700 hover:border-slate-600 transition-colors" id="req-${req.id}">
                                     <div class="flex justify-between items-start mb-2">
                                         <div>
-                                            <h4 class="font-bold text-white text-sm">Öğrenci Adı Soyadı (ID: ${req.studentId.substring(0,4)})</h4>
+                                            <h4 class="font-bold text-white text-sm">Öğrenci (ID: ${req.studentId.substring(0,4)})</h4>
                                             <p class="text-xs text-slate-400 mt-1">${req.message}</p>
                                         </div>
                                         <span class="bg-orange-500/10 text-orange-400 px-2 py-1 rounded text-[10px] font-black uppercase tracking-wider border border-orange-500/20">YENİ</span>
@@ -854,12 +807,10 @@
             if(success) {
                 document.getElementById(`req-${id}`).remove();
                 triggerToast(status === 'accepted' ? "Talep kabul edildi!" : "Talep reddedildi.");
-            } else {
-                triggerToast("İşlem sırasında hata oluştu.");
-            }
+            } else triggerToast("İşlem sırasında hata oluştu.");
         };
 
-        window.logout = async () => {
+        window.logoutUser = async () => {
             await auth.signOut();
             window.location.href = 'login.html';
         };
