@@ -720,65 +720,52 @@
     </script>
 
        <!-- FİREBASE & VERİ TABANI -->
-     <script type="module">
-        import { listenAuthState, getUserProfile, logoutUser, sendCoachingRequest } from './firebase-shared.js';
+        <script type="module">
+        import { auth, listenAuthState, getUserProfile, sendCoachingRequest } from './firebase-shared.js';
 
-        window.logoutUser = logoutUser;
-        let currentUserUid = null;
-        let currentUserName = "";
+        let currentStudentInfo = null;
 
         listenAuthState(async (user) => {
             if (user) {
-                currentUserUid = user.uid;
                 const data = await getUserProfile(user.uid);
-                
                 if (data) {
-                    currentUserName = data.firstName + " " + data.lastName;
-                    
-                    document.getElementById('studentNameDisplay').innerText = currentUserName;
+                    currentStudentInfo = { uid: user.uid, name: data.firstName + " " + data.lastName };
+                    const fullName = data.firstName + " " + data.lastName;
+                    document.getElementById('studentNameDisplay').innerText = fullName;
                     document.getElementById('welcomeName').innerText = data.firstName;
-                    document.getElementById('hedefIdDisplay').innerText = data.hedefId || 'ID Bekleniyor';
-                    document.getElementById('targetExamBadge').innerText = data.specialtyOrExam || 'YKS';
+                    document.getElementById('hedefIdDisplay').innerText = data.hedefId || "H100-" + user.uid.substring(0, 5).toUpperCase();
+                    document.getElementById('targetExamBadge').innerText = (data.specialtyOrExam || "YKS") + " ADAYI";
+                    document.getElementById('avatarInitials').innerText = (data.firstName.charAt(0) + data.lastName.charAt(0)).toUpperCase();
                     
-                    const initials = data.firstName.charAt(0) + data.lastName.charAt(0);
-                    document.getElementById('avatarInitials').innerText = initials.toUpperCase();
+                    document.getElementById('setFirstName').value = data.firstName;
+                    document.getElementById('setLastName').value = data.lastName;
+                    document.getElementById('setEmail').value = data.email;
+                } else {
+                    window.location.href = 'login.html';
                 }
             } else {
                 window.location.href = 'login.html';
             }
         });
 
-        // TALEBİ FİREBASE'E GÖNDEREN YENİ FONKSİYON
-        window.handleMentorshipRequest = async function(e) {
-            e.preventDefault();
-            if(!currentUserUid) return;
-
-            const textarea = e.target.querySelector('textarea');
-            const message = textarea.value;
-            const btn = e.target.querySelector('button');
-            const originalText = btn.innerHTML;
             
-            btn.innerText = "Gönderiliyor...";
-            btn.disabled = true;
-
+            const message = event.target.querySelector('textarea').value;
+            
+            triggerToast("Talebiniz iletiliyor...", "info");
+            
             const result = await sendCoachingRequest({
-                studentId: currentUserUid,
-                studentName: currentUserName,
-                // Not: Şimdilik test edebilmeniz için sabit bir eğitmen ID'si veriyoruz.
-                // İleride bu, öğrencinin seçtiği eğitmenin gerçek UID'si olacak.
-                teacherId: "TEST_OGRETMEN_001", 
+                studentId: currentStudentInfo.uid,
+                studentName: currentStudentInfo.name,
+                teacherId: 'GLOBAL', // Şimdilik tüm eğitmenlere düşsün diye GLOBAL kullanıyoruz
                 message: message
             });
 
             if(result.success) {
-                if(window.triggerToast) triggerToast('Mentorluk talebiniz eğitmene iletildi! 🚀', 'success');
-                e.target.reset();
+                triggerToast("Talebiniz başarıyla hocanıza iletildi!", "success");
+                event.target.reset();
             } else {
-                alert("Talep gönderilirken hata oluştu.");
+                triggerToast("Bir hata oluştu, tekrar deneyin.", "error");
             }
-            
-            btn.innerHTML = originalText;
-            btn.disabled = false;
         };
     </script>
 </body>
