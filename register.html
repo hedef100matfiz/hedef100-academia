@@ -187,7 +187,7 @@
         }
 
         // Firebase Kayıt İşlemi
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+                document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const email = document.getElementById('email').value;
@@ -195,85 +195,72 @@
             const firstName = document.getElementById('firstName').value;
             const lastName = document.getElementById('lastName').value;
             const selection = document.getElementById('dynamicSelect').value;
-            const classId = document.getElementById('classSelect').value;
             const inviteCodeVal = document.getElementById('inviteCode').value.trim().toUpperCase();
             
             const btn = document.getElementById('submitBtn');
             const spinner = document.getElementById('loadingSpinner');
             const errorMsg = document.getElementById('errorMessage');
 
-            // Yükleniyor animasyonunu başlat
             spinner.classList.remove('hidden');
             btn.disabled = true;
             errorMsg.classList.add('hidden');
 
             try {
+                let resolvedClassId = null;
+                let resolvedClassName = null;
+
                 // 1. Davet Kodu Doğrulaması
-                // TEST100 master kodu demo için açık bırakıldı.
                 if (inviteCodeVal !== "TEST100" && inviteCodeVal !== "HEDEF100") {
                     const codesRef = collection(db, "inviteCodes");
                     const q = query(codesRef, where("code", "==", inviteCodeVal), where("role", "==", currentRole));
                     const querySnapshot = await getDocs(q);
                     
                     if (querySnapshot.empty) {
-                        throw new Error("Geçersiz veya kullanılmış davet kodu! (Test için HEDEF100 veya TEST100 kullanabilirsiniz)");
+                        throw new Error("Geçersiz veya kullanılmış davet kodu! Lütfen öğretmeninizin verdiği kodu girin.");
+                    } else {
+                        const codeData = querySnapshot.docs[0].data();
+                        resolvedClassId = codeData.classId;
+                        resolvedClassName = codeData.className;
                     }
+                } else {
+                    resolvedClassId = "demo-class";
+                    resolvedClassName = "Demo Sınıfı";
                 }
 
                 // 2. Firebase Authentication'da kullanıcı oluştur
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
 
-                // Rastgele Hedef ID Üret
-                const randomCode = Math.random().toString(36).substring(2,6).toUpperCase();
-                const hedefId = 'H100-' + randomCode;
-
-                // 3. Firestore Veritabanına kullanıcının detaylarını kaydet
+                // 3. Firestore'a kullanıcı bilgilerini kaydet
                 const userData = {
-                    uid: user.uid,
-                    hedefId: hedefId,
+                    email: user.email,
                     firstName: firstName,
                     lastName: lastName,
                     role: currentRole,
                     specialtyOrExam: selection,
-                    email: email,
-                    createdAt: new Date().toISOString()
+                    createdAt: serverTimestamp()
                 };
 
+                // Eğer öğrenciyse sınıf kimliğini (Davet Kodundan gelen) kaydet
                 if (currentRole === 'student') {
-                    userData.classId = classId; // Sınıf bilgisini kaydet
+                    userData.classId = resolvedClassId;
+                    userData.className = resolvedClassName;
                 }
 
                 await setDoc(doc(db, "users", user.uid), userData);
 
-                // Başarı Ekranını Göster
-                const overlay = document.getElementById('successOverlay');
-                const content = document.getElementById('successContent');
-                overlay.classList.remove('hidden');
-                setTimeout(() => {
-                    overlay.classList.remove('opacity-0');
-                    content.classList.remove('scale-90');
-                }, 50);
-
-                // Yönlendirme
-                setTimeout(() => {
-                    if(currentRole === 'student') window.location.href = 'student-dashboard.html';
-                    else window.location.href = 'teacher-dashboard.html';
-                }, 2500);
+                // 4. İlgili panele yönlendir
+                if (currentRole === 'student') window.location.href = 'student-dashboard.html';
+                else if (currentRole === 'teacher') window.location.href = 'teacher-dashboard.html';
+                else if (currentRole === 'parent') window.location.href = 'parent-dashboard.html';
 
             } catch (error) {
-                // Hata Yakalama (Örn: Bu e-posta zaten kullanımda)
+                console.error("Kayıt hatası:", error);
+                errorMsg.innerText = error.message.replace("Firebase:", "").trim();
+                errorMsg.classList.remove('hidden');
+            } finally {
                 spinner.classList.add('hidden');
                 btn.disabled = false;
-                errorMsg.classList.remove('hidden');
-                
-                if (error.code === 'auth/email-already-in-use') {
-                    errorMsg.innerText = "Bu e-posta adresi zaten kullanımda!";
-                } else if (error.code === 'auth/weak-password') {
-                    errorMsg.innerText = "Şifreniz en az 6 karakter olmalıdır!";
-                } else {
-                    errorMsg.innerText = "Bir hata oluştu: " + error.message;
-                }
             }
         });
     </script>
