@@ -278,21 +278,6 @@ export async function getStudentsByClass(classId) {
 
 // ================= 5. SINIF VE DAVET KODU YÖNETİMİ =================
 
-// Yeni Sınıf Oluştur
-export async function createClass(teacherId, className) {
-    try {
-        const docRef = await addDoc(collection(db, "classes"), {
-            name: className,
-            teacherId: teacherId,
-            createdAt: serverTimestamp()
-        });
-        return { success: true, id: docRef.id };
-    } catch (error) {
-        console.error("Sınıf oluşturulamadı:", error);
-        return { success: false, error };
-    }
-}
-
 // Öğrencinin Kod ile Sınıfa Katılması
 export async function joinClassWithCode(studentId, code) {
     try {
@@ -321,6 +306,22 @@ export async function joinClassWithCode(studentId, code) {
         return { success: false, error: "Sunucu bağlantı hatası." };
     }
 }
+
+// Yeni Sınıf Oluştur
+export async function createClass(teacherId, className) {
+    try {
+        const docRef = await addDoc(collection(db, "classes"), {
+            name: className,
+            teacherId: teacherId,
+            createdAt: serverTimestamp()
+        });
+        return { success: true, id: docRef.id };
+    } catch (error) {
+        console.error("Sınıf oluşturulamadı:", error);
+        return { success: false, error };
+    }
+}
+
 // Eğitmenin kendi oluşturduğu sınıfları dinlemesi
 export function listenClasses(teacherId, callback) {
     const q = query(collection(db, "classes"), where("teacherId", "==", teacherId));
