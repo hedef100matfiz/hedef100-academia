@@ -59,9 +59,10 @@ export async function sendCoachingRequest(data) {
 }
 
 export function listenCoachingRequests(teacherId, callback) {
+    // Şimdilik demo ve test amaçlı WHERE filtresini kaldırdık. 
+    // Böylece öğrencinin attığı istek herhangi bir öğretmenin paneline anında düşecek.
     const q = query(
         collection(db, "coachingRequests"), 
-        where("teacherId", "==", teacherId),
         orderBy("createdAt", "desc")
     );
     
