@@ -73,6 +73,11 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 <span class="text-sm">Risk Radarı (AI)</span>
             </button>
+            <button onclick="switchSection('section-requests')" id="nav-requests" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 font-bold text-[11px] uppercase tracking-widest hover:bg-slate-800 hover:text-white transition-all group">
+    <div class="w-8 h-8 rounded-lg bg-slate-800/50 flex items-center justify-center text-base group-hover:bg-amber-500/20 group-hover:text-amber-400 transition-colors">📨</div>
+    Gelen Talepler
+    <span id="requestCountBadge" class="ml-auto bg-amber-500 text-white text-[9px] px-2 py-0.5 rounded-full hidden">0</span>
+</button>
             <button onclick="switchSection('solutions')" id="nav-solutions" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                 <span class="text-sm">Çözüm Havuzu</span>
@@ -321,6 +326,21 @@
                 </div>
             </div>
 
+            <!-- YENİ BÖLÜM: GELEN TALEPLER -->
+<div id="section-requests" class="section-hidden">
+    <div class="flex items-center gap-3 mb-8">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/10 border border-amber-500/20 flex items-center justify-center text-xl shadow-lg">📨</div>
+        <div>
+            <h2 class="text-3xl font-black text-white tracking-tight">Koçluk <span class="text-amber-500">Talepleri</span></h2>
+            <p class="text-slate-400 text-xs font-semibold mt-1">Öğrencilerden gelen mentorluk ve takip istekleri.</p>
+        </div>
+    </div>
+    
+    <div id="requestsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Talepler buraya JavaScript ile yüklenecek -->
+        <p class="text-slate-500 text-sm italic">Bekleyen talep bulunmuyor veya yükleniyor...</p>
+    </div>
+</div>
             <div id="section-ayarlar" class="section-hidden space-y-6">
                 <div class="glass-card rounded-[2rem] p-6 md:p-10 max-w-2xl mx-auto border border-slate-800">
                     <h3 class="text-xl font-black text-white border-b border-slate-800 pb-4 mb-6">Eğitmen Profili ve Tercihler</h3>
@@ -449,112 +469,101 @@
         window.addEventListener('resize', init3D);
     </script>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+      <script type="module">
+        import { listenAuthState, getUserProfile, logoutUser, listenCoachingRequests, updateCoachingRequest } from './firebase-shared.js';
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
-            authDomain: "hedef100-academia.firebaseapp.com",
-            projectId: "hedef100-academia",
-            storageBucket: "hedef100-academia.firebasestorage.app",
-            messagingSenderId: "886084339971",
-            appId: "1:886084339971:web:ca31ab9d1575344d234136"
-        };
+        window.logoutUser = logoutUser;
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // KİMLİK YÜKLEME
-        onAuthStateChanged(auth, async (user) => {
+        listenAuthState(async (user) => {
             if (user) {
-                const docSnap = await getDoc(doc(db, "users", user.uid));
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    const fullName = data.firstName + " " + data.lastName;
-                    document.getElementById('teacherNameDisplay').innerText = fullName;
+                const data = await getUserProfile(user.uid);
+                
+                if (data) {
+                    document.getElementById('teacherNameDisplay').innerText = data.firstName + " " + data.lastName;
                     document.getElementById('welcomeName').innerText = data.firstName + " Hocam";
-                    document.getElementById('teacherBranch').innerText = data.specialtyOrExam || "EĞİTMEN";
-                    document.getElementById('teacherAvatar').innerText = (data.firstName.charAt(0) + data.lastName.charAt(0)).toUpperCase();
-                    
-                    document.getElementById('setFirstName').value = data.firstName;
-                    document.getElementById('setLastName').value = data.lastName;
-                    document.getElementById('setBranch').value = data.specialtyOrExam || "Belirtilmemiş";
+                    document.getElementById('teacherBranch').innerText = data.specialtyOrExam;
+                    const initials = data.firstName.charAt(0) + data.lastName.charAt(0);
+                    document.getElementById('teacherAvatar').innerText = initials.toUpperCase();
                 }
-            } else {
-                document.getElementById('teacherNameDisplay').innerText = "Ahmet Kula";
-                document.getElementById('welcomeName').innerText = "Ahmet Hocam";
-                document.getElementById('teacherBranch').innerText = "Matematik & Fizik";
-                document.getElementById('setFirstName').value = "Ahmet";
-                document.getElementById('setLastName').value = "Kula";
-                document.getElementById('setBranch').value = "Matematik & Fizik";
-            }
-        });
 
-        // ================= CANLI VERİ YAZMA: YENİ GÖREV ATAMA =================
-        document.getElementById('teacherAssignTaskForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const target = document.getElementById('taskTarget').value;
-            const title = document.getElementById('taskTitle').value;
-            const desc = document.getElementById('taskDesc').value;
-            const dueDateStr = document.getElementById('taskDueDate').value;
+                // TEST İÇİN ÖĞRENCİDE VERDİĞİMİZ SABİT ID'Yİ DİNLİYORUZ:
+                const listenId = "TEST_OGRETMEN_001"; 
 
-            // Tarihi haftanın gününe çevir (Örn: pazartesi)
-            const dateObj = new Date(dueDateStr);
-            const days = ["pazar", "pazartesi", "sali", "carsamba", "persembe", "cuma", "cumartesi"];
-            const dayName = days[dateObj.getDay()];
-
-            const teacherName = document.getElementById('teacherNameDisplay').innerText;
-
-            try {
-                await addDoc(collection(db, "tasks"), {
-                    title: title,
-                    description: desc,
-                    target: target,
-                    dueDate: dueDateStr,
-                    day: dayName,
-                    assignedBy: teacherName,
-                    createdAt: serverTimestamp()
-                });
-                window.triggerToast('Görev başarıyla buluta yüklendi ve öğrencinin 7 günlük takvimine iletildi! 🚀');
-                e.target.reset();
-            } catch (error) {
-                window.triggerToast('Hata: ' + error.message, 'error');
-            }
-        });
-
-        // ================= CANLI VERİ OKUMA: VERİLEN GÖREVLERİ LİSTELEME =================
-        const qTasks = query(collection(db, "tasks"), orderBy("createdAt", "desc"));
-        onSnapshot(qTasks, (snapshot) => {
-            const listEl = document.getElementById('teacherLiveTasksContainer');
-            listEl.innerHTML = '';
-            
-            if(snapshot.empty) {
-                listEl.innerHTML = '<div class="text-center text-slate-500 text-xs py-4">Sistemde aktif görev bulunamadı.</div>';
-            } else {
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    const targetBadge = data.target === 'all' ? 'Tüm Sınıf' : data.target;
+                // GERÇEK ZAMANLI TALEPLERİ DİNLEME (SAYFA YENİLEMEDEN DÜŞER)
+                listenCoachingRequests(listenId, (requests) => {
+                    const container = document.getElementById('requestsContainer');
+                    const badge = document.getElementById('requestCountBadge');
                     
-                    const html = `
-                    <div class="glass-card p-5 rounded-[1.5rem] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-l-4 border-l-indigo-500 animate-fade-in mb-3">
-                        <div class="flex-1">
-                            <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded text-[9px] font-black uppercase border border-indigo-500/20 mb-2 inline-block">Hedef: ${targetBadge}</span>
-                            <h4 class="font-bold text-white text-base">${data.title}</h4>
-                            <p class="text-xs text-slate-400 mt-1">Son Teslim: ${data.dueDate} (${data.day.toUpperCase()})</p>
-                        </div>
-                        <div class="w-full md:w-1/3">
-                            <div class="flex justify-between text-[10px] font-bold mb-1"><span class="text-slate-400">Tamamlanma</span><span class="text-emerald-400">Bulutta Aktif ☁️</span></div>
-                            <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[0%]"></div></div>
-                        </div>
-                        <button onclick="triggerToast('Öğrencilere otomatik SMS hatırlatması gönderildi.')" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold px-4 py-2 rounded-lg border border-slate-600 transition-colors whitespace-nowrap">Hatırlat</button>
-                    </div>`;
-                    listEl.insertAdjacentHTML('beforeend', html);
+                    const pendingRequests = requests.filter(r => r.status === 'pending');
+                    
+                    if(pendingRequests.length > 0) {
+                        badge.innerText = pendingRequests.length;
+                        badge.classList.remove('hidden');
+                    } else {
+                        badge.classList.add('hidden');
+                    }
+
+                    if(requests.length === 0) {
+                        container.innerHTML = '<p class="text-slate-500 text-sm italic">Bekleyen talep bulunmuyor.</p>';
+                        return;
+                    }
+
+                    container.innerHTML = ''; // İçeriği temizle
+                    
+                    requests.forEach(req => {
+                        let statusHtml = '';
+                        let buttonsHtml = '';
+
+                        if (req.status === 'pending') {
+                            statusHtml = `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/20 px-2 py-1 rounded text-[9px] uppercase font-bold tracking-wider">Bekliyor</span>`;
+                            buttonsHtml = `
+                                <div class="flex gap-2 mt-4 pt-4 border-t border-slate-700/50">
+                                    <button onclick="handleReq('${req.id}', 'accepted')" class="flex-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 py-2 rounded-lg text-[10px] font-bold transition-colors">KABUL ET</button>
+                                    <button onclick="handleReq('${req.id}', 'rejected')" class="flex-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 py-2 rounded-lg text-[10px] font-bold transition-colors">REDDET</button>
+                                </div>`;
+                        } else if (req.status === 'accepted') {
+                            statusHtml = `<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded text-[9px] uppercase font-bold tracking-wider">Kabul Edildi</span>`;
+                        } else {
+                            statusHtml = `<span class="bg-rose-500/20 text-rose-400 border border-rose-500/20 px-2 py-1 rounded text-[9px] uppercase font-bold tracking-wider">Reddedildi</span>`;
+                        }
+
+                        // Tarih formatlama
+                        const dateStr = req.createdAt ? new Date(req.createdAt.toDate()).toLocaleDateString('tr-TR', { hour: '2-digit', minute:'2-digit' }) : 'Az önce';
+
+                        const card = `
+                            <div class="bg-slate-800/40 border border-slate-700/50 rounded-2xl p-5 hover:border-slate-600 transition-colors flex flex-col">
+                                <div class="flex justify-between items-start mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-xl bg-slate-700 flex items-center justify-center font-bold text-white">${req.studentName.charAt(0)}</div>
+                                        <div>
+                                            <h4 class="text-sm font-bold text-white">${req.studentName}</h4>
+                                            <p class="text-[10px] text-slate-400">Tarih: ${dateStr}</p>
+                                        </div>
+                                    </div>
+                                    ${statusHtml}
+                                </div>
+                                <div class="bg-slate-900/50 p-3 rounded-xl border border-slate-800 flex-1">
+                                    <p class="text-xs text-slate-300 italic leading-relaxed">"${req.message}"</p>
+                                </div>
+                                ${buttonsHtml}
+                            </div>
+                        `;
+                        container.insertAdjacentHTML('beforeend', card);
+                    });
                 });
+
+            } else {
+                window.location.href = 'login.html';
             }
         });
+
+        // Eğitmenin butona basınca veritabanını güncelleyen fonksiyonu
+        window.handleReq = async function(id, newStatus) {
+            const success = await updateCoachingRequest(id, newStatus);
+            if(success && window.triggerToast) {
+                triggerToast(newStatus === 'accepted' ? 'Talep kabul edildi!' : 'Talep reddedildi.', newStatus === 'accepted' ? 'success' : 'info');
+            }
+        };
     </script>
         <!-- FİREBASE MODÜLÜ -->
     <script type="module">
