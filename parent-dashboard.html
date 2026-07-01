@@ -262,20 +262,27 @@
         listenAuthState(async (user) => {
             if (user) {
                 const profile = await getUserProfile(user.uid);
-                if(profile && profile.role === 'veli') {
-                    currentParent = { uid: user.uid, ...profile };
-                    document.getElementById('parentNameDisplay').innerText = profile.fullName || "İsimsiz Veli";
-                    const initial = (profile.fullName || "V").charAt(0).toUpperCase();
-                    document.getElementById('parentInitials').innerText = initial;
-                    
-                    // Loader'ı kaldır
-                    document.getElementById('globalLoader').style.opacity = 0;
-                    setTimeout(() => document.getElementById('globalLoader').style.display = 'none', 500);
-                    // Öğrencileri Dinle
-                    initStudentsListener();
+                if(profile) {
+                    if(profile.role === 'veli' || profile.role === 'parent') {
+                        currentParent = { uid: user.uid, ...profile };
+                        // firstName ve lastName birleştir
+                        const fullName = (profile.firstName && profile.lastName) ? `${profile.firstName} ${profile.lastName}` : (profile.fullName || "İsimsiz Veli");
+                        document.getElementById('parentNameDisplay').innerText = fullName;
+                        const initial = fullName.charAt(0).toUpperCase();
+                        document.getElementById('parentInitials').innerText = initial;
+                        
+                        // Loader'ı kaldır
+                        document.getElementById('globalLoader').style.opacity = 0;
+                        setTimeout(() => document.getElementById('globalLoader').style.display = 'none', 500);
+                        // Öğrencileri Dinle
+                        initStudentsListener();
+                    } else {
+                        // Veli değilse login sayfasına yönlendir
+                        alert(`Hata: Veritabanındaki rolünüz '${profile.role}' olarak görünüyor. Bu panele sadece 'veli' rolüne sahip olanlar erişebilir.`);
+                        logoutUser();
+                    }
                 } else {
-                    // Veli değilse login sayfasına yönlendir
-                    alert("Bu panele sadece veliler erişebilir.");
+                    alert("Hata: Profil veriniz veritabanında bulunamadı.");
                     logoutUser();
                 }
             } else {
