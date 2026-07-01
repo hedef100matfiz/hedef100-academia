@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hedef100 Academia | Geleceğin Eğitim Ekosistemi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #040814; color: #f8fafc; overflow-x: hidden; }
+        
+        /* Navbar */
+        #navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 9999; backdrop-filter: blur(10px); background: rgba(4, 8, 20, 0.6); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        /* The Scroll Space */
+        #scroll-space {
+            height: 500vh; /* 4 transitions * 100vh + extra */
+        }
+
+        /* The Pinned Stage */
+        #scene-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        /* Room Layers */
+        .room-layer {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            will-change: transform, opacity;
+            overflow: hidden;
+        }
+
+        /* Dark overlay for readability */
+        .overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(4,8,20,0.9) 0%, rgba(4,8,20,0.6) 100%);
+            z-index: 1;
+        }
+
+        .content-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 1280px;
+            padding: 2rem;
+            max-height: 80vh;
+            overflow-y: auto;
+            /* hide scrollbar */
+            -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .content-container::-webkit-scrollbar { display: none; }
+
+        /* Initial States */
+        #room-hero { z-index: 4; background-image: url('https://images.unsplash.com/photo-1541888086425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80'); }
+        #room-vision { z-index: 3; background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1920&q=80'); transform: scale(0.5); opacity: 0; }
+        #room-features { z-index: 2; background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80'); transform: translateX(100%); }
+        #room-ecosystem { z-index: 1; background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80'); transform: translateY(100%); }
+
+        /* Premium Card Styles (Reused) */
+        .premium-card {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02), 0 20px 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+        }
+        .feature-card {
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            background: rgba(30, 41, 59, 0.6);
+            border-color: rgba(255,255,255,0.1);
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav id="navbar" class="px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-xl shadow-[0_0_20px_rgba(249,115,22,0.3)]">H</div>
+            <div class="font-black text-xl tracking-tight">HEDEF100<span class="text-orange-500">.ACADEMIA</span></div>
+        </div>
+        <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-300">
+            <a href="#" class="hover:text-white transition">GİRİŞ</a>
+            <a href="#" class="hover:text-white transition">VİZYON</a>
+            <a href="#" class="hover:text-white transition">ÖZELLİKLER</a>
+            <a href="#" class="hover:text-white transition">EKOSİSTEM</a>
+        </div>
+        <div class="flex items-center gap-4">
+            <a href="login.html" class="px-6 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white text-xs font-bold rounded-full shadow-[0_0_20px_rgba(249,115,22,0.4)] hover:shadow-[0_0_30px_rgba(249,115,22,0.6)] transition-all uppercase tracking-widest transform hover:-translate-y-0.5">Sisteme Giriş</a>
+        </div>
+    </nav>
+
+    <!-- SCROLL SPACE (invisible, creates the scrollbar) -->
+    <div id="scroll-space"></div>
+
+    <!-- THE SCENE (Pinned) -->
+    <div id="scene-container">
+        
+        <!-- ROOM 1: HERO -->
+        <div id="room-hero" class="room-layer">
+            <div class="overlay"></div>
+            <div class="content-container flex flex-col md:flex-row items-center gap-12 mt-16">
+                <div class="flex-1">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-500/20 bg-orange-500/10 mb-6">
+                        <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                        <span class="text-orange-400 text-[10px] font-bold tracking-[0.2em] uppercase">Akademik Başarı Ekosistemi V2.0</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight leading-[1.1]">
+                        Sınav Sürecini <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-500 to-orange-500">Yapay Zeka İle</span><br>Yeniden Yaz.
+                    </h1>
+                    <p class="text-slate-400 text-lg md:text-xl mb-10 max-w-xl font-light">
+                        Öğrenci, eğitmen, kurum ve veliyi tek bir dijital odakta birleştiren; kişiselleştirilmiş analiz ve koçluk ağı.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="login.html" class="px-8 py-4 bg-orange-500 hover:bg-orange-400 text-white rounded-full font-bold uppercase tracking-widest text-xs transition-all shadow-[0_0_30px_rgba(249,115,22,0.3)] flex items-center gap-3 group">
+                            Platforma Giriş <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="flex-1 hidden lg:block">
+                    <!-- Right side abstract graphic -->
+                    <div class="premium-card rounded-[2rem] p-8 text-center relative overflow-hidden group">
+                         <div class="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                         <div class="text-6xl mb-4">🚀</div>
+                         <h3 class="text-2xl font-black mb-2">Başarıya Hazırlan</h3>
+                         <p class="text-slate-400 text-sm">Aşağı kaydırarak binanın içine gir.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROOM 2: VISION -->
+        <div id="room-vision" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(8,4,20,0.95) 0%, rgba(15,8,30,0.8) 100%);"></div>
+            <div class="content-container mt-16">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-purple-500/15 bg-purple-500/5 mb-6">
+                            <span class="text-purple-400 text-[9px] font-bold tracking-[0.15em] uppercase">Vizyon Odası</span>
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-black mb-6 tracking-tight leading-tight">Hatalardan Ders Çıkararak <br><span class="text-purple-500">Zirveye İlerle.</span></h2>
+                        <p class="text-slate-300 text-base leading-relaxed mb-5">
+                            Gerçek başarı, çözdüğün yüzlerce kolay soruda değil, yapamadığın soruların mantığını kavramakta gizlidir. Hedef100 Academia, seni her hatanda bir adım ileriye taşımak için tasarlandı.
+                        </p>
+                    </div>
+                    <div class="premium-card rounded-[2rem] p-8 border-purple-500/20">
+                        <!-- Stats Area inside Vision Room -->
+                        <div class="grid grid-cols-2 gap-8">
+                            <div class="text-center">
+                                <div class="text-4xl font-black text-white mb-1">12.500+</div>
+                                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Aktif Öğrenci</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-black text-orange-400 mb-1">150+</div>
+                                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Partner Kurum</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-black text-amber-400 mb-1">85.000+</div>
+                                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Çözülen Hata</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-black text-emerald-400 mb-1">%99</div>
+                                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Memnuniyet</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROOM 3: FEATURES -->
+        <div id="room-features" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(4,20,15,0.95) 0%, rgba(8,30,20,0.8) 100%);"></div>
+            <div class="content-container mt-16">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/15 bg-emerald-500/5 mb-4">
+                        <span class="text-emerald-400 text-[9px] font-bold tracking-[0.15em] uppercase">Çalışma Salonu</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-black mb-4 tracking-tight">Başarının Her Adımı İçin <span class="text-emerald-500">Güçlü Araçlar.</span></h2>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <a href="#" class="feature-card rounded-2xl p-6 block">
+                        <h3 class="text-base font-black text-white mb-2 text-orange-400">Akıllı Hata Kutusu</h3>
+                        <p class="text-xs text-slate-400">Yaptığın hataları fotoğrafla, AI analiz etsin. Branş öğretmenlerin çözsün.</p>
+                    </a>
+                    <a href="#" class="feature-card rounded-2xl p-6 block">
+                        <h3 class="text-base font-black text-white mb-2 text-blue-400">Yapay Zeka Analizi</h3>
+                        <p class="text-xs text-slate-400">Performansını analiz eden ve sana özel çalışma planı oluşturan motor.</p>
+                    </a>
+                    <a href="#" class="feature-card rounded-2xl p-6 block">
+                        <h3 class="text-base font-black text-white mb-2 text-emerald-400">Odak Odası</h3>
+                        <p class="text-xs text-slate-400">Kronometre ve zamanlayıcı ile odaklanarak çalış. Grafiklerini takip et.</p>
+                    </a>
+                    <a href="#" class="feature-card rounded-2xl p-6 block">
+                        <h3 class="text-base font-black text-white mb-2 text-purple-400">Online Deneme</h3>
+                        <p class="text-xs text-slate-400">TYT/AYT formatında online denemeler, detaylı performans raporları.</p>
+                    </a>
+                    <a href="#" class="feature-card rounded-2xl p-6 block">
+                        <h3 class="text-base font-black text-white mb-2 text-amber-400">VIP Koçluk</h3>
+                        <p class="text-xs text-slate-400">Birebir danışman desteği, haftalık görüşmeler ve sana özel strateji.</p>
+                    </a>
+                    <a href="#" class="feature-card rounded-2xl p-6 block">
+                        <h3 class="text-base font-black text-white mb-2 text-rose-400">Veli Paneli</h3>
+                        <p class="text-xs text-slate-400">Çocuğunuzun sınav sonuçları ve danışman mesajları tek ekranda.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROOM 4: ECOSYSTEM -->
+        <div id="room-ecosystem" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(20,8,4,0.95) 0%, rgba(30,12,8,0.8) 100%);"></div>
+            <div class="content-container mt-16">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-amber-500/15 bg-amber-500/5 mb-4">
+                        <span class="text-amber-400 text-[9px] font-bold tracking-[0.15em] uppercase">Merkez İstasyon</span>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-black mb-4 tracking-tight">Bütünsel <span class="text-amber-500">Ekosistem.</span></h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="premium-card rounded-2xl p-6 text-center border-orange-500/20">
+                        <div class="text-4xl mb-4">🎓</div>
+                        <h3 class="text-lg font-black text-white mb-2">Öğrenci Üssü</h3>
+                        <a href="student-dashboard.html" class="inline-block mt-4 text-xs font-bold text-orange-400 uppercase tracking-widest border border-orange-500/50 rounded-full px-4 py-2 hover:bg-orange-500 hover:text-white transition">Giriş Yap</a>
+                    </div>
+                    <div class="premium-card rounded-2xl p-6 text-center border-emerald-500/20">
+                        <div class="text-4xl mb-4">⚡</div>
+                        <h3 class="text-lg font-black text-white mb-2">Eğitmen Radarı</h3>
+                        <a href="teacher-dashboard.html" class="inline-block mt-4 text-xs font-bold text-emerald-400 uppercase tracking-widest border border-emerald-500/50 rounded-full px-4 py-2 hover:bg-emerald-500 hover:text-white transition">Giriş Yap</a>
+                    </div>
+                    <div class="premium-card rounded-2xl p-6 text-center border-amber-500/20">
+                        <div class="text-4xl mb-4">🏢</div>
+                        <h3 class="text-lg font-black text-white mb-2">Kurum Paneli</h3>
+                        <a href="kurum-dashboard.html" class="inline-block mt-4 text-xs font-bold text-amber-400 uppercase tracking-widest border border-amber-500/50 rounded-full px-4 py-2 hover:bg-amber-500 hover:text-white transition">Giriş Yap</a>
+                    </div>
+                    <div class="premium-card rounded-2xl p-6 text-center border-rose-500/20">
+                        <div class="text-4xl mb-4">👨‍👩‍👧‍👦</div>
+                        <h3 class="text-lg font-black text-white mb-2">Veli Takibi</h3>
+                        <a href="#" class="inline-block mt-4 text-xs font-bold text-rose-400 uppercase tracking-widest border border-rose-500/50 rounded-full px-4 py-2 hover:bg-rose-500 hover:text-white transition">Giriş Yap</a>
+                    </div>
+                </div>
+                
+                <div class="mt-16 text-center text-slate-500 text-xs font-bold uppercase tracking-widest">
+                    Hedef100 Academia © 2026
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GSAP LOGIC -->
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Timeline for the entire scrollytelling experience
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: "#scroll-space",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1, // Smooth scrubbing
+            }
+        });
+
+        // 1. Hero scales up drastically (flying into the building) and fades out
+        tl.to("#room-hero", {
+            scale: 3,
+            opacity: 0,
+            duration: 1,
+            ease: "power2.inOut"
+        }, 0);
+
+        // 2. Vision room scales up to 1 (appearing as we fly in) and fades in
+        tl.to("#room-vision", {
+            scale: 1,
+            opacity: 1,
+            duration: 1,
+            ease: "power2.inOut"
+        }, 0);
+
+        // 3. Vision room slides LEFT, Features room slides IN from RIGHT
+        tl.to("#room-vision", {
+            xPercent: -100,
+            opacity: 0,
+            duration: 1,
+            ease: "power2.inOut"
+        }, 1.5);
+        tl.to("#room-features", {
+            x: "0%",
+            duration: 1,
+            ease: "power2.inOut"
+        }, 1.5);
+
+        // 4. Features room moves UP (Elevator), Ecosystem moves IN from BOTTOM
+        tl.to("#room-features", {
+            yPercent: -100,
+            opacity: 0,
+            duration: 1,
+            ease: "power2.inOut"
+        }, 3);
+        tl.to("#room-ecosystem", {
+            y: "0%",
+            duration: 1,
+            ease: "power2.inOut"
+        }, 3);
+
+    </script>
+</body>
+</html>
