@@ -262,7 +262,7 @@
         listenAuthState(async (user) => {
             if (user) {
                 const profile = await getUserProfile(user.uid);
-                if(profile && profile.role === 'parent') {
+                if(profile && profile.role === 'veli') {
                     currentParent = { uid: user.uid, ...profile };
                     document.getElementById('parentNameDisplay').innerText = profile.fullName || "İsimsiz Veli";
                     const initial = (profile.fullName || "V").charAt(0).toUpperCase();
