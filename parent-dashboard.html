@@ -313,7 +313,8 @@
                         const opt = document.createElement('option');
                         opt.value = s.id;
                         opt.className = 'bg-slate-900 text-white';
-                        opt.text = `${s.fullName} (${s.hedefId})`;
+                        const sFullName = (s.firstName && s.lastName) ? `${s.firstName} ${s.lastName}` : (s.fullName || "İsimsiz Öğrenci");
+                        opt.text = `${sFullName} (${s.hedefId})`;
                         selector.appendChild(opt);
                     });
                     // Eğer aktif bir seçim yoksa ilkini seç
@@ -333,8 +334,9 @@
         function renderStudentData(sId) {
             const student = studentsList.find(s => s.id === sId);
             if(!student) return;
-            document.getElementById('headerStudentName').innerText = `${student.fullName} Paneli`;
-            document.getElementById('summaryStudentName').innerText = student.fullName.split(' ')[0];
+            const sFullName = (student.firstName && student.lastName) ? `${student.firstName} ${student.lastName}` : (student.fullName || "İsimsiz Öğrenci");
+            document.getElementById('headerStudentName').innerText = `${sFullName} Paneli`;
+            document.getElementById('summaryStudentName').innerText = sFullName.split(' ')[0];
             // İstatistikler (Eğer öğrencinin stats objesi varsa göster, yoksa varsayılan)
             const stats = student.stats || {};
             document.getElementById('statNet').innerText = stats.lastNet || "--";
