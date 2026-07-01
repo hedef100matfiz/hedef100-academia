@@ -12,535 +12,412 @@
     <style>
         body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #040814; color: #f8fafc; overflow-x: hidden; }
         
-        /* ═══════ NAVBAR STYLES ═══════ */
-        .glass-nav { background: rgba(4, 8, 20, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.3s ease; }
-        .nav-dropdown { opacity: 0; visibility: hidden; transform: translateY(8px); transition: all 0.25s ease; }
-        .nav-dropdown.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        /* ═══════ NAVBAR ═══════ */
+        .glass-nav { background: rgba(4, 8, 20, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .btn-action {
             background: linear-gradient(135deg, #f97316 0%, #d97706 100%); color: white;
-            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.25); transition: all 0.3s ease;
-            position: relative; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.25); transition: all 0.3s ease; position: relative; overflow: hidden;
         }
         .btn-action:hover { transform: scale(1.03); box-shadow: 0 6px 30px rgba(249, 115, 22, 0.4); }
         .btn-ghost { border: 1px solid rgba(255,255,255,0.15); color: white; backdrop-filter: blur(8px); transition: all 0.3s ease; }
         .btn-ghost:hover { background: rgba(255,255,255,0.05); border-color: rgba(249,115,22,0.3); transform: scale(1.02); }
-        /* ═══════ GSAP TOUR STYLES ═══════ */
-        #tour-container { width: 100vw; height: 100vh; position: relative; overflow: hidden; z-index: 10; }
+        /* ═══════ GSAP SINGLE PAGE SCROLL ═══════ */
+        #scroll-space { height: 800vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 0; }
+        #scene-container { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 10; overflow: hidden; pointer-events: none; }
+        
         .room-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            position: absolute; inset: 0; width: 100%; height: 100%;
             background-size: cover; background-position: center;
             display: flex; align-items: center; justify-content: center;
-            will-change: transform, opacity, visibility; overflow: hidden;
+            will-change: transform, opacity, visibility; pointer-events: auto;
         }
-        .overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(2,6,23,0.95) 100%); z-index: 1; }
+        
+        .overlay { position: absolute; inset: 0; z-index: 1; }
         .content-container {
-            position: relative; z-index: 2; width: 100%; max-width: 1300px; padding: 2rem;
-            max-height: 85vh; overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none;
+            position: relative; z-index: 2; width: 100%; max-width: 1400px; padding: 2rem;
+            max-height: 100vh; overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none;
         }
         .content-container::-webkit-scrollbar { display: none; }
-        
-        #room-hero { z-index: 7; visibility: visible; opacity: 1; background-image: url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=1920&q=80'); }
-        #room-vision { z-index: 6; visibility: hidden; opacity: 0; transform: scale(0.5); background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80'); }
-        #room-programs { z-index: 5; visibility: hidden; opacity: 0; transform: translateX(100%); background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1920&q=80'); }
-        #room-student { z-index: 4; visibility: hidden; opacity: 0; transform: translateY(100%); background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80'); }
-        #room-teacher { z-index: 3; visibility: hidden; opacity: 0; transform: translateX(-100%); background-image: url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1920&q=80'); }
-        #room-reviews { z-index: 2; visibility: hidden; opacity: 0; transform: translateY(-100%); background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1920&q=80'); }
-        #room-ecosystem { z-index: 1; visibility: hidden; opacity: 0; transform: scale(1.5); background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80'); }
-        .sign-overlay { position: absolute; top: 30%; left: 50%; transform: translateX(-50%); z-index: 2; text-align: center; width: 100%; }
-        /* ═══════ SECTION STYLES (FOOTER, CTA, ETC) ═══════ */
+        /* Initial States for GSAP */
+        #layer-1 { z-index: 8; visibility: visible; opacity: 1; background-image: url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-2 { z-index: 7; visibility: hidden; opacity: 0; transform: scale(0.8); background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-3 { z-index: 6; visibility: hidden; opacity: 0; transform: translateX(100%); background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-4 { z-index: 5; visibility: hidden; opacity: 0; transform: translateY(100%); background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-5 { z-index: 4; visibility: hidden; opacity: 0; transform: translateX(-100%); background-image: url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-6 { z-index: 3; visibility: hidden; opacity: 0; transform: scale(1.2); background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-7 { z-index: 2; visibility: hidden; opacity: 0; transform: translateY(-100%); background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-8 { z-index: 1; visibility: hidden; opacity: 0; transform: scale(0.9); background-color: #040814; }
+        /* ═══════ UI ELEMENTS ═══════ */
         .premium-card {
-            background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02), 0 20px 40px rgba(0, 0, 0, 0.6);
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             transition: all 0.4s ease;
         }
-        .feature-card { background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); backdrop-filter: blur(12px); transition: all 0.3s ease; }
-        .feature-card:hover { background: rgba(30, 41, 59, 0.7); border-color: rgba(255,255,255,0.15); transform: translateY(-5px); }
+        .premium-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); }
         .text-gradient-hero { background: linear-gradient(135deg, #ffffff 20%, #fcd34d 60%, #f97316 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .marquee-track { animation: marquee 30s linear infinite; }
-        .marquee-track:hover { animation-play-state: paused; }
-        .testimonial-card { background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.005) 100%); border: 1px solid rgba(255,255,255,0.06); transition: all 0.4s ease; }
-        .testimonial-card:hover { border-color: rgba(249,115,22,0.2); transform: translateY(-2px); }
+        
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 1.5rem;
+            backdrop-filter: blur(10px); height: 100%;
+        }
+        
+        /* ═══════ FOOTER SCROLL OVERRIDE ═══════ */
+        /* Layer 8 (Footer) needs internal scroll if screen is small */
+        #layer-8 .content-container { padding-top: 100px; padding-bottom: 50px; }
     </style>
 </head>
 <body>
-    <!-- ═══════════════ MOBİL MENÜ DRAWER ═══════════════ -->
-    <div id="mobileDrawer" class="fixed inset-0 bg-slate-950/98 backdrop-blur-2xl z-[99999] hidden flex flex-col justify-center items-center space-y-6 text-lg font-bold uppercase tracking-widest opacity-0 transition-all duration-300">
-        <button onclick="toggleMobileSidebar()" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-900 w-12 h-12 rounded-full flex items-center justify-center border border-slate-800 transition-colors">✕</button>
-        <a href="sistemimiz.html" onclick="toggleMobileSidebar()" class="text-slate-300 hover:text-white transition text-sm">Sistemimiz</a>
-        <a href="online-deneme.html" onclick="toggleMobileSidebar()" class="text-slate-300 hover:text-white transition text-sm">Online Deneme</a>
-        <a href="vip-kocluk.html" onclick="toggleMobileSidebar()" class="text-slate-300 hover:text-white transition text-sm">VIP Koçluk</a>
-        <a href="kurumsal.html" onclick="toggleMobileSidebar()" class="text-slate-300 hover:text-white transition text-sm">Kurumsal</a>
-        <a href="hata-kutusu.html" class="text-orange-400 hover:text-orange-300 transition text-sm">Hata Kutusunu Dene</a>
-        <a href="login.html" class="btn-action font-bold text-xs px-8 py-3.5 rounded-full mt-4 inline-block">Sisteme Giriş</a>
-    </div>
+    <!-- ═══════════════ SCROLL HEIGHT DRIVER ═══════════════ -->
+    <div id="scroll-space"></div>
     <!-- ═══════════════ MEGA NAVBAR ═══════════════ -->
-    <nav class="glass-nav fixed top-0 w-full px-6 py-3.5 z-[9999]" id="navbar">
+    <nav class="glass-nav fixed top-0 w-full px-6 py-4 z-[9999]" id="navbar">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <!-- LOGO -->
-            <a href="index.html" class="flex items-center gap-3 group">
-                <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg group-hover:shadow-orange-500/20 transition-shadow">H</div>
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg">H</div>
                 <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-orange-500 font-medium">.ACADEMIA</span></span>
             </a>
-            <!-- DESKTOP NAV -->
-            <div class="hidden lg:flex items-center gap-1">
-                <div class="relative" id="exploreDropdown">
-                    <button onclick="toggleExploreMenu()" class="text-[11px] font-semibold text-slate-400 hover:text-white transition uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-white/5 flex items-center gap-1.5">
-                        Sistemi Keşfet
-                        <svg class="w-3 h-3 transition-transform" id="exploreArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                    </button>
-                    <div id="exploreMenu" class="nav-dropdown absolute top-full left-0 mt-2 w-56 bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-2 shadow-2xl">
-                        <a href="sistemimiz.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition text-xs font-medium"><span class="w-7 h-7 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[11px]">📊</span>Sistemimiz</a>
-                        <a href="online-deneme.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition text-xs font-medium"><span class="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[11px]">📝</span>Online Deneme</a>
-                        <a href="vip-kocluk.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition text-xs font-medium"><span class="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-[11px]">⭐</span>VIP Koçluk</a>
-                        <a href="kurumsal.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition text-xs font-medium"><span class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-[11px]">🏢</span>Kurumsal</a>
-                        <div class="h-px bg-slate-700/50 my-1.5 mx-2"></div>
-                        <a href="hata-kutusu.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-orange-400 hover:text-orange-300 hover:bg-orange-500/5 transition text-xs font-semibold"><span class="w-7 h-7 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[11px]">🧪</span>Hata Kutusunu Dene</a>
-                    </div>
-                </div>
-                <div class="w-px h-5 bg-slate-700/50 mx-2"></div>
-                
-                <a href="login.html" class="btn-action font-bold text-[11px] px-6 py-2.5 rounded-full uppercase tracking-widest ml-3 cursor-pointer relative z-[10000]">Sisteme Giriş</a>
+            <div class="hidden lg:flex items-center gap-6">
+                <a href="sistemimiz.html" class="text-xs font-semibold text-slate-300 hover:text-white uppercase tracking-widest transition">Sistemimiz</a>
+                <a href="hata-kutusu.html" class="text-xs font-semibold text-orange-400 hover:text-orange-300 uppercase tracking-widest transition">Hata Kutusu Dene</a>
+                <div class="w-px h-5 bg-slate-700/50"></div>
+                <a href="login.html" class="btn-action font-bold text-[11px] px-6 py-2.5 rounded-full uppercase tracking-widest">Sisteme Giriş</a>
             </div>
-            <!-- MOBILE HAMBURGER -->
-            <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-400 hover:text-white p-2 bg-slate-900/60 border border-slate-800 rounded-xl transition-colors">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
         </div>
     </nav>
-    <!-- ═══════════════ GSAP CINEMATIC TOUR ═══════════════ -->
-    <div id="tour-container">
+    <!-- ═══════════════ THE 8 ROOMS (SINGLE PAGE SCROLL) ═══════════════ -->
+    <div id="scene-container">
         
-        <!-- ODA 1: DIŞ CEPHE -->
-        <div id="room-hero" class="room-layer">
-            <div class="overlay" style="background: linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(2,6,23,0.95) 100%);"></div>
-            <div class="sign-overlay px-4">
-                <h1 class="text-7xl md:text-9xl font-black text-white tracking-tighter mb-4" style="text-shadow: 0 10px 50px rgba(0,0,0,0.8), 0 0 100px rgba(249,115,22,0.4);">
+        <!-- LAYER 1: DIŞ CEPHE (HERO) -->
+        <div id="layer-1" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(2,6,23,0.95) 100%); pointer-events: none;"></div>
+            <div class="content-container text-center pt-20" style="pointer-events: none;">
+                <h1 class="text-7xl md:text-[8rem] font-black text-white tracking-tighter mb-4" style="text-shadow: 0 10px 50px rgba(0,0,0,0.8), 0 0 100px rgba(249,115,22,0.4);">
                     HEDEF100 <br><span class="text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-amber-600">ACADEMIA</span>
                 </h1>
-                <p class="text-xl md:text-3xl text-slate-200 font-light tracking-wide max-w-3xl mx-auto mb-16 drop-shadow-lg">Dijital Eğitim Kampüsüne Hoş Geldiniz.</p>
+                <p class="text-xl md:text-3xl text-slate-200 font-light tracking-wide max-w-3xl mx-auto mb-16 drop-shadow-lg">Gerçek Eğitim Kampüsü. Tek Ekran, Tam Kontrol.</p>
                 <div class="animate-bounce mt-10">
-                    <p class="text-xs text-orange-400 font-black uppercase tracking-widest mb-3">Kapıdan İçeri Girmek İçin Kaydırın</p>
+                    <p class="text-xs text-orange-400 font-black uppercase tracking-widest mb-3">İçeri Girmek İçin Kaydırın</p>
                     <svg class="w-8 h-8 mx-auto text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
                 </div>
             </div>
         </div>
-        <!-- ODA 2: VİZYONUMUZ -->
-        <div id="room-vision" class="room-layer">
-            <div class="overlay" style="background: linear-gradient(135deg, rgba(8,15,30,0.95) 0%, rgba(15,8,30,0.90) 100%);"></div>
+        <!-- LAYER 2: VİZYON & İSTATİSTİKLER -->
+        <div id="layer-2" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(15,8,30,0.95) 0%, rgba(8,15,30,0.90) 100%); pointer-events: none;"></div>
             <div class="content-container mt-16">
-                <div class="text-center mb-12">
+                <div class="text-center mb-16">
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-purple-500/20 bg-purple-500/10 mb-4">
-                        <span class="text-purple-400 text-[10px] font-bold tracking-[0.2em] uppercase">Bizim Vizyonumuz</span>
+                        <span class="text-purple-400 text-[10px] font-bold tracking-[0.2em] uppercase">Vizyonumuz & Gücümüz</span>
                     </div>
-                    <h2 class="text-4xl md:text-5xl font-black mb-4 tracking-tight leading-tight">Eğitimin Geleceğini <br><span class="text-purple-500">Birlikte İnşa Ediyoruz.</span></h2>
-                    <p class="text-slate-300 text-sm max-w-2xl mx-auto">Sadece bir soru çözüm platformu değil, başarıya giden yoldaki tüm aktörleri tek bir ekosistemde birleştiren devasa bir dijital kampüs yarattık.</p>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 tracking-tight leading-tight">Başarıyı Şansa Bırakmayan <br><span class="text-purple-500">Devasa Ekosistem.</span></h2>
+                    <p class="text-slate-300 text-sm max-w-3xl mx-auto leading-relaxed">Hedef100 Academia, öğrenciyi yalnız bırakan eski nesil sistemleri yıkar. Yapay zeka ile eksikleri tespit eder, kurum, öğretmen ve veliyi anlık verilerle aynı hedefe odaklar.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="premium-card p-6 rounded-2xl border-orange-500/20">
-                        <div class="text-3xl mb-3">🎓</div>
-                        <h3 class="text-lg font-black text-white mb-2 text-orange-400">Öğrenci İçin</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Binlerce soru içinde kaybolmak yerine, sadece yapamadığı soruların mantığını kavramasını sağlayan yapay zeka destekli pusula.</p>
+                <!-- Detaylı İstatistikler -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto text-center">
+                    <div class="premium-card p-8 rounded-3xl border-purple-500/20">
+                        <div class="text-4xl md:text-5xl font-black text-white mb-2">12.5K</div>
+                        <p class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Aktif Öğrenci</p>
                     </div>
-                    <div class="premium-card p-6 rounded-2xl border-blue-500/20">
-                        <div class="text-3xl mb-3">👨‍🏫</div>
-                        <h3 class="text-lg font-black text-white mb-2 text-blue-400">Eğitmen İçin</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Kağıt kürek işlerini bitirerek, eğitmenin tüm enerjisini öğrencinin gelişimine harcamasını sağlayan akıllı radar panelleri.</p>
+                    <div class="premium-card p-8 rounded-3xl border-orange-500/20">
+                        <div class="text-4xl md:text-5xl font-black text-white mb-2">150+</div>
+                        <p class="text-orange-400 text-[10px] font-bold uppercase tracking-widest">Partner Kurum</p>
                     </div>
-                    <div class="premium-card p-6 rounded-2xl border-rose-500/20">
-                        <div class="text-3xl mb-3">👪</div>
-                        <h3 class="text-lg font-black text-white mb-2 text-rose-400">Veli İçin</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Öğrencinin anlık net grafiklerini ve koçluk raporlarını %100 şeffaflıkla izleyebileceği, sürece dahil olabileceği bir köprü.</p>
+                    <div class="premium-card p-8 rounded-3xl border-emerald-500/20">
+                        <div class="text-4xl md:text-5xl font-black text-white mb-2">85K+</div>
+                        <p class="text-emerald-400 text-[10px] font-bold uppercase tracking-widest">Çözülen Hata</p>
                     </div>
-                    <div class="premium-card p-6 rounded-2xl border-amber-500/20">
-                        <div class="text-3xl mb-3">🏢</div>
-                        <h3 class="text-lg font-black text-white mb-2 text-amber-400">Kurum İçin</h3>
-                        <p class="text-xs text-slate-300 leading-relaxed">Tüm şubelerdeki öğrenci performanslarını tek ekranda analiz edip veri odaklı yönetim imkanı tanıyan devasa komuta merkezi.</p>
+                    <div class="premium-card p-8 rounded-3xl border-blue-500/20">
+                        <div class="text-4xl md:text-5xl font-black text-white mb-2">%99</div>
+                        <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">Memnuniyet</p>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- ODA 3: EĞİTİM PROGRAMLARIMIZ -->
-        <div id="room-programs" class="room-layer">
-            <div class="overlay" style="background: linear-gradient(135deg, rgba(30,15,8,0.95) 0%, rgba(30,8,15,0.90) 100%);"></div>
+        <!-- LAYER 3: EĞİTİM PROGRAMLARI -->
+        <div id="layer-3" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(30,15,8,0.95) 0%, rgba(30,8,15,0.90) 100%); pointer-events: none;"></div>
             <div class="content-container mt-16 text-center">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 mb-4">
-                    <span class="text-rose-400 text-[10px] font-bold tracking-[0.2em] uppercase">Eğitimlerimiz</span>
+                    <span class="text-rose-400 text-[10px] font-bold tracking-[0.2em] uppercase">Eğitim Programları</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Her Seviyeye Uygun <span class="text-rose-500">Akademik Programlar.</span></h2>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Her Seviye İçin <span class="text-rose-500">Nokta Atışı Plan.</span></h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto">
-                    <div class="feature-card p-8 rounded-3xl border-rose-500/30">
-                        <h3 class="text-2xl font-black text-white mb-2">YKS (TYT-AYT)</h3>
-                        <p class="text-sm text-slate-300 mb-6">Üniversiteye hazırlanan öğrenciler için nokta atışı eksik kapatma stratejileri, Türkiye geneli online denemeler ve koçluk.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto text-left">
+                    <div class="premium-card p-8 rounded-3xl border-rose-500/30">
+                        <div class="w-12 h-12 bg-rose-500/20 rounded-xl flex items-center justify-center text-rose-400 mb-6 text-2xl">🎓</div>
+                        <h3 class="text-2xl font-black text-white mb-3">YKS (TYT-AYT)</h3>
+                        <p class="text-sm text-slate-300 mb-6 leading-relaxed">Üniversite hedefine giden yolda deneme analizleri, yapay zeka tekrar döngüleri ve Türkiye geneli sıralama ölçümleri.</p>
+                        <ul class="text-xs text-slate-400 space-y-2 mb-6">
+                            <li>✓ 3 Milyon Soru Havuzu</li>
+                            <li>✓ Anlık Net Takibi</li>
+                            <li>✓ Video Çözüm Desteği</li>
+                        </ul>
                     </div>
-                    <div class="feature-card p-8 rounded-3xl border-amber-500/30">
-                        <h3 class="text-2xl font-black text-white mb-2">LGS Hazırlık</h3>
-                        <p class="text-sm text-slate-300 mb-6">Liselere geçişte yeni nesil soruların mantığını kavratan, erken yaşta stres yönetimini öğreten güçlü temel eğitim platformu.</p>
+                    <div class="premium-card p-8 rounded-3xl border-amber-500/30">
+                        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400 mb-6 text-2xl">⚡</div>
+                        <h3 class="text-2xl font-black text-white mb-3">LGS Hazırlık</h3>
+                        <p class="text-sm text-slate-300 mb-6 leading-relaxed">Yeni nesil mantık muhakeme sorularına adaptasyon, zaman yönetimi becerisi ve stressiz sınav pratiği odaklı program.</p>
+                        <ul class="text-xs text-slate-400 space-y-2 mb-6">
+                            <li>✓ Yeni Nesil Soru Radarı</li>
+                            <li>✓ Haftalık Veli Raporu</li>
+                            <li>✓ Odaklanma Atölyesi</li>
+                        </ul>
                     </div>
-                    <div class="feature-card p-8 rounded-3xl border-emerald-500/30">
-                        <h3 class="text-2xl font-black text-white mb-2">Ara Sınıf Takviye</h3>
-                        <p class="text-sm text-slate-300 mb-6">Okul notlarını yükselten, üniversite sınavına şimdiden sağlam bir zemin hazırlayan akademik destek programı.</p>
+                    <div class="premium-card p-8 rounded-3xl border-emerald-500/30">
+                        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 mb-6 text-2xl">⭐</div>
+                        <h3 class="text-2xl font-black text-white mb-3">Ara Sınıf & VIP Koçluk</h3>
+                        <p class="text-sm text-slate-300 mb-6 leading-relaxed">Sadece sınava değil geleceğe hazırlık. GPA artırma, birebir danışmanlık ve kişisel yetenek keşif analizleri.</p>
+                        <ul class="text-xs text-slate-400 space-y-2 mb-6">
+                            <li>✓ Birebir Motivasyon</li>
+                            <li>✓ Okul Notu Entegrasyonu</li>
+                            <li>✓ Kariyer Planlama</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- ODA 4: ÖĞRENCİ LABORATUVARI -->
-        <div id="room-student" class="room-layer">
-            <div class="overlay" style="background: linear-gradient(135deg, rgba(4,20,15,0.95) 0%, rgba(8,30,20,0.90) 100%);"></div>
+        <!-- LAYER 4: ÖĞRENCİ ÜSSÜ -->
+        <div id="layer-4" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(4,20,15,0.95) 0%, rgba(8,30,20,0.90) 100%); pointer-events: none;"></div>
             <div class="content-container mt-16 text-center">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 mb-4">
                     <span class="text-emerald-400 text-[10px] font-bold tracking-[0.2em] uppercase">Öğrenci Laboratuvarı</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Başarı Tesadüf Değildir, <span class="text-emerald-500">Stratejidir.</span></h2>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Eksiklerini Yapay Zeka İle <span class="text-emerald-500">Kapat.</span></h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto text-left">
-                    <div class="premium-card rounded-2xl p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto text-left">
+                    <div class="premium-card rounded-2xl p-8 border-emerald-500/20 flex flex-col pointer-events-auto">
                         <div class="text-4xl mb-4 text-emerald-400">🧪</div>
-                        <h3 class="text-lg font-black text-white mb-2">Akıllı Hata Kutusu</h3>
-                        <p class="text-xs text-slate-300 mb-6">Test kitaplarındaki yapamadığın soruları fotoğrafla. Sisteme yükle ve uzman öğretmenlerinden çözüm al.</p>
-                        <a href="hata-kutusu.html" class="inline-block px-4 py-2 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 rounded-lg text-[10px] font-bold uppercase transition">Hemen Dene</a>
+                        <h3 class="text-xl font-black text-white mb-3">Akıllı Hata Kutusu</h3>
+                        <p class="text-xs text-slate-300 mb-8 flex-1 leading-relaxed">Çözemediğin soruları fotoğrafla, sisteme at. Öğretmenlerin çözümü göndersin, AI algoritması konuyu tam öğrenene kadar sana aynı soru tipini sormaya devam etsin.</p>
+                        <a href="hata-kutusu.html" class="inline-block px-5 py-3 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 text-center rounded-xl text-[11px] font-bold uppercase transition pointer-events-auto">Test Et</a>
                     </div>
-                    <div class="premium-card rounded-2xl p-6">
-                        <div class="text-4xl mb-4 text-emerald-400">🤖</div>
-                        <h3 class="text-lg font-black text-white mb-2">Performans Yapay Zekası</h3>
-                        <p class="text-xs text-slate-300 mb-6">Deneme sonuçlarına göre seni analiz eder. Hangi konularda zaman kaybettiğini sana özel haritayla sunar.</p>
-                        <a href="login.html" class="inline-block px-4 py-2 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 rounded-lg text-[10px] font-bold uppercase transition">Öğrenci Girişi</a>
+                    <div class="premium-card rounded-2xl p-8 border-teal-500/20 flex flex-col pointer-events-auto">
+                        <div class="text-4xl mb-4 text-teal-400">🤖</div>
+                        <h3 class="text-xl font-black text-white mb-3">Performans AI Radarı</h3>
+                        <p class="text-xs text-slate-300 mb-8 flex-1 leading-relaxed">Denemelerdeki hatalarını konu bazlı analiz eder. "Matematik Türev'de zayıfsın" demez, "Türevde Maksimum Minimum problemlerinde eksiğin var" diyerek nokta atışı yapar.</p>
+                        <a href="login.html" class="inline-block px-5 py-3 bg-teal-600/20 hover:bg-teal-600/40 text-teal-400 text-center rounded-xl text-[11px] font-bold uppercase transition pointer-events-auto">Öğrenci Girişi</a>
                     </div>
-                    <div class="premium-card rounded-2xl p-6">
-                        <div class="text-4xl mb-4 text-emerald-400">⏱️</div>
-                        <h3 class="text-lg font-black text-white mb-2">Dijital Odak Odası</h3>
-                        <p class="text-xs text-slate-300 mb-6">Pomodoro ile odaklanarak çalış. Günlük ve haftalık çalışma grafiklerini profilinde gururla sergile.</p>
-                        <a href="login.html" class="inline-block px-4 py-2 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 rounded-lg text-[10px] font-bold uppercase transition">Öğrenci Girişi</a>
+                    <div class="premium-card rounded-2xl p-8 border-cyan-500/20 flex flex-col pointer-events-auto">
+                        <div class="text-4xl mb-4 text-cyan-400">⏱️</div>
+                        <h3 class="text-xl font-black text-white mb-3">Dijital Odak Odası</h3>
+                        <p class="text-xs text-slate-300 mb-8 flex-1 leading-relaxed">Masaya oturduğunda zamanlayıcını başlat. Çalıştığın her dakika buluta kaydedilsin. Haftalık hedeflerine ulaş, rozetleri topla ve rakiplerinin önüne geç.</p>
+                        <a href="login.html" class="inline-block px-5 py-3 bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-400 text-center rounded-xl text-[11px] font-bold uppercase transition pointer-events-auto">Öğrenci Girişi</a>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- ODA 5: EĞİTMEN KONTROL MERKEZİ -->
-        <div id="room-teacher" class="room-layer">
-            <div class="overlay" style="background: linear-gradient(135deg, rgba(8,20,30,0.95) 0%, rgba(4,10,20,0.90) 100%);"></div>
+        <!-- LAYER 5: EĞİTMEN & KURUM -->
+        <div id="layer-5" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(8,20,30,0.95) 0%, rgba(4,10,20,0.90) 100%); pointer-events: none;"></div>
             <div class="content-container mt-16 text-center">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 mb-4">
-                    <span class="text-blue-400 text-[10px] font-bold tracking-[0.2em] uppercase">Eğitmen Radar Merkezi</span>
+                    <span class="text-blue-400 text-[10px] font-bold tracking-[0.2em] uppercase">Yönetim ve Takip</span>
                 </div>
-                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Akademik Gelişimi <span class="text-blue-500">Verilerle Yönetin.</span></h2>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Eğitmen ve Kurum İçin <span class="text-blue-500">Komuta Merkezi.</span></h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto text-left">
                     <div class="premium-card p-10 rounded-3xl border-blue-500/30">
-                        <h3 class="text-2xl font-black text-white mb-4">Merkezi Soru Çözüm Havuzu</h3>
-                        <p class="text-sm text-slate-300 mb-6 leading-relaxed">Öğrencilerin hata kutusuna gönderdiği branşınıza ait tüm sorular tek ekranda toplanır. Sınıf içerisinde zaman kaybetmek yerine, öğrencilerinize evden veya dilediğiniz yerden yazılı/görsel çözüm sunun.</p>
-                        <a href="login.html" class="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white uppercase tracking-widest text-center shadow-[0_0_20px_rgba(37,99,235,0.4)]">Öğretmen Girişi</a>
+                        <h3 class="text-2xl font-black text-white mb-4">Eğitmen Radar & Soru Havuzu</h3>
+                        <p class="text-sm text-slate-300 mb-6 leading-relaxed">Sınıf yoklamalarını tek tıkla alın, öğrencilerin gönderdiği hatalı soruları topluca görün. Koçluk yaptığınız öğrencilerin deneme sınavı dalgalanmalarını anında raporlayın.</p>
+                        <a href="login.html" class="inline-block px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white uppercase tracking-widest text-center shadow-[0_0_20px_rgba(37,99,235,0.4)] transition pointer-events-auto">Öğretmen Girişi</a>
                     </div>
-                    <div class="premium-card p-10 rounded-3xl border-cyan-500/30">
-                        <h3 class="text-2xl font-black text-white mb-4">Erken Uyarı & Analiz Radarı</h3>
-                        <p class="text-sm text-slate-300 mb-6 leading-relaxed">Danışmanlığını yaptığınız öğrencilerin deneme sınavı netlerindeki dalgalanmaları sistem otomatik tespit eder ve size bildirir. Düşüş yaşayan öğrenciye anında müdahale edin.</p>
-                        <a href="login.html" class="inline-block px-8 py-3 bg-cyan-600 hover:bg-cyan-500 rounded-xl text-xs font-bold text-white uppercase tracking-widest text-center shadow-[0_0_20px_rgba(6,182,212,0.4)]">Koçluk Araçları</a>
+                    <div class="premium-card p-10 rounded-3xl border-amber-500/30">
+                        <h3 class="text-2xl font-black text-white mb-4">Kurumsal Şube Yönetimi</h3>
+                        <p class="text-sm text-slate-300 mb-6 leading-relaxed">Kurum müdürleri için devasa kontrol paneli. Tüm şubelerin deneme ortalamaları, öğretmen performansları ve öğrenci devam durumu tek bir ekranda, %100 kontrol altında.</p>
+                        <a href="kurumsal.html" class="inline-block px-8 py-3 bg-amber-600 hover:bg-amber-500 rounded-xl text-xs font-bold text-white uppercase tracking-widest text-center shadow-[0_0_20px_rgba(245,158,11,0.4)] transition pointer-events-auto">Kurumsal Demo</a>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- ODA 6: BÜTÜNSEL EKOSİSTEM (GİRİŞ) -->
-        <div id="room-ecosystem" class="room-layer">
-            <div class="overlay" style="background: linear-gradient(135deg, rgba(20,8,4,0.95) 0%, rgba(30,12,8,0.90) 100%);"></div>
+        <!-- LAYER 6: EKOSİSTEM (GİRİŞ) -->
+        <div id="layer-6" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(20,8,4,0.95) 0%, rgba(30,12,8,0.90) 100%); pointer-events: none;"></div>
             <div class="content-container mt-16 text-center">
                 <div class="mb-12">
                     <div class="w-24 h-24 bg-gradient-to-br from-orange-500 to-amber-600 rounded-[2rem] flex items-center justify-center font-black text-white text-5xl mx-auto shadow-[0_0_60px_rgba(249,115,22,0.4)] mb-8">H</div>
-                    <h2 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">Gelecek, Seninle Başlıyor.</h2>
-                    <p class="text-slate-400 text-base max-w-2xl mx-auto">Tüm araçlar, tüm hocalar ve devasa bir dijital altyapı seni bekliyor. Hemen giriş yap, başarı yolculuğuna başla.</p>
+                    <h2 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">Sisteme Hoş Geldiniz.</h2>
+                    <p class="text-slate-400 text-base max-w-2xl mx-auto">Hedefinize giden yolda rolünüzü seçin ve paneline giriş yapın.</p>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
-                    <a href="login.html" class="premium-card rounded-3xl p-8 text-center border-orange-500/40 hover:bg-orange-500/20 transition-all group block">
+                    <a href="login.html" class="premium-card rounded-3xl p-8 text-center border-orange-500/40 hover:bg-orange-500/20 transition-all group block pointer-events-auto">
                         <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🎓</div>
-                        <h3 class="text-base font-black text-white mb-2">Öğrenci</h3>
-                        <p class="text-[10px] text-orange-400 uppercase font-bold tracking-widest px-4 py-2 border border-orange-500/50 rounded-full group-hover:bg-orange-500 group-hover:text-white transition-colors">Sisteme Gir</p>
+                        <h3 class="text-base font-black text-white mb-4">Öğrenci</h3>
+                        <span class="text-[10px] text-orange-400 uppercase font-bold tracking-widest px-4 py-2 border border-orange-500/50 rounded-full group-hover:bg-orange-500 group-hover:text-white transition-colors">Panele Git</span>
                     </a>
-                    <a href="login.html" class="premium-card rounded-3xl p-8 text-center border-blue-500/40 hover:bg-blue-500/20 transition-all group block">
+                    <a href="login.html" class="premium-card rounded-3xl p-8 text-center border-blue-500/40 hover:bg-blue-500/20 transition-all group block pointer-events-auto">
                         <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">⚡</div>
-                        <h3 class="text-base font-black text-white mb-2">Eğitmen</h3>
-                        <p class="text-[10px] text-blue-400 uppercase font-bold tracking-widest px-4 py-2 border border-blue-500/50 rounded-full group-hover:bg-blue-600 group-hover:text-white transition-colors">Sisteme Gir</p>
+                        <h3 class="text-base font-black text-white mb-4">Eğitmen</h3>
+                        <span class="text-[10px] text-blue-400 uppercase font-bold tracking-widest px-4 py-2 border border-blue-500/50 rounded-full group-hover:bg-blue-600 group-hover:text-white transition-colors">Panele Git</span>
                     </a>
-                    <a href="login.html" class="premium-card rounded-3xl p-8 text-center border-amber-500/40 hover:bg-amber-500/20 transition-all group block">
+                    <a href="login.html" class="premium-card rounded-3xl p-8 text-center border-amber-500/40 hover:bg-amber-500/20 transition-all group block pointer-events-auto">
                         <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">🏢</div>
-                        <h3 class="text-base font-black text-white mb-2">Kurum</h3>
-                        <p class="text-[10px] text-amber-400 uppercase font-bold tracking-widest px-4 py-2 border border-amber-500/50 rounded-full group-hover:bg-amber-500 group-hover:text-white transition-colors">Sisteme Gir</p>
+                        <h3 class="text-base font-black text-white mb-4">Kurum</h3>
+                        <span class="text-[10px] text-amber-400 uppercase font-bold tracking-widest px-4 py-2 border border-amber-500/50 rounded-full group-hover:bg-amber-500 group-hover:text-white transition-colors">Panele Git</span>
                     </a>
-                    <a href="login.html" class="premium-card rounded-3xl p-8 text-center border-rose-500/40 hover:bg-rose-500/20 transition-all group block">
+                    <a href="login.html" class="premium-card rounded-3xl p-8 text-center border-rose-500/40 hover:bg-rose-500/20 transition-all group block pointer-events-auto">
                         <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">👪</div>
-                        <h3 class="text-base font-black text-white mb-2">Veli</h3>
-                        <p class="text-[10px] text-rose-400 uppercase font-bold tracking-widest px-4 py-2 border border-rose-500/50 rounded-full group-hover:bg-rose-500 group-hover:text-white transition-colors">Sisteme Gir</p>
+                        <h3 class="text-base font-black text-white mb-4">Veli</h3>
+                        <span class="text-[10px] text-rose-400 uppercase font-bold tracking-widest px-4 py-2 border border-rose-500/50 rounded-full group-hover:bg-rose-500 group-hover:text-white transition-colors">Panele Git</span>
                     </a>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- ═══════════════ NORMAL SCROLLING SECTIONS (TOUR SONRASI) ═══════════════ -->
-    <div class="relative z-20 bg-[#040814] pt-12">
-        
-        <!-- TESTIMONIALS (MARQUEE) -->
-        <section class="py-20 px-6 overflow-hidden">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-500/15 bg-orange-500/5 mb-6">
-                        <span class="text-orange-400 text-[9px] font-bold tracking-[0.15em] uppercase">Başarı Hikayeleri</span>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-black mb-3 tracking-tight">Kullanıcılarımız <span class="text-orange-500">Ne Diyor?</span></h2>
+        <!-- LAYER 7: KULLANICI YORUMLARI -->
+        <div id="layer-7" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(4,8,20,0.95) 100%); pointer-events: none;"></div>
+            <div class="content-container mt-16 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-500/15 bg-orange-500/5 mb-4">
+                    <span class="text-orange-400 text-[9px] font-bold tracking-[0.15em] uppercase">Başarı Hikayeleri</span>
                 </div>
-            </div>
-            <!-- Marquee Testimonials -->
-            <div class="relative">
-                <div class="flex marquee-track" style="width: max-content;">
-                    <div class="flex gap-5 px-2.5">
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center font-bold text-sm text-white">AY</div>
-                                <div><p class="text-white text-xs font-bold">Ayşe Y.</p><p class="text-slate-500 text-[10px]">TYT — 12. Sınıf</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Hata kutusu sayesinde sürekli yaptığım hataları görebildim. 3 ayda Matematik netim 12'den 28'e çıktı. Öğretmenim çözüm videolarını bizzat yüklüyor!"</p>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Kullanıcılarımız <span class="text-orange-500">Ne Diyor?</span></h2>
+                <!-- Grid of Testimonials for detailed view -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto text-left">
+                    <div class="testimonial-card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center font-bold text-sm text-white">AY</div>
+                            <div><p class="text-white text-xs font-bold">Ayşe Y.</p><p class="text-slate-500 text-[10px]">TYT — 12. Sınıf</p></div>
+                            <div class="ml-auto text-amber-400 text-xs">★★★★★</div>
                         </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center font-bold text-sm text-white">MK</div>
-                                <div><p class="text-white text-xs font-bold">Mehmet K.</p><p class="text-slate-500 text-[10px]">AYT — Mezun</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Odak odası ile çalışma disiplinini yakaladım. Günlük 6 saat verimli çalışma hedefime ilk kez ulaşabildim. Program otomatik hatırlatıyor."</p>
-                        </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-bold text-sm text-white">EÖ</div>
-                                <div><p class="text-white text-xs font-bold">Elif Ö.</p><p class="text-slate-500 text-[10px]">Eğitmen — Matematik</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Risk radarı sayesinde sınıfta geri kalan öğrencileri erken tespit edip müdahale edebiliyorum. Yoklama ve ödev takibi çok kolaylaştı."</p>
-                        </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center font-bold text-sm text-white">SB</div>
-                                <div><p class="text-white text-xs font-bold">Selma B.</p><p class="text-slate-500 text-[10px]">Veli</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Kızımın sınav sonuçlarını anında görebiliyorum. Danışman öğretmeniyle mesajlaşabilmek büyük bir avantaj. Artık sürecin dışında kalmıyorum."</p>
-                        </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center font-bold text-sm text-white">CK</div>
-                                <div><p class="text-white text-xs font-bold">Can K.</p><p class="text-slate-500 text-[10px]">Kurum Müdürü</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"3 şubemizi tek panelden yönetiyoruz. Optik okuma, öğrenci analiz ve öğretmen takibi hepsi entegre. Kurumsal demo bizi anında ikna etti."</p>
-                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">"Hata kutusu sayesinde sürekli yaptığım hataları görebildim. 3 ayda Matematik netim 12'den 28'e çıktı. Öğretmenim çözüm videolarını bizzat yüklüyor!"</p>
                     </div>
-                    <!-- Duplicate for infinite loop -->
-                    <div class="flex gap-5 px-2.5">
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center font-bold text-sm text-white">AY</div>
-                                <div><p class="text-white text-xs font-bold">Ayşe Y.</p><p class="text-slate-500 text-[10px]">TYT — 12. Sınıf</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Hata kutusu sayesinde sürekli yaptığım hataları görebildim. 3 ayda Matematik netim 12'den 28'e çıktı. Öğretmenim çözüm videolarını bizzat yüklüyor!"</p>
+                    
+                    <div class="testimonial-card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center font-bold text-sm text-white">MK</div>
+                            <div><p class="text-white text-xs font-bold">Mehmet K.</p><p class="text-slate-500 text-[10px]">AYT — Mezun</p></div>
+                            <div class="ml-auto text-amber-400 text-xs">★★★★★</div>
                         </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center font-bold text-sm text-white">MK</div>
-                                <div><p class="text-white text-xs font-bold">Mehmet K.</p><p class="text-slate-500 text-[10px]">AYT — Mezun</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Odak odası ile çalışma disiplinini yakaladım. Günlük 6 saat verimli çalışma hedefime ilk kez ulaşabildim. Program otomatik hatırlatıyor."</p>
+                        <p class="text-slate-300 text-xs leading-relaxed">"Odak odası ile çalışma disiplinini yakaladım. Günlük 6 saat verimli çalışma hedefime ilk kez ulaşabildim. Program otomatik hatırlatıyor."</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-bold text-sm text-white">EÖ</div>
+                            <div><p class="text-white text-xs font-bold">Elif Ö.</p><p class="text-slate-500 text-[10px]">Eğitmen</p></div>
+                            <div class="ml-auto text-amber-400 text-xs">★★★★★</div>
                         </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-bold text-sm text-white">EÖ</div>
-                                <div><p class="text-white text-xs font-bold">Elif Ö.</p><p class="text-slate-500 text-[10px]">Eğitmen — Matematik</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Risk radarı sayesinde sınıfta geri kalan öğrencileri erken tespit edip müdahale edebiliyorum. Yoklama ve ödev takibi çok kolaylaştı."</p>
+                        <p class="text-slate-300 text-xs leading-relaxed">"Risk radarı sayesinde sınıfta geri kalan öğrencileri erken tespit edip müdahale edebiliyorum. Yoklama ve ödev takibi çok kolaylaştı."</p>
+                    </div>
+                    <div class="testimonial-card hidden md:block">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center font-bold text-sm text-white">SB</div>
+                            <div><p class="text-white text-xs font-bold">Selma B.</p><p class="text-slate-500 text-[10px]">Veli</p></div>
+                            <div class="ml-auto text-amber-400 text-xs">★★★★★</div>
                         </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center font-bold text-sm text-white">SB</div>
-                                <div><p class="text-white text-xs font-bold">Selma B.</p><p class="text-slate-500 text-[10px]">Veli</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Kızımın sınav sonuçlarını anında görebiliyorum. Danışman öğretmeniyle mesajlaşabilmek büyük bir avantaj. Artık sürecin dışında kalmıyorum."</p>
+                        <p class="text-slate-300 text-xs leading-relaxed">"Kızımın sınav sonuçlarını anında görebiliyorum. Danışman öğretmeniyle mesajlaşabilmek büyük avantaj. Artık sürecin dışında kalmıyorum."</p>
+                    </div>
+                    <div class="testimonial-card hidden lg:block">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center font-bold text-sm text-white">CK</div>
+                            <div><p class="text-white text-xs font-bold">Can K.</p><p class="text-slate-500 text-[10px]">Kurum Müdürü</p></div>
+                            <div class="ml-auto text-amber-400 text-xs">★★★★★</div>
                         </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center font-bold text-sm text-white">CK</div>
-                                <div><p class="text-white text-xs font-bold">Can K.</p><p class="text-slate-500 text-[10px]">Kurum Müdürü</p></div>
-                                <div class="ml-auto"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"3 şubemizi tek panelden yönetiyoruz. Optik okuma, öğrenci analiz ve öğretmen takibi hepsi entegre. Kurumsal demo bizi anında ikna etti."</p>
-                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">"3 şubemizi tek panelden yönetiyoruz. Optik okuma, öğrenci analiz ve öğretmen takibi hepsi entegre. Kurumsal demo bizi anında ikna etti."</p>
                     </div>
                 </div>
             </div>
-        </section>
-        <!-- STATS BAR -->
-        <section class="py-12 px-6 relative border-y border-white/5 bg-slate-900/30">
-            <div class="max-w-5xl mx-auto">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                    <div>
-                        <div class="text-3xl md:text-4xl font-black text-white mb-1">12.500+</div>
-                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Aktif Öğrenci</p>
-                    </div>
-                    <div>
-                        <div class="text-3xl md:text-4xl font-black text-orange-400 mb-1">150+</div>
-                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Partner Kurum</p>
-                    </div>
-                    <div>
-                        <div class="text-3xl md:text-4xl font-black text-amber-400 mb-1">85.000+</div>
-                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Çözülen Hata</p>
-                    </div>
-                    <div>
-                        <div class="text-3xl md:text-4xl font-black text-emerald-400 mb-1">%99</div>
-                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Memnuniyet</p>
+        </div>
+        <!-- LAYER 8: CTA & FOOTER (SON ODA) -->
+        <div id="layer-8" class="room-layer">
+            <!-- Bu son oda, eğer ekran küçükse kendi içinde scroll edilebilir! -->
+            <div class="content-container w-full max-w-full px-0 py-0 overflow-y-auto pointer-events-auto" style="height: 100vh;">
+                
+                <!-- CTA -->
+                <div class="max-w-4xl mx-auto text-center px-6 mt-32 mb-16">
+                    <div class="premium-card rounded-[2.5rem] p-12 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 pointer-events-none"></div>
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg shadow-orange-500/20">🚀</div>
+                            <h2 class="text-3xl md:text-4xl font-black mb-6 tracking-tight">Başarıya Giden Yolculuğuna <br><span class="text-gradient-hero">Bugün Başla.</span></h2>
+                            <p class="text-slate-400 text-sm mb-10 max-w-lg mx-auto leading-relaxed">Ücretsiz hesabını oluştur, hata kutusunu dene ve yapay zeka destekli çalışma planını hemen al.</p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                <a href="register.html" class="btn-action font-black py-4 px-10 rounded-full text-xs uppercase tracking-wider inline-flex items-center justify-center gap-2 pointer-events-auto">Kayıt Ol</a>
+                                <a href="kurum-basvurusu.html" class="btn-ghost font-bold py-4 px-10 rounded-full text-xs uppercase tracking-wider pointer-events-auto">Demo Talep Et</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <!-- FOOTER -->
+                <footer class="border-t border-white/5 bg-slate-950/80 mt-auto">
+                    <div class="max-w-7xl mx-auto px-6 py-16">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                            <div>
+                                <div class="flex items-center gap-3 mb-5">
+                                    <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg">H</div>
+                                    <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-orange-500 font-medium">.ACADEMIA</span></span>
+                                </div>
+                                <p class="text-slate-500 text-xs leading-relaxed mb-5">Yapay zeka destekli eğitim ve koçluk platformu.</p>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Platform</h4>
+                                <ul class="space-y-3">
+                                    <li><a href="sistemimiz.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium pointer-events-auto">Sistemimiz</a></li>
+                                    <li><a href="hata-kutusu.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium pointer-events-auto">Hata Kutusu Demo</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Kurumsal</h4>
+                                <ul class="space-y-3">
+                                    <li><a href="kurumsal.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium pointer-events-auto">Kurumsal Çözümler</a></li>
+                                    <li><a href="kurum-basvurusu.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium pointer-events-auto">Demo Talep Et</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">İletişim</h4>
+                                <div class="p-4 rounded-xl bg-orange-500/5 border border-orange-500/10">
+                                    <p class="text-orange-400 text-[10px] font-bold uppercase tracking-wider mb-1">Destek</p>
+                                    <p class="text-slate-400 text-xs">info@hedef100.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                            <p class="text-slate-600 text-[11px] font-medium">© 2026 Hedef100 Academia. Tüm hakları saklıdır.</p>
+                            <div class="flex gap-6">
+                                <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] transition pointer-events-auto">Gizlilik Politikası</a>
+                                <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] transition pointer-events-auto">KVKK</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                
             </div>
-        </section>
-        <!-- CTA SECTION -->
-        <section class="py-24 px-6 relative">
-            <div class="max-w-4xl mx-auto text-center">
-                <div class="premium-card rounded-[2.5rem] p-12 md:p-16 relative overflow-hidden">
-                    <!-- BG Glow -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5"></div>
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl"></div>
-                    <div class="relative z-10">
-                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg shadow-orange-500/20">🚀</div>
-                        <h2 class="text-3xl md:text-4xl font-black mb-6 tracking-tight">Başarıya Giden Yolculuğuna <br><span class="text-gradient-hero">Bugün Başla.</span></h2>
-                        <p class="text-slate-400 text-sm mb-10 max-w-lg mx-auto leading-relaxed">Ücretsiz hesabını oluştur, hata kutusunu dene ve yapay zeka destekli çalışma planını hemen al. Yüzlerce öğrencinin başardığı gibi sen de hedefine ulaş.</p>
-                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a href="register.html" class="btn-action font-black py-4 px-10 rounded-full text-xs uppercase tracking-wider inline-flex items-center justify-center gap-2">
-                                Ücretsiz Kayıt Ol
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                            </a>
-                            <a href="kurum-basvurusu.html" class="btn-ghost font-bold py-4 px-10 rounded-full text-xs uppercase tracking-wider">Kurumsal Demo Talep Et</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- FOOTER -->
-        <footer class="border-t border-white/5 bg-slate-950">
-            <div class="max-w-7xl mx-auto px-6 py-16">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-                    <!-- Brand -->
-                    <div>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg">H</div>
-                            <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-orange-500 font-medium">.ACADEMIA</span></span>
-                        </div>
-                        <p class="text-slate-500 text-xs leading-relaxed mb-5">Yapay zeka destekli, kişiselleştirilmiş eğitim ve koçluk platformu. Başarıya giden en net yol.</p>
-                        <div class="flex gap-3">
-                            <a href="#" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition text-sm">𝕏</a>
-                            <a href="#" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition text-sm">📷</a>
-                            <a href="#" class="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-800 transition text-sm">▶</a>
-                        </div>
-                    </div>
-                    <!-- Platform -->
-                    <div>
-                        <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Platform</h4>
-                        <ul class="space-y-3">
-                            <li><a href="sistemimiz.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Sistemimiz</a></li>
-                            <li><a href="online-deneme.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Online Deneme</a></li>
-                            <li><a href="vip-kocluk.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">VIP Koçluk</a></li>
-                            <li><a href="hata-kutusu.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Hata Kutusu Demo</a></li>
-                        </ul>
-                    </div>
-                    <!-- Kurumsal -->
-                    <div>
-                        <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Kurumsal</h4>
-                        <ul class="space-y-3">
-                            <li><a href="kurumsal.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Kurumsal Çözümler</a></li>
-                            <li><a href="kurum-basvurusu.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Demo Talep Et</a></li>
-                            <li><a href="login.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Kurum Girişi</a></li>
-                        </ul>
-                    </div>
-                    <!-- Hesap -->
-                    <div>
-                        <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Hesap</h4>
-                        <ul class="space-y-3">
-                            <li><a href="login.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Sisteme Giriş</a></li>
-                            <li><a href="register.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Ücretsiz Kayıt</a></li>
-                        </ul>
-                        <div class="mt-6 p-4 rounded-xl bg-orange-500/5 border border-orange-500/10">
-                            <p class="text-orange-400 text-[10px] font-bold uppercase tracking-wider mb-1">Destek</p>
-                            <p class="text-slate-400 text-xs">info@hedef100.com</p>
-                        </div>
-                    </div>
-                </div>
-                <!-- Bottom Bar -->
-                <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p class="text-slate-600 text-[11px] font-medium">© 2026 Hedef100 Academia. Tüm hakları saklıdır.</p>
-                    <div class="flex gap-6">
-                        <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] font-medium transition">Gizlilik Politikası</a>
-                        <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] font-medium transition">Kullanım Koşulları</a>
-                        <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] font-medium transition">KVKK</a>
-                    </div>
-                </div>
-            </div>
-        </footer>
+        </div>
     </div>
     <!-- ═══════════════ SCRIPTS ═══════════════ -->
     <script>
-        // 1. Navbar Mobile Drawer
-        window.toggleMobileSidebar = function() {
-            const drawer = document.getElementById('mobileDrawer');
-            if (drawer.classList.contains('hidden')) {
-                drawer.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-                setTimeout(() => drawer.classList.add('opacity-100'), 10);
-            } else {
-                drawer.classList.remove('opacity-100');
-                document.body.style.overflow = '';
-                setTimeout(() => drawer.classList.add('hidden'), 300);
-            }
-        };
-        // 2. Explore Dropdown
-        window.toggleExploreMenu = function() {
-            const menu = document.getElementById('exploreMenu');
-            const arrow = document.getElementById('exploreArrow');
-            menu.classList.toggle('show');
-            arrow.style.transform = menu.classList.contains('show') ? 'rotate(180deg)' : '';
-        };
-        document.addEventListener('click', (e) => {
-            const dropdown = document.getElementById('exploreDropdown');
-            const menu = document.getElementById('exploreMenu');
-            const arrow = document.getElementById('exploreArrow');
-            if (dropdown && !dropdown.contains(e.target) && menu.classList.contains('show')) {
-                menu.classList.remove('show');
-                arrow.style.transform = '';
-            }
-        });
-        // 3. GSAP PINNED TOUR LOGIC
         gsap.registerPlugin(ScrollTrigger);
+        // Devasa scroll alanını kullanarak tek ekran üzerinden 8 katmanı yönetiyoruz
         const tl = gsap.timeline({
             scrollTrigger: {
-                trigger: "#tour-container",
+                trigger: "#scroll-space",
                 start: "top top",
-                end: "+=6000", // 6000px uzunluğunda kaydırma (7 Oda geçişi için)
-                scrub: 1, 
-                pin: true,     // Tour bitene kadar ekranı sabitler, bitince normal scroll devam eder!
-                anticipatePin: 1
+                end: "bottom bottom",
+                scrub: 1
             }
         });
-        // Oda 1 -> Oda 2
-        tl.to("#room-hero", { scale: 3, autoAlpha: 0, duration: 1.5, ease: "power1.inOut" }, 0);
-        tl.to("#room-vision", { scale: 1, autoAlpha: 1, duration: 1.5, ease: "power1.inOut" }, 0);
-        // Oda 2 -> Oda 3
-        tl.to("#room-vision", { xPercent: -100, autoAlpha: 0, duration: 1.5, ease: "power1.inOut" }, 2.5);
-        tl.to("#room-programs", { x: "0%", autoAlpha: 1, duration: 1.5, ease: "power1.inOut" }, 2.5);
-        // Oda 3 -> Oda 4
-        tl.to("#room-programs", { yPercent: -100, autoAlpha: 0, duration: 1.5, ease: "power1.inOut" }, 5);
-        tl.to("#room-student", { y: "0%", auto.alpha: 1, duration: 1.5, ease: "power1.inOut" }, 5);
-        // Oda 4 -> Oda 5
-        tl.to("#room-student", { xPercent: 100, autoAlpha: 0, duration: 1.5, ease: "power1.inOut" }, 7.5);
-        tl.to("#room-teacher", { x: "0%", autoAlpha: 1, duration: 1.5, ease: "power1.inOut" }, 7.5);
-        // Oda 5 -> Oda 6
-        tl.to("#room-teacher", { yPercent: 100, autoAlpha: 0, duration: 1.5, ease: "power1.inOut" }, 10);
-        tl.to("#room-ecosystem", { y: "0%", autoAlpha: 1, duration: 1.5, ease: "power1.inOut" }, 10);
+        // Oda 1 -> Oda 2 (Vizyon)
+        tl.to("#layer-1", { scale: 1.5, autoAlpha: 0, duration: 1, ease: "none" }, 0)
+          .to("#layer-2", { scale: 1, autoAlpha: 1, duration: 1, ease: "none" }, 0);
+        // Oda 2 -> Oda 3 (Programlar)
+        tl.to("#layer-2", { xPercent: -100, autoAlpha: 0, duration: 1, ease: "none" }, 1)
+          .to("#layer-3", { x: "0%", autoAlpha: 1, duration: 1, ease: "none" }, 1);
+        // Oda 3 -> Oda 4 (Öğrenci)
+        tl.to("#layer-3", { yPercent: -100, autoAlpha: 0, duration: 1, ease: "none" }, 2)
+          .to("#layer-4", { y: "0%", autoAlpha: 1, duration: 1, ease: "none" }, 2);
+        // Oda 4 -> Oda 5 (Eğitmen)
+        tl.to("#layer-4", { xPercent: 100, autoAlpha: 0, duration: 1, ease: "none" }, 3)
+          .to("#layer-5", { x: "0%", autoAlpha: 1, duration: 1, ease: "none" }, 3);
+        // Oda 5 -> Oda 6 (Ekosistem)
+        tl.to("#layer-5", { scale: 0.5, autoAlpha: 0, duration: 1, ease: "none" }, 4)
+          .to("#layer-6", { scale: 1, autoAlpha: 1, duration: 1, ease: "none" }, 4);
+        // Oda 6 -> Oda 7 (Yorumlar)
+        tl.to("#layer-6", { yPercent: 100, autoAlpha: 0, duration: 1, ease: "none" }, 5)
+          .to("#layer-7", { y: "0%", autoAlpha: 1, duration: 1, ease: "none" }, 5);
+        // Oda 7 -> Oda 8 (CTA & Footer)
+        tl.to("#layer-7", { scale: 1.5, autoAlpha: 0, duration: 1, ease: "none" }, 6)
+          .to("#layer-8", { scale: 1, autoAlpha: 1, duration: 1, ease: "none" }, 6);
     </script>
 </body>
 </html>
