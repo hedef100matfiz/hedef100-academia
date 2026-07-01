@@ -326,10 +326,10 @@
                 </div>
             </div>
 
-            <!-- ================= SEKMELER 5: ÇÖZÜM HAVUZU (HATA KUTUSU) ================= -->
+                       <!-- ================= SEKMELER 5: ÇÖZÜM HAVUZU (SORU KUTUSU) ================= -->
             <div id="section-solutions" class="section-hidden space-y-6">
                 <div>
-                    <h2 class="text-xl md:text-2xl font-black text-white">Dijital Hata Kutusu (Soru Çözüm)</h2>
+                    <h2 class="text-xl md:text-2xl font-black text-white">Akıllı Soru Kutusu (Çözüm Havuzu)</h2>
                     <p class="text-xs text-slate-400 mt-1">Öğrencilerin çözemediği ve sisteme fotoğrafını yüklediği sorular. Çözümlerinizi göndererek öğrencilerin arşivine katkı sağlayın.</p>
                 </div>
 
@@ -537,9 +537,9 @@
 
     <!-- ================= FIREBASE AUTH VE VERİTABANI ================= -->
     <script type="module">
-        import { 
+               import { 
             auth, listenAuthState, getUserProfile, listenCoachingRequests, updateCoachingRequest, 
-            getStudentsByClass, saveAttendance, addAssignment, listenAssignments, listenErrorBox,
+            getStudentsByClass, saveAttendance, addAssignment, listenAssignments, listenQuestionBox,
             createClass, listenClasses, createInviteCode, uploadProfilePhoto, updateUserProfile, addCoachingMessage,
             listenAnnouncements
         } from './firebase-shared.js';
@@ -825,14 +825,14 @@
                         });
                     });
 
-                    // === 3. HATA KUTUSU (ÇÖZÜM HAVUZU) DİNAMİKLEŞTİRME ===
-                    listenErrorBox((questions) => {
+                                        // === 3. SORU KUTUSU (ÇÖZÜM HAVUZU) DİNAMİKLEŞTİRME ===
+                    listenQuestionBox((questions) => {
                         const grid = document.getElementById('solutionsGrid');
                         if(!grid) return;
                         grid.innerHTML = '';
                         
                         if(questions.length === 0) {
-                            grid.innerHTML = '<p class="text-slate-500 text-sm italic col-span-full">Şu an hata kutusunda bekleyen soru yok.</p>';
+                            grid.innerHTML = '<p class="text-slate-500 text-sm italic col-span-full">Şu an soru kutusunda bekleyen soru yok.</p>';
                             return;
                         }
                         
