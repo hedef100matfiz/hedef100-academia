@@ -161,10 +161,10 @@ export function listenAssignments(targetClass, callback) {
         callback(assignments);
     });
 }
-// --- 4.3 Dijital Hata Kutusu (Error Box & Storage) ---
-export async function uploadErrorBoxImage(file, studentId) {
+// --- 4.3 Akıllı Soru Kutusu (Question Box & Storage) ---
+export async function uploadQuestionImage(file, studentId) {
     try {
-        const fileRef = ref(storage, `errorBox/${studentId}/${Date.now()}_${file.name}`);
+        const fileRef = ref(storage, `questionBox/${studentId}/${Date.now()}_${file.name}`);
         await uploadBytes(fileRef, file);
         return await getDownloadURL(fileRef);
     } catch (error) {
@@ -172,9 +172,10 @@ export async function uploadErrorBoxImage(file, studentId) {
         return null;
     }
 }
+
 export async function askQuestion(data) {
     try {
-        await addDoc(collection(db, "errorBox"), {
+        await addDoc(collection(db, "questionBox"), {
             ...data, status: 'pending', createdAt: serverTimestamp()
         });
         return true;
@@ -183,9 +184,10 @@ export async function askQuestion(data) {
         return false;
     }
 }
-export function listenErrorBox(callback) {
+
+export function listenQuestionBox(callback) {
     // Index hatasını engellemek için orderBy kaldırıldı, frontend'de sıralanıyor
-    const q = query(collection(db, "errorBox"));
+    const q = query(collection(db, "questionBox"));
     return onSnapshot(q, (snapshot) => {
         const questions = [];
         snapshot.forEach((doc) => questions.push({ id: doc.id, ...doc.data() }));
