@@ -3,280 +3,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Veli Takip Sistemi | Hedef100 Academia</title>
+    <title>Veli Paneli | Hedef100 Academia</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #0b1329; color: #f8fafc; }
-        .bg-quantum-grid { background-image: linear-gradient(to right, rgba(99, 102, 241, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(99, 102, 241, 0.05) 1px, transparent 1px); background-size: 40px 40px; }
+        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #040814; color: #f8fafc; }
+        
+        .bg-grid { background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 30px 30px; }
         
         .section-hidden { display: none; }
-        .section-active { display: block; animation: portalFade 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes portalFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
+        .section-active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0b1329; }
+        ::-webkit-scrollbar-track { background: #040814; }
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
-
-        .glass-panel { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(16px); border: 1px solid rgba(99, 102, 241, 0.15); }
-        .neon-border-orange { border-color: rgba(249, 115, 22, 0.3); box-shadow: 0 0 15px rgba(249, 115, 22, 0.05); }
+        ::-webkit-scrollbar-thumb:hover { background: #f97316; }
+        .glass-panel { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .btn-action { background: linear-gradient(135deg, #f97316 0%, #d97706 100%); color: white; transition: all 0.3s; }
+        .btn-action:hover { box-shadow: 0 0 20px rgba(249, 115, 22, 0.4); transform: translateY(-2px); }
+        
+        .nav-item { border-left: 3px solid transparent; transition: all 0.3s; }
+        .nav-item.active { background: rgba(249, 115, 22, 0.1); border-left-color: #f97316; color: white; }
+        
+        /* Modal Background */
+        .modal-bg { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
     </style>
 </head>
-<body class="h-screen flex relative overflow-hidden bg-quantum-grid">
-
-    <div id="sidebarBackdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-950/70 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
-
-    <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-80 opacity-0 transition-all duration-300 bg-emerald-600 text-white font-bold text-xs px-6 py-3.5 rounded-xl shadow-lg shadow-emerald-600/20 uppercase tracking-widest flex items-center gap-2">
-        <span>✓</span> <span id="toastMessage">İşlem Başarılı</span>
-    </div>
-
-    <aside id="sidebar" class="w-66 fixed inset-y-0 left-0 z-50 bg-slate-950 border-r border-slate-800/80 flex flex-col flex-shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 md:static text-slate-400 transition-transform duration-300 ease-in-out">
-        <div class="h-20 flex items-center justify-between px-5 border-b border-slate-800/60 bg-slate-950">
-            <div class="flex items-center gap-2.5">
-                <div class="w-8 h-8 bg-gradient-to-br from-indigo-500 to-indigo-700 text-white rounded-lg flex items-center justify-center font-black shadow-md">H</div>
-                <span class="font-black text-base tracking-tighter text-white">HEDEF100<span class="text-indigo-400">.VELİ</span></span>
-            </div>
-            <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-400 hover:text-white focus:outline-none">✕</button>
-        </div>
-
-        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1">
-            <p class="px-3 text-[10px] font-bold text-slate-600 mb-2.5 uppercase tracking-widest">Öğrenci İzleme</p>
+<body class="h-screen flex relative overflow-hidden bg-grid">
+    <!-- MOBİL SİDEBAR BACKDROP -->
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+    <!-- YENİ ÖĞRENCİ EKLE MODAL -->
+    <div id="addStudentModal" class="fixed inset-0 z-[9999] modal-bg hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-8 border-orange-500/20 shadow-2xl relative transform transition-all scale-95 opacity-0" id="modalContent">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white">✕</button>
+            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mb-6 shadow-lg shadow-orange-500/20">🎓</div>
+            <h2 class="text-2xl font-black text-white mb-2">Öğrenci Bağla</h2>
+            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Çocuğunuza kurum tarafından verilen ve sadece ona özel olan <strong>Hedef ID</strong> kodunu aşağıya giriniz.</p>
             
-            <button onclick="switchSection('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-indigo-600/10 text-indigo-400 rounded-xl font-bold transition-all text-left border-l-4 border-indigo-500">
+            <form onsubmit="handleAddStudent(event)" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Hedef ID</label>
+                    <input type="text" id="hedefIdInput" placeholder="Örn: HDF-10452-ACD" required class="w-full bg-slate-900/50 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-orange-500 transition-colors">
+                </div>
+                <button type="submit" class="w-full btn-action py-3 rounded-xl font-black text-xs uppercase tracking-widest mt-2">Öğrenciyi Sisteme Ekle</button>
+            </form>
+        </div>
+    </div>
+    <!-- TOAST BİLDİRİM -->
+    <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-80 opacity-0 transition-all duration-300 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-lg shadow-emerald-500/20 uppercase tracking-widest flex items-center gap-3 border border-emerald-400/30">
+        <span class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">✓</span> 
+        <span id="toastMessage">İşlem Başarılı</span>
+    </div>
+    <!-- SİDEBAR -->
+    <aside id="sidebar" class="w-72 fixed inset-y-0 left-0 z-50 glass-panel border-r border-white/5 flex flex-col flex-shrink-0 transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out">
+        <div class="h-20 flex items-center justify-between px-6 border-b border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg">H</div>
+                <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-orange-500 font-medium">.VELİ</span></span>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">✕</button>
+        </div>
+        <div class="p-6">
+            <p class="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-widest">Seçili Öğrenci</p>
+            <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-2 relative">
+                <select id="studentSelector" onchange="changeStudent(this.value)" class="w-full bg-transparent text-sm font-bold text-white outline-none cursor-pointer appearance-none px-3 py-2">
+                    <option value="stu_1" class="bg-slate-900">Can Yılmaz (12. Sınıf - TYT/AYT)</option>
+                    <option value="stu_2" class="bg-slate-900">Elif Yılmaz (8. Sınıf - LGS)</option>
+                </select>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-xs">▼</div>
+            </div>
+            <button onclick="openModal()" class="w-full mt-3 border border-dashed border-slate-700 text-slate-400 hover:text-white hover:border-orange-500 hover:bg-orange-500/10 rounded-xl py-2.5 text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2">
+                <span>+</span> Yeni Öğrenci Ekle
+            </button>
+        </div>
+        <nav class="flex-1 overflow-y-auto px-4 space-y-2 mt-2">
+            <p class="px-2 text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Akademik Takip</p>
+            
+            <button onclick="switchSection('dashboard')" id="nav-dashboard" class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-slate-400 rounded-xl font-bold text-left">
                 <span class="text-lg">📊</span> <span class="text-xs uppercase tracking-wider">Genel Özet</span>
             </button>
-            <button onclick="switchSection('exams')" id="nav-exams" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-900/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
-                <span class="text-lg">📝</span> <span class="text-xs uppercase tracking-wider">Sınav Karneleri</span>
+            <button onclick="switchSection('exams')" id="nav-exams" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl font-bold text-left">
+                <span class="text-lg">🤖</span> <span class="text-xs uppercase tracking-wider">AI Sınav Radarı</span>
             </button>
-            <button onclick="switchSection('homework')" id="nav-homework" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-900/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
-                <span class="text-lg">📚</span> <span class="text-xs uppercase tracking-wider">Ödev & Devamsızlık</span>
+            <button onclick="switchSection('homework')" id="nav-homework" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl font-bold text-left">
+                <span class="text-lg">📚</span> <span class="text-xs uppercase tracking-wider">Ödev & Hata Kutusu</span>
             </button>
-            <button onclick="switchSection('messages')" id="nav-messages" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-900/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
-                <span class="text-lg">💬</span> <span class="text-xs uppercase tracking-wider">Danışman Notları</span>
-            </button>
-            <button onclick="switchSection('ayarlar')" id="nav-ayarlar" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-900/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
-                <span class="text-lg">⚙️</span> <span class="text-xs uppercase tracking-wider">Bildirim Ayarları</span>
+            <button onclick="switchSection('messages')" id="nav-messages" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl font-bold text-left">
+                <span class="text-lg">💬</span> <span class="text-xs uppercase tracking-wider">Danışman İletişim</span>
             </button>
         </nav>
-
-        <div class="p-4 border-t border-slate-900 bg-slate-950/40">
-            <button onclick="logoutUser()" class="w-full flex items-center gap-3 px-3 py-2.5 text-rose-400 hover:bg-rose-500/10 hover:text-rose-500 rounded-xl font-bold transition-colors text-left text-xs uppercase tracking-wider">
+        <div class="p-6 border-t border-white/5">
+            <button onclick="logoutUser()" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-rose-400 hover:bg-rose-500/10 hover:text-rose-500 border border-transparent hover:border-rose-500/20 rounded-xl font-bold transition-all text-xs uppercase tracking-wider">
                 🚪 Güvenli Çıkış
             </button>
         </div>
     </aside>
-
+    <!-- ANA İÇERİK -->
     <div class="flex-1 flex flex-col h-full relative overflow-hidden">
         
-        <header class="bg-slate-950/80 backdrop-blur-md sticky top-0 z-40 border-b border-slate-800/60 px-4 md:px-8 py-4 flex justify-between items-center relative z-10">
-            <div class="flex items-center gap-3">
-                <button onclick="toggleMobileSidebar()" class="md:hidden p-2 -ml-2 text-slate-400 focus:outline-none">
+        <header class="h-20 glass-panel border-b border-white/5 px-6 flex justify-between items-center relative z-10 shrink-0">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-                <div class="text-xs font-bold text-slate-400">
-                    Öğrenci: <span id="studentName" class="text-white font-black">Yükleniyor...</span>
+                <div>
+                    <p class="text-[10px] font-bold text-orange-400 uppercase tracking-widest">Canlı Bağlantı Aktif</p>
+                    <h2 class="text-sm font-black text-white" id="headerStudentName">Can Yılmaz'ın Paneli</h2>
                 </div>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center gap-4">
                 <div class="text-right hidden sm:block">
-                    <p id="parentNameDisplay" class="text-sm font-bold text-slate-200">Yeli Profili</p>
-                    <p class="text-[9px] text-orange-400 font-bold uppercase tracking-widest">Akademik Veli</p>
+                    <p id="parentNameDisplay" class="text-xs font-bold text-white">Ahmet Yılmaz</p>
+                    <p class="text-[10px] text-slate-400">Ana Veli</p>
                 </div>
-                <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-slate-800 text-white rounded-full flex items-center justify-center font-bold border border-indigo-500/30">V</div>
+                <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center font-bold text-white text-sm">AY</div>
             </div>
         </header>
-
-        <main class="p-4 md:p-6 lg:p-8 flex-1 relative z-10 w-full max-w-7xl mx-auto overflow-y-auto">
+        <main class="p-6 md:p-8 flex-1 relative z-10 w-full max-w-7xl mx-auto overflow-y-auto">
             
+            <!-- SECTION: GENEL ÖZET -->
             <div id="section-dashboard" class="section-active space-y-6">
-                <div class="bg-slate-900 border border-slate-800 rounded-[2rem] p-6 md:p-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row justify-between items-stretch gap-6">
-                    <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-transparent pointer-events-none"></div>
-                    <div class="flex-1 flex flex-col justify-between py-1 relative z-10">
-                        <div>
-                            <span class="px-2.5 py-1 bg-indigo-500/15 border border-indigo-500/30 text-indigo-400 text-[9px] font-bold uppercase tracking-widest rounded-md mb-4 inline-block">Gelişim Takip Kalkanı</span>
-                            <h1 class="text-2xl md:text-4xl font-black text-white tracking-tight leading-tight">Çocuğunuzun Başarı Grafiğini <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-indigo-400">Anlık İzleyin.</span></h1>
-                            <p class="text-slate-400 text-xs mt-3 leading-relaxed">Öğretmenlerle bitmeyen telefon trafiğine son. Yapay zeka destekli ders tomografisi ve haftalık ödev uyum endeksi aşağıda listelenmiştir.</p>
-                        </div>
-                        <div class="mt-6 flex flex-wrap gap-2">
-                            <button onclick="switchSection('exams')" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider transition-all">Tüm Sınav Karneleri</button>
-                            <button onclick="switchSection('messages')" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold py-2.5 px-5 rounded-xl text-xs uppercase tracking-wider transition-all">Danışman Öğretmen Notu</button>
+                <!-- Veli Karşılama Kartı -->
+                <div class="glass-panel rounded-[2rem] p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 border-orange-500/10">
+                    <div class="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent pointer-events-none"></div>
+                    <div class="relative z-10">
+                        <span class="px-3 py-1 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[9px] font-bold uppercase tracking-widest rounded-lg mb-4 inline-block">Akademik Durum Özeti</span>
+                        <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-3">Çocuğunuzun Gelişimi <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">Hedef Doğrultusunda.</span></h1>
+                        <p class="text-slate-400 text-xs md:text-sm max-w-xl leading-relaxed">Öğretmen raporları ve dijital sistem verilerine göre <span id="summaryStudentName" class="font-bold text-white">Can</span>, bu hafta denemelerde pozitif bir ivme yakaladı. Hata kutusunda çözdüğü soru sayısı hedefi tutturdu.</p>
+                        <div class="mt-6 flex flex-wrap gap-3">
+                            <button onclick="switchSection('exams')" class="bg-white/5 hover:bg-white/10 text-white border border-white/10 font-bold py-2.5 px-6 rounded-xl text-xs uppercase tracking-wider transition-all">Sınav Analizini Gör</button>
                         </div>
                     </div>
-                    <div class="w-full md:w-80 h-44 md:h-auto min-h-[160px] bg-slate-950/60 border border-slate-800 rounded-2xl relative overflow-hidden flex items-center justify-center">
-                        <canvas id="parentLattice3D" class="absolute inset-0 w-full h-full pointer-events-none"></canvas>
+                    <!-- Mini Radar/Chart Placeholder -->
+                    <div class="w-full md:w-64 h-40 bg-slate-900/50 rounded-2xl border border-white/5 flex items-center justify-center relative overflow-hidden shrink-0">
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <div class="w-32 h-32 border border-orange-500/20 rounded-full animate-ping"></div>
+                            <div class="w-24 h-24 border border-orange-500/40 rounded-full absolute"></div>
+                            <div class="w-16 h-16 bg-orange-500/20 rounded-full absolute flex items-center justify-center font-black text-orange-400 text-xs">YÜKSELİŞ</div>
+                        </div>
                     </div>
                 </div>
-
+                <!-- 4lü İstatistik -->
                 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-28 border-b-4 border-b-indigo-500">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Son Sınav Neti</p>
-                        <p class="text-2xl md:text-3xl font-black text-white">74.50 <span class="text-xs text-indigo-400 font-medium">Net</span></p>
+                    <div class="glass-panel p-6 rounded-2xl border-t-4 border-t-emerald-500">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Son Deneme Neti</p>
+                        <div class="flex items-end gap-2"><p class="text-3xl font-black text-white" id="statNet">74.50</p><span class="text-xs text-emerald-400 font-bold mb-1">▲ +2.5</span></div>
                     </div>
-                    <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-28 border-b-4 border-b-emerald-500">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ödev Tamamlama</p>
-                        <p class="text-2xl md:text-3xl font-black text-emerald-400">%88 <span class="text-xs text-slate-400 font-medium">Uyum</span></p>
+                    <div class="glass-panel p-6 rounded-2xl border-t-4 border-t-blue-500">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Odak Odası (Bu Hafta)</p>
+                        <div class="flex items-end gap-2"><p class="text-3xl font-black text-white" id="statFocus">18s</p><span class="text-xs text-slate-400 font-medium mb-1"> / Hedef: 20s</span></div>
                     </div>
-                    <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-28 border-b-4 border-b-amber-500">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Toplam Devamsızlık</p>
-                        <p class="text-2xl md:text-3xl font-black text-amber-500">1.5 <span class="text-xs text-slate-400 font-medium">Gün</span></p>
+                    <div class="glass-panel p-6 rounded-2xl border-t-4 border-t-orange-500">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Hata Kutusu Çözülen</p>
+                        <div class="flex items-end gap-2"><p class="text-3xl font-black text-white" id="statHata">45</p><span class="text-xs text-orange-400 font-bold mb-1">Soru</span></div>
                     </div>
-                    <div class="glass-panel p-5 rounded-2xl flex flex-col justify-between h-28 border-b-4 border-b-orange-500">
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Genel Başarı Sırası</p>
-                        <p class="text-xl md:text-2xl font-black text-orange-400">14 <span class="text-xs text-slate-400 font-medium">/ 120 Öğrenci</span></p>
+                    <div class="glass-panel p-6 rounded-2xl border-t-4 border-t-amber-500">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Ödev Uyum Endeksi</p>
+                        <div class="flex items-end gap-2"><p class="text-3xl font-black text-white" id="statOdev">%92</p><span class="text-xs text-emerald-400 font-bold mb-1">Çok İyi</span></div>
                     </div>
                 </div>
             </div>
-
-            <div id="section-exams" class="section-hidden space-y-4">
-                <div class="mb-2">
-                    <h2 class="text-xl md:text-2xl font-black text-white">Sınav Performans Karneleri</h2>
-                    <p class="text-xs text-slate-400 mt-1">Öğrencinin kurum genelinde girdi tüm deneme sonuçları ve konu detaylı kazanım dökümleri.</p>
+            <!-- SECTION: SİNAV AI RADARI -->
+            <div id="section-exams" class="section-hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Yapay Zeka Sınav Radarı</h2>
+                    <p class="text-xs text-slate-400 mt-1">Öğrencinin son denemelerindeki konu bazlı eksiklerini ve güçlü yönlerini gösteren yapay zeka analiz raporu.</p>
                 </div>
-
-                <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Zayıf Yönler (Kırmızı/Turuncu) -->
+                    <div class="glass-panel p-6 rounded-3xl border-rose-500/20">
+                        <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+                            <div class="w-10 h-10 rounded-xl bg-rose-500/10 flex items-center justify-center text-rose-400 text-xl">⚠️</div>
+                            <div><h3 class="text-sm font-black text-white">Kritik Konu Eksikleri</h3><p class="text-[10px] text-slate-400">Üzerine düşülmesi gereken alanlar</p></div>
+                        </div>
+                        <ul class="space-y-4" id="aiWeakList">
+                            <li class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-white">Matematik: İntegral Hacim</span>
+                                    <span class="text-[10px] text-rose-400 font-bold">%30 Başarı</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-rose-500 h-full w-[30%]"></div></div>
+                                <p class="text-[10px] text-slate-400 mt-2 italic">Danışman Notu: Formül eksiği var, hafta sonu ek etüt atandı.</p>
+                            </li>
+                            <li class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-white">Fizik: İndüksiyon Akımı</span>
+                                    <span class="text-[10px] text-amber-400 font-bold">%45 Başarı</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-amber-500 h-full w-[45%]"></div></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Güçlü Yönler (Yeşil/Mavi) -->
+                    <div class="glass-panel p-6 rounded-3xl border-emerald-500/20">
+                        <div class="flex items-center gap-3 mb-6 border-b border-white/5 pb-4">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-xl">⭐</div>
+                            <div><h3 class="text-sm font-black text-white">En Güçlü Olduğu Konular</h3><p class="text-[10px] text-slate-400">Soru kaçırmadığı alanlar</p></div>
+                        </div>
+                        <ul class="space-y-4" id="aiStrongList">
+                            <li class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-white">Matematik: Türev / Max-Min</span>
+                                    <span class="text-[10px] text-emerald-400 font-bold">%95 Başarı</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[95%]"></div></div>
+                            </li>
+                            <li class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-xs font-bold text-white">Kimya: Organik Bileşikler</span>
+                                    <span class="text-[10px] text-emerald-400 font-bold">%100 Başarı</span>
+                                </div>
+                                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[100%]"></div></div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Detaylı Sınav Tablosu -->
+                <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden mt-6">
                     <div class="w-full overflow-x-auto">
-                        <table class="w-full text-left text-xs md:text-sm min-w-[600px]">
-                            <thead class="bg-slate-900 text-slate-400 uppercase font-bold text-[10px] border-b border-slate-800">
+                        <table class="w-full text-left text-xs min-w-[600px]">
+                            <thead class="bg-slate-900/80 text-slate-400 uppercase font-bold text-[10px] border-b border-slate-800">
                                 <tr>
-                                    <th class="p-4">Sınav Adı / Yayın</th>
+                                    <th class="p-4">Sınav Adı</th>
                                     <th class="p-4 text-center">Matematik</th>
                                     <th class="p-4 text-center">Fen Bilimleri</th>
-                                    <th class="p-4 text-center">Toplam Net</th>
-                                    <th class="p-4 text-center">Detaylar</th>
+                                    <th class="p-4 text-center">Türkçe</th>
+                                    <th class="p-4 text-center">Genel Net</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-slate-800 font-medium text-slate-300 text-xs">
-                                <tr class="hover:bg-slate-900/40 transition-colors">
-                                    <td class="p-4 font-bold text-white">3D Türkiye Geneli TYT - 1</td>
-                                    <td class="p-4 text-center text-emerald-400 font-bold">32.50 D / 3.00 Y</td>
-                                    <td class="p-4 text-center text-emerald-400 font-bold">14.00 D / 2.50 Y</td>
-                                    <td class="p-4 text-center font-black text-indigo-400 text-sm">74.50 Net</td>
-                                    <td class="p-4 text-center">
-                                        <button onclick="toggleExamDropdown('exam1')" class="bg-slate-800 hover:bg-slate-700 text-white font-bold text-[10px] px-3 py-1.5 rounded-lg border border-slate-700 transition-all uppercase tracking-wider">İncele</button>
-                                    </td>
+                            <tbody class="divide-y divide-slate-800 font-medium text-slate-300">
+                                <tr class="hover:bg-white/5 transition-colors">
+                                    <td class="p-4 font-bold text-white">3D Türkiye Geneli TYT</td>
+                                    <td class="p-4 text-center">32.5 D / 3 Y</td>
+                                    <td class="p-4 text-center">14.0 D / 2.5 Y</td>
+                                    <td class="p-4 text-center">35.0 D / 4 Y</td>
+                                    <td class="p-4 text-center font-black text-orange-400">74.50</td>
                                 </tr>
-                                <tr id="exam1-detail" class="hidden bg-slate-950/60">
-                                    <td colspan="5" class="p-5">
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                                            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
-                                                <h4 class="font-bold text-orange-400 mb-2 border-b border-slate-800 pb-1.5 uppercase tracking-wider text-[10px]">⚠️ Kritik Konu Eksikleri</h4>
-                                                <ul class="space-y-1.5 text-slate-400">
-                                                    <li>• Matematik: İntegral Hacim Hesabı (%30 Başarı)</li>
-                                                    <li>• Fizik: Manyetik Akı & İndüksiyon (%20 Başarı)</li>
-                                                </ul>
-                                            </div>
-                                            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-xl">
-                                                <h4 class="font-bold text-emerald-400 mb-2 border-b border-slate-800 pb-1.5 uppercase tracking-wider text-[10px]">✓ En Güçlü Olduğu Konular</h4>
-                                                <ul class="space-y-1.5 text-slate-400">
-                                                    <li>• Matematik: Fonksiyonlar ve Grafik Okuma (%100 Başarı)</li>
-                                                    <li>• Fizik: Çembersel Hareket Dinamiği (%95 Başarı)</li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </td>
+                                <tr class="hover:bg-white/5 transition-colors">
+                                    <td class="p-4 font-bold text-white">Özdebir TYT Denemesi</td>
+                                    <td class="p-4 text-center">29.0 D / 5 Y</td>
+                                    <td class="p-4 text-center">12.0 D / 4 Y</td>
+                                    <td class="p-4 text-center">34.0 D / 5 Y</td>
+                                    <td class="p-4 text-center font-black text-slate-300">72.00</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-
+            <!-- SECTION: ÖDEV & HATA KUTUSU -->
             <div id="section-homework" class="section-hidden space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="glass-panel p-5 rounded-2xl">
-                        <h3 class="text-sm font-black text-white mb-4 uppercase tracking-widest text-indigo-400">📋 Güncel Ödev Kontrolü</h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
-                                <div><h4 class="text-xs font-bold text-white">Matematik: Türev Fasikülü</h4><p class="text-[10px] text-slate-500">Sorumlu: Ahmet Kula</p></div>
-                                <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-bold px-2 py-1 rounded">✓ Eksiksiz Yapıldı</span>
+                    <!-- Ödev Kontrolü -->
+                    <div class="glass-panel p-6 rounded-3xl">
+                        <h3 class="text-sm font-black text-white mb-4 uppercase tracking-widest text-indigo-400 flex items-center gap-2"><span>📋</span> Haftalık Ödev Listesi</h3>
+                        <div class="space-y-3" id="hwList">
+                            <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+                                <div><h4 class="text-xs font-bold text-white">Matematik: Türev Fasikülü Bitiş</h4><p class="text-[10px] text-slate-500 mt-1">Eğitmen: Ahmet Kula</p></div>
+                                <span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[9px] font-bold px-2.5 py-1 rounded uppercase tracking-wider">Tamamlandı</span>
                             </div>
-                            <div class="flex items-center justify-between p-3 bg-slate-900/50 rounded-xl border border-slate-800">
-                                <div><h4 class="text-xs font-bold text-white">Fizik: Elektriksel Kuvvet Testi</h4><p class="text-[10px] text-slate-500">Sorumlu: Ahmet Kula</p></div>
-                                <span class="bg-rose-500/10 border border-rose-500/30 text-rose-400 text-[10px] font-bold px-2 py-1 rounded">✕ Eksik / Yapılmadı</span>
+                            <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+                                <div><h4 class="text-xs font-bold text-white">Fizik: Manyetizma 100 Soru</h4><p class="text-[10px] text-slate-500 mt-1">Eğitmen: Sinan Yıldız</p></div>
+                                <span class="bg-rose-500/10 border border-rose-500/30 text-rose-400 text-[9px] font-bold px-2.5 py-1 rounded uppercase tracking-wider">Eksik / Yapılmadı</span>
                             </div>
                         </div>
                     </div>
-
-                    <div class="glass-panel p-5 rounded-2xl">
-                        <h3 class="text-sm font-black text-white mb-4 uppercase tracking-widest text-amber-500">📅 Devamsızlık Sicil Kaydı</h3>
-                        <div class="space-y-2 text-xs font-semibold text-slate-300">
-                            <div class="flex justify-between p-2.5 bg-slate-900/30 border border-slate-800 rounded-lg"><span>22/06/2026 - Sabah Oturumu</span><span class="text-amber-500">Yarım Gün Gelmedi</span></div>
-                            <div class="flex justify-between p-2.5 bg-slate-900/30 border border-slate-800 rounded-lg"><span>15/06/2026 - Etüt Bloğu</span><span class="text-amber-500">1 Ders Saati İzinli</span></div>
+                    <!-- Devamsızlık ve Hata Kutusu -->
+                    <div class="space-y-6">
+                        <div class="glass-panel p-6 rounded-3xl border-orange-500/10">
+                            <h3 class="text-sm font-black text-white mb-4 uppercase tracking-widest text-orange-400 flex items-center gap-2"><span>📸</span> Hata Kutusu Aktvitesi</h3>
+                            <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-4 flex justify-between items-center">
+                                <div>
+                                    <p class="text-xs text-slate-300">Bu Hafta Yüklenen: <span class="font-bold text-white">45 Soru</span></p>
+                                    <p class="text-xs text-slate-300 mt-1">Öğretmen Çözümü: <span class="font-bold text-emerald-400">45 Soru</span></p>
+                                </div>
+                                <div class="w-12 h-12 border-4 border-emerald-500 rounded-full flex items-center justify-center text-xs font-black text-white">%100</div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-3 italic">Tüm çözülemeyen sorular eğitmenler tarafından video çözümüyle yanıtlandı.</p>
+                        </div>
+                        <div class="glass-panel p-6 rounded-3xl">
+                            <h3 class="text-sm font-black text-white mb-4 uppercase tracking-widest text-amber-500 flex items-center gap-2"><span>📅</span> Devamsızlık Kaydı</h3>
+                            <div class="space-y-2 text-xs font-semibold text-slate-300">
+                                <div class="flex justify-between p-3 bg-slate-900/30 border border-slate-800 rounded-lg"><span>15/06/2026 - Etüt Bloğu</span><span class="text-amber-500">1 Saat İzinli</span></div>
+                                <div class="flex justify-between p-3 bg-slate-900/30 border border-slate-800 rounded-lg"><span>02/06/2026 - Pazar Denemesi</span><span class="text-rose-500">Katılmadı</span></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div id="section-messages" class="section-hidden space-y-6">
-                <div class="glass-card neon-border-orange p-6 rounded-[2rem] flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                    <div class="w-16 h-16 bg-gradient-to-br from-orange-400 to-orange-600 text-white font-black text-xl rounded-xl flex items-center justify-center flex-shrink-0 shadow">AK</div>
-                    <div class="flex-1 text-center sm:text-left">
-                        <span class="px-2 py-0.5 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[9px] font-bold uppercase tracking-widest rounded mb-1.5 inline-block">Sınıf Danışmanı Notu</span>
-                        <h3 class="text-lg font-black text-white" id="teacherNameNote">Ahmet Kula</h3>
-                        <p class="text-xs text-slate-500 mb-3">Matematik & Fizik Bölüm Başkanı</p>
-                        <p class="text-sm leading-relaxed text-slate-300 italic">"Öğrencimiz bu hafta Matematik denemelerinde limit ve türev sorularını tamamen eritti, performansı mükemmel düzeyde. Ancak Fizik dersinde Elektromanyetizma konularındaki ödevinde bazı eksiklikler saptadım. Evde pazar günleri fizik konu tekrarlarına odaklanmasını rica ediyorum."</p>
+            <!-- SECTION: DANIŞMAN İLETİŞİM -->
+            <div id="section-messages" class="section-hidden space-y-6 max-w-4xl mx-auto">
+                
+                <div class="glass-panel p-6 md:p-8 rounded-[2.5rem] flex flex-col md:flex-row items-center md:items-start gap-6 border-blue-500/20">
+                    <div class="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 text-white font-black text-2xl rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">AK</div>
+                    <div class="flex-1 text-center md:text-left">
+                        <span class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[9px] font-bold uppercase tracking-widest rounded-lg mb-3 inline-block">Sınıf Danışmanı Notu</span>
+                        <h3 class="text-xl font-black text-white mb-1">Ahmet Kula</h3>
+                        <p class="text-xs text-slate-400 mb-4">VIP Koç & Matematik Öğretmeni</p>
+                        <div class="bg-slate-900/60 border border-slate-800 p-5 rounded-2xl relative">
+                            <div class="absolute -left-3 top-5 w-0 h-0 border-t-[10px] border-t-transparent border-r-[15px] border-r-slate-800 border-b-[10px] border-b-transparent hidden md:block"></div>
+                            <p class="text-sm leading-relaxed text-slate-300 italic" id="teacherMessageText">
+                                "Merhabalar Ahmet Bey, Can'ın bu hafta matematik denemelerindeki performansı çok iyiydi. Odak odasında da belirlediğimiz 20 saatlik hedefin çok yakınına ulaştı. Ancak fizik ödevlerinde biraz aksamalar var, evde kontrol edebilirseniz harika olur."
+                            </p>
+                        </div>
                     </div>
                 </div>
-
-                <div class="glass-panel p-5 rounded-2xl max-w-xl mx-auto">
-                    <h3 class="text-sm font-black text-white mb-3 uppercase tracking-widest">Danışman Öğretmene Soru Sor</h3>
-                    <form onsubmit="handleSendVeliMessage(event)" class="space-y-3">
-                        <textarea id="veliMsgInput" rows="3" placeholder="Ahmet Öğretmenimize iletmek istediğiniz notu yazın..." class="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white outline-none focus:border-orange-500 font-medium" required></textarea>
-                        <button type="submit" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-2.5 rounded-xl text-xs uppercase tracking-widest transition-all shadow-md">Mesajı Güvenli Gönder</button>
+                <div class="glass-panel p-6 md:p-8 rounded-[2.5rem]">
+                    <h3 class="text-sm font-black text-white mb-4 uppercase tracking-widest flex items-center gap-2"><span>💬</span> Eğitmene Mesaj Gönder</h3>
+                    <form onsubmit="handleSendMessage(event)" class="space-y-4">
+                        <textarea id="veliMsgInput" rows="4" placeholder="Ahmet Öğretmenimize iletmek istediğiniz mesajı buraya yazın..." class="w-full p-4 bg-slate-900/50 border border-slate-700 rounded-2xl text-xs text-white outline-none focus:border-orange-500 transition-colors resize-none" required></textarea>
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-white text-slate-900 hover:bg-slate-200 font-black py-3 px-8 rounded-xl text-xs uppercase tracking-widest transition-all shadow-md">Güvenli Gönder</button>
+                        </div>
                     </form>
                 </div>
             </div>
-
-            <div id="section-ayarlar" class="section-hidden space-y-6 max-w-xl mx-auto">
-                <div class="glass-panel p-6 rounded-[2rem]">
-                    <h3 class="text-base font-black text-white mb-1 border-b border-slate-800 pb-3">Akıllı Bilgilendirme Parametreleri</h3>
-                    
-                    <div class="space-y-4 pt-4">
-                        <div class="flex items-center justify-between p-3 bg-slate-900/40 border border-slate-800 rounded-xl">
-                            <div><h4 class="text-xs font-bold text-white">Anlık Sınav Sonuç Bildirimi</h4><p class="text-[10px] text-slate-500">Deneme açıklandığında SMS/E-Posta gönderilsin.</p></div>
-                            <input type="checkbox" checked onclick="triggerToast('Sınav bildirim tercihleri güncellendi.')" class="w-10 h-5 bg-slate-800 checked:bg-indigo-600 rounded-full appearance-none cursor-pointer relative before:content-[''] before:absolute before:w-5 before:h-5 before:bg-white before:rounded-full before:transition-all checked:before:translate-x-5">
-                        </div>
-                        
-                        <div class="flex items-center justify-between p-3 bg-slate-900/40 border border-slate-800 rounded-xl">
-                            <div><h4 class="text-xs font-bold text-white">Kritik Ödev ve Devamsızlık Alarmı</h4><p class="text-[10px] text-slate-500">Ödev eksiklerinde veya devamsızlıklarda anında uyarı gelsin.</p></div>
-                            <input type="checkbox" onclick="triggerToast('Ödev/Devamsızlık alarmı aktif hale getirildi.')" class="w-10 h-5 bg-slate-800 checked:bg-indigo-600 rounded-full appearance-none cursor-pointer relative before:content-[''] before:absolute before:w-5 before:h-5 before:bg-white before:rounded-full before:transition-all checked:before:translate-x-5">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </main>
     </div>
-
     <script>
-        // Çalışan Toast Uyarı Mekanizması
-        function triggerToast(message) {
-            const toast = document.getElementById('toastBox');
-            document.getElementById('toastMessage').innerText = message;
-            toast.classList.remove('translate-x-80', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-x-80', 'opacity-0');
-            }, 2500);
-        }
-
-        // Veli Mesaj Gönderme Fonksiyonu
-        function handleSendVeliMessage(e) {
-            e.preventDefault();
-            const input = document.getElementById('veliMsgInput');
-            if(!input.value.trim()) return;
-            input.value = '';
-            triggerToast('Mesajınız Danışman Eğitmene Güvenle İletildi.');
-        }
-
-        // Tablo Detay Çekmecesi Açma/Kapatma
-        function toggleExamDropdown(id) {
-            const row = document.getElementById(id + '-detail');
-            row.classList.toggle('hidden');
-        }
-
-        // Sidebar Hamburger Menü Kontrolü
-        window.toggleMobileSidebar = function() {
+        // Data Store (Simulate multiple children for Parent)
+        const studentData = {
+            stu_1: {
+                name: "Can Yılmaz", label: "Can Yılmaz'ın Paneli", grade: "12. Sınıf - TYT/AYT",
+                net: "74.50", netTrend: "▲ +2.5", focus: "18s", focusTarget: "20s",
+                hata: "45", odev: "%92",
+                weakness: `
+                    <li class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-white">Matematik: İntegral Hacim</span><span class="text-[10px] text-rose-400 font-bold">%30 Başarı</span></div>
+                        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-rose-500 h-full w-[30%]"></div></div>
+                    </li>
+                `,
+                strong: `
+                    <li class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-white">Matematik: Türev</span><span class="text-[10px] text-emerald-400 font-bold">%95 Başarı</span></div>
+                        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[95%]"></div></div>
+                    </li>
+                `,
+                hw: `
+                    <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+                        <div><h4 class="text-xs font-bold text-white">Matematik: Türev Fasikülü</h4></div>
+                        <span class="bg-emerald-500/10 text-emerald-400 text-[9px] font-bold px-2.5 py-1 rounded">Tamamlandı</span>
+                    </div>
+                `,
+                msg: "\"Merhabalar Ahmet Bey, Can'ın bu hafta matematik performansı çok iyiydi...\""
+            },
+            stu_2: {
+                name: "Elif Yılmaz", label: "Elif Yılmaz'ın Paneli", grade: "8. Sınıf - LGS",
+                net: "82.00", netTrend: "▼ -1.5", focus: "12s", focusTarget: "15s",
+                hata: "20", odev: "%100",
+                weakness: `
+                    <li class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-white">Fen: Optik</span><span class="text-[10px] text-amber-400 font-bold">%45 Başarı</span></div>
+                        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-amber-500 h-full w-[45%]"></div></div>
+                    </li>
+                `,
+                strong: `
+                    <li class="bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                        <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-white">İnkılap Tarihi</span><span class="text-[10px] text-emerald-400 font-bold">%100 Başarı</span></div>
+                        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden"><div class="bg-emerald-500 h-full w-[100%]"></div></div>
+                    </li>
+                `,
+                hw: `
+                    <div class="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+                        <div><h4 class="text-xs font-bold text-white">Fen: Basit Makineler Testi</h4></div>
+                        <span class="bg-emerald-500/10 text-emerald-400 text-[9px] font-bold px-2.5 py-1 rounded">Tamamlandı</span>
+                    </div>
+                `,
+                msg: "\"Elif bu hafta denemede inkılap testini full çıkardı, fen bilimlerinde optik konusuna biraz ağırlık vereceğiz.\""
+            }
+        };
+        // --- UI Interactions ---
+        function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebarBackdrop');
             if (sidebar.classList.contains('-translate-x-full')) {
@@ -284,95 +382,92 @@
             } else {
                 sidebar.classList.add('-translate-x-full'); backdrop.classList.add('hidden');
             }
-        };
-
-        // Ana Navigasyon Sekme Motoru
-        window.switchSection = function(sectionId) {
+        }
+        function switchSection(sectionId) {
             document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.replace('section-active', 'section-hidden'));
             document.getElementById('section-' + sectionId).classList.replace('section-hidden', 'section-active');
             
             document.querySelectorAll('.nav-item').forEach(el => {
-                el.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-900/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent";
+                el.classList.remove('active', 'text-white', 'bg-white/5');
+                el.classList.add('text-slate-400');
             });
-            document.getElementById('nav-' + sectionId).className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-indigo-600/10 text-indigo-400 rounded-xl font-bold transition-all text-left border-l-4 border-indigo-500";
-            if (window.innerWidth < 768) toggleMobileSidebar();
-        };
-
-           <!-- FİREBASE MODÜLÜ -->
-    <script type="module">
-        import { listenAuthState, getUserProfile, logoutUser } from './firebase-shared.js';
-
-        window.logoutUser = logoutUser;
-
-        listenAuthState(async (user) => {
-            if (user) {
-                const data = await getUserProfile(user.uid);
-                if (data) {
-                    document.getElementById('parentNameDisplay').innerText = data.firstName + " " + data.lastName;
-                    document.getElementById('studentName').innerText = data.firstName + " Jr. (" + (data.specialtyOrExam || "YKS") + ")";
-                }
-            } else {
-                window.location.href = 'login.html';
-            }
-        });
-    </script>
-
-            // Noktaları Çiz
-            transformed.forEach(p => {
-                ctx.beginPath(); ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(249, 115, 22, ${(p.z + 50) / 100 * 0.6 + 0.4})`; ctx.fill();
-            });
-
-            // Çizgisel Ağ Bağlantıları
-            ctx.lineWidth = 0.4;
-            for (let i = 0; i < transformed.length; i++) {
-                for (let j = i + 1; j < transformed.length; j++) {
-                    let d = Math.hypot(transformed[i].x - transformed[j].x, transformed[i].y - transformed[j].y);
-                    if (d < 45) {
-                        ctx.beginPath(); ctx.moveTo(transformed[i].x, transformed[i].y); ctx.lineTo(transformed[j].x, transformed[j].y);
-                        ctx.strokeStyle = `rgba(99, 102, 241, ${(45 - d) / 45 * 0.15})`; ctx.stroke();
-                    }
-                }
-            }
-            requestAnimationFrame(draw3D);
+            const activeNav = document.getElementById('nav-' + sectionId);
+            activeNav.classList.add('active', 'text-white');
+            activeNav.classList.remove('text-slate-400');
+            if (window.innerWidth < 768) toggleSidebar();
         }
-        setTimeout(() => { init3D(); draw3D(); }, 150);
-        window.addEventListener('resize', init3D);
-    </script>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
-            authDomain: "hedef100-academia.firebaseapp.com",
-            projectId: "hedef100-academia",
-            storageBucket: "hedef100-academia.firebasestorage.app",
-            messagingSenderId: "886084339971",
-            appId: "1:886084339971:web:ca31ab9d1575344d234136"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const docSnap = await getDoc(doc(db, "users", user.uid));
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    // Firebase'den veli ve öğrenci verilerini çekip eşleme simülasyonu
-                    document.getElementById('parentNameDisplay').innerText = data.firstName + " " + data.lastName;
-                    document.getElementById('studentName').innerText = data.firstName + " Jr. (" + (data.specialtyOrExam || "YKS") + ")";
-                }
-            } else {
-                // Eğer oturum yoksa veya test modundaysak yerel veriyi canlandır
-                document.getElementById('parentNameDisplay').innerText = "Veli Kullanıcı";
-                document.getElementById('studentName').innerText = "Can Yılmaz (YKS)";
-            }
-        });
+        function triggerToast(message) {
+            const toast = document.getElementById('toastBox');
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.remove('translate-x-80', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-x-80', 'opacity-0'), 3000);
+        }
+        // --- Modals & Student Management ---
+        function openModal() {
+            const modal = document.getElementById('addStudentModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            // Small GSAP animation for premium feel
+            gsap.to(content, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" });
+        }
+        function closeModal() {
+            const content = document.getElementById('modalContent');
+            gsap.to(content, { scale: 0.95, opacity: 0, duration: 0.2, onComplete: () => {
+                document.getElementById('addStudentModal').classList.add('hidden');
+            }});
+        }
+        function handleAddStudent(e) {
+            e.preventDefault();
+            const id = document.getElementById('hedefIdInput').value;
+            if(!id) return;
+            
+            // Simulate adding a new student
+            const selector = document.getElementById('studentSelector');
+            const newOption = document.createElement('option');
+            newOption.value = 'stu_new';
+            newOption.className = "bg-slate-900";
+            newOption.text = `Yeni Öğrenci (${id})`;
+            selector.appendChild(newOption);
+            
+            // Generate dummy data
+            studentData['stu_new'] = {
+                name: "Yeni Öğrenci", label: `Yeni Öğrenci (${id})`, grade: "Kayıt Bekliyor",
+                net: "0.00", netTrend: "-", focus: "0s", focusTarget: "10s",
+                hata: "0", odev: "%0", weakness: "", strong: "", hw: "", msg: "Veriler güncelleniyor..."
+            };
+            selector.value = 'stu_new';
+            changeStudent('stu_new');
+            document.getElementById('hedefIdInput').value = '';
+            closeModal();
+            triggerToast('Öğrenci Hesabı Başarıyla Bağlandı');
+        }
+        function changeStudent(stuId) {
+            const data = studentData[stuId];
+            if(!data) return;
+            // DOM Updates
+            document.getElementById('headerStudentName').innerText = data.label;
+            document.getElementById('summaryStudentName').innerText = data.name.split(' ')[0];
+            
+            document.getElementById('statNet').innerText = data.net;
+            document.getElementById('statFocus').innerText = data.focus;
+            document.getElementById('statHata').innerText = data.hata;
+            document.getElementById('statOdev').innerText = data.odev;
+            document.getElementById('aiWeakList').innerHTML = data.weakness || '<p class="text-xs text-slate-500">Veri yok</p>';
+            document.getElementById('aiStrongList').innerHTML = data.strong || '<p class="text-xs text-slate-500">Veri yok</p>';
+            document.getElementById('hwList').innerHTML = data.hw || '<p class="text-xs text-slate-500">Kayıtlı ödev yok</p>';
+            document.getElementById('teacherMessageText').innerText = data.msg;
+            triggerToast(`${data.name} paneline geçiş yapıldı.`);
+        }
+        function handleSendMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('veliMsgInput');
+            if(!input.value.trim()) return;
+            input.value = '';
+            triggerToast('Mesajınız Sınıf Danışmanına İletildi.');
+        }
+        function logoutUser() {
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>
