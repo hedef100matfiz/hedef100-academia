@@ -3,907 +3,423 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hedef100 Academia | Başarıya Giden En Net Yol</title>
-    <meta name="description" content="Hedef100 Academia — Yapay zeka destekli, kişiselleştirilmiş eğitim ve koçluk platformu. Öğrenci, eğitmen ve kurumlar için bütünsel akademik başarı ekosistemi.">
+    <title>Hedef100 Academia | Geleceğin Eğitim Kampüsü</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
     <style>
-        body { margin: 0; background-color: #040814; font-family: 'Inter', sans-serif; color: #f8fafc; overflow-x: hidden; }
-
-        /* FILM GRAIN OVERLAY */
-        .film-grain {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 50; opacity: 0.12; mix-blend-mode: overlay;
-            background-image: url("data:image/svg+xml;utf8,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
-
-        /* AMBIENT GLOW */
-        .ambient-glow { position: fixed; border-radius: 50%; filter: blur(140px); z-index: 1; pointer-events: none; opacity: 0.35; animation: gentleFloat 12s infinite ease-in-out alternate; }
-        .glow-warm { top: -20%; right: -10%; width: 55vw; height: 55vw; background: radial-gradient(circle, rgba(249,115,22,0.3) 0%, rgba(217,119,6,0) 70%); }
-        .glow-deep { bottom: -10%; left: -10%; width: 50vw; height: 50vw; background: radial-gradient(circle, rgba(79,70,229,0.2) 0%, rgba(99,102,241,0) 70%); }
-        .glow-center { top: 40%; left: 30%; width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(249,115,22,0.08) 0%, transparent 70%); animation-delay: 3s; }
-        @keyframes gentleFloat { 0% { transform: translateY(0px) scale(1); } 100% { transform: translateY(30px) scale(1.1); } }
-
-        .content-layer { position: relative; z-index: 10; }
-
-        /* GLASS NAV */
-        .glass-nav { background: rgba(4, 8, 20, 0.6); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.04); transition: background 0.3s ease; }
-
-        /* PREMIUM CARD */
-        .premium-card {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.7);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .premium-card:hover { border-color: rgba(249, 115, 22, 0.3); transform: translateY(-6px); background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%); box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.8); }
-
-        /* FEATURE CARD */
-        .feature-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.005) 100%);
-            border: 1px solid rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .feature-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(249,115,22,0.3), transparent);
-            opacity: 0; transition: opacity 0.4s ease;
-        }
-        .feature-card:hover::before { opacity: 1; }
-        .feature-card:hover { border-color: rgba(249,115,22,0.15); transform: translateY(-4px); background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%); }
-
-        /* ANIMATIONS */
-        .data-aos="fade-up" { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .data-aos="fade-up".active { opacity: 1; transform: translateY(0); }
-        .data-aos="fade-right" { opacity: 0; transform: translateX(-40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .data-aos="fade-right".active { opacity: 1; transform: translateX(0); }
-        .data-aos="fade-left" { opacity: 0; transform: translateX(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .data-aos="fade-left".active { opacity: 1; transform: translateX(0); }
-        .data-aos="zoom-in" { opacity: 0; transform: scale(0.9); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
-        .data-aos="zoom-in".active { opacity: 1; transform: scale(1); }
-
-        .stagger-1 { transition-delay: 0.1s; }
-        .stagger-2 { transition-delay: 0.2s; }
-        .stagger-3 { transition-delay: 0.3s; }
-        .stagger-4 { transition-delay: 0.4s; }
-        .stagger-5 { transition-delay: 0.5s; }
-        .stagger-6 { transition-delay: 0.6s; }
-
-        /* GRADIENTS */
-        .text-gradient-hero { background: linear-gradient(135deg, #ffffff 20%, #fcd34d 60%, #f97316 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .text-gradient-success { background: linear-gradient(to right, #ffffff 30%, #fcd34d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* BUTTONS */
+        body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #040814; color: #f8fafc; overflow-x: hidden; }
+        
+        /* ═══════ NAVBAR ═══════ */
+        .glass-nav { background: rgba(4, 8, 20, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
         .btn-action {
             background: linear-gradient(135deg, #f97316 0%, #d97706 100%); color: white;
-            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.25);
-            transition: all 0.3s ease;
-            position: relative; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(249, 115, 22, 0.25); transition: all 0.3s ease; position: relative; overflow: hidden;
         }
-        .btn-action::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: rotate(45deg) translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-        .btn-action:hover::after { transform: rotate(45deg) translateX(100%); }
         .btn-action:hover { transform: scale(1.03); box-shadow: 0 6px 30px rgba(249, 115, 22, 0.4); }
-
-        .btn-ghost {
-            border: 1px solid rgba(255,255,255,0.15); color: white;
-            backdrop-filter: blur(8px); transition: all 0.3s ease;
-        }
+        .btn-ghost { border: 1px solid rgba(255,255,255,0.15); color: white; backdrop-filter: blur(8px); transition: all 0.3s ease; }
         .btn-ghost:hover { background: rgba(255,255,255,0.05); border-color: rgba(249,115,22,0.3); transform: scale(1.02); }
-
-        /* STAT COUNTER */
-        .stat-divider { width: 1px; height: 48px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.1), transparent); }
-
-        /* TESTIMONIAL */
-        .testimonial-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.005) 100%);
-            border: 1px solid rgba(255,255,255,0.06);
+        /* ═══════ GSAP SINGLE PAGE SCROLL ═══════ */
+        #scroll-space { height: 800vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 0; }
+        #scene-container { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 10; overflow: hidden; pointer-events: none; }
+        
+        .room-layer {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            display: flex; align-items: center; justify-content: center;
+            will-change: transform, opacity, visibility; pointer-events: auto;
+        }
+        
+        .overlay { position: absolute; inset: 0; z-index: 1; }
+        .content-container {
+            position: relative; z-index: 2; width: 100%; max-width: 1400px; padding: 2rem;
+            max-height: 100vh; overflow-y: auto; -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .content-container::-webkit-scrollbar { display: none; }
+        /* Initial States for GSAP */
+        #layer-1 { z-index: 1; visibility: visible; opacity: 1; background-image: url('https://images.unsplash.com/photo-1541829070764-84a7d30dd3f3?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-2 { z-index: 2; visibility: hidden; opacity: 0; transform: scale(0.8); background-image: url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-3 { z-index: 3; visibility: hidden; opacity: 0; transform: translateX(100%); background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-4 { z-index: 4; visibility: hidden; opacity: 0; transform: translateY(100%); background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-5 { z-index: 5; visibility: hidden; opacity: 0; transform: translateX(-100%); background-image: url('https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-6 { z-index: 6; visibility: hidden; opacity: 0; transform: scale(1.2); background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-7 { z-index: 7; visibility: hidden; opacity: 0; transform: translateY(-100%); background-image: url('https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1920&q=80'); }
+        #layer-8 { z-index: 8; visibility: hidden; opacity: 0; transform: scale(0.9); background-color: #040814; }
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        /* ═══════ UI ELEMENTS ═══════ */
+        .premium-card {
+            background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             transition: all 0.4s ease;
         }
-        .testimonial-card:hover { border-color: rgba(249,115,22,0.2); transform: translateY(-2px); }
-
-        /* MARQUEE */
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .marquee-track { animation: marquee 30s linear infinite; }
-        .marquee-track:hover { animation-play-state: paused; }
-
-        /* FLOATING PARTICLES */
-        .particle {
-            position: absolute; border-radius: 50%; pointer-events: none;
-            background: rgba(249, 115, 22, 0.15);
-            animation: particleFloat 8s infinite ease-in-out;
+        .premium-card:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); }
+        .text-gradient-hero { background: linear-gradient(135deg, #ffffff 20%, #fcd34d 60%, #f97316 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .testimonial-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 1.5rem; padding: 1.5rem;
+            backdrop-filter: blur(10px); height: 100%;
         }
-        @keyframes particleFloat {
-            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
-            25% { transform: translateY(-20px) translateX(10px); opacity: 0.6; }
-            50% { transform: translateY(-40px) translateX(-5px); opacity: 0.3; }
-            75% { transform: translateY(-20px) translateX(15px); opacity: 0.5; }
-        }
-
-        /* SECTION DIVIDER */
-        .section-glow-divider {
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(249,115,22,0.2), rgba(251,191,36,0.15), rgba(249,115,22,0.2), transparent);
-        }
-
-        /* NAV DROPDOWN */
-        .nav-dropdown { opacity: 0; visibility: hidden; transform: translateY(8px); transition: all 0.25s ease; }
-        .nav-dropdown.show { opacity: 1; visibility: visible; transform: translateY(0); }
+        
+        /* ═══════ FOOTER SCROLL OVERRIDE ═══════ */
+        /* Layer 8 (Footer) needs internal scroll if screen is small */
+        #layer-8 .content-container { padding-top: 100px; padding-bottom: 50px; }
     </style>
 </head>
 <body>
-
-    <div class="film-grain"></div>
-    <div class="ambient-glow glow-warm"></div>
-    <div class="ambient-glow glow-deep"></div>
-    <div class="ambient-glow glow-center"></div>
-
-    <!-- MOBİL MENÜ DRAWER -->
-    <div id="mobileDrawer" class="fixed inset-0 bg-slate-950/98 backdrop-blur-2xl z-[999] hidden flex flex-col justify-center items-center space-y-6 text-lg font-bold uppercase tracking-widest opacity-0 transition-all duration-300">
-        <button onclick="toggleMobileSidebar()" class="absolute top-6 right-6 text-slate-400 hover:text-white bg-slate-900 w-12 h-12 rounded-full flex items-center justify-center border border-slate-800 transition-colors">✕</button>
-        <a href="#hero" onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white transition">Ana Sayfa</a>
-        <a href="#vision" onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white transition">Vizyon</a>
-        <a href="#features" onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white transition">Özellikler</a>
-        <a href="#ecosystem" onclick="toggleMobileSidebar()" class="text-slate-400 hover:text-white transition">Ekosistem</a>
-        <div class="w-16 h-px bg-slate-800 my-2"></div>
-        <a href="sistemimiz.html" onclick="toggleMobileSidebar()" class="text-slate-300 hover:text-white transition text-sm">Sistemimiz</a>
-        <a href="online-deneme.html" onclick="toggleMobileSidebar()" class="text-slate-300 hover:text-white transition text-sm">Online Deneme</a>
-        <a href="vip-kocluk.html" onclick="toggleMobileSidebar()" class="text-slate-300 hover:text-white transition text-sm">VIP Koçluk</a>
-        <a href="kurumsal.html" onclick="toggleMobileSidebar()" class="text-slate-300 hover:text-white transition text-sm">Kurumsal</a>
-        <a href="soru-kutusu.html" class="text-orange-400 hover:text-orange-300 transition text-sm">Soru Kutusunu Dene</a>
-        <a href="login.html" class="btn-action font-bold text-xs px-8 py-3.5 rounded-full mt-4 inline-block">Sisteme Giriş</a>
-    </div>
-
-    <div class="content-layer">
-
-        <!-- ═══════════════ MEGA NAVBAR ═══════════════ -->
-        <nav class="glass-nav sticky top-0 w-full px-6 py-3.5 z-50" id="navbar">
-            <div class="max-w-7xl mx-auto flex justify-between items-center">
-                <!-- LOGO -->
-                <a href="index.html" class="flex items-center gap-3 group">
-                    <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg group-hover:shadow-orange-500/20 transition-shadow">H</div>
-                    <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-orange-500 font-medium">.ACADEMIA</span></span>
-                </a>
-
-                <!-- DESKTOP NAV -->
-                <div class="hidden lg:flex items-center gap-1">
-                    <!-- Sayfa İçi Linkler -->
-                    <a href="#vision" class="text-[11px] font-semibold text-slate-400 hover:text-white transition uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-white/5">Vizyon</a>
-                    <a href="#features" class="text-[11px] font-semibold text-slate-400 hover:text-white transition uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-white/5">Özellikler</a>
-                    <a href="#ecosystem" class="text-[11px] font-semibold text-slate-400 hover:text-white transition uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-white/5">Ekosistem</a>
-
-                    <!-- Dikey Ayırıcı -->
-                    <div class="w-px h-5 bg-slate-700/50 mx-2"></div>
-
-                    <!-- Keşfet Dropdown -->
-                    <div class="relative" id="exploreDropdown">
-                        <button onclick="toggleExploreMenu()" class="text-[11px] font-semibold text-slate-400 hover:text-white transition uppercase tracking-widest px-3 py-2 rounded-lg hover:bg-white/5 flex items-center gap-1.5">
-                            Keşfet
-                            <svg class="w-3 h-3 transition-transform" id="exploreArrow" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </button>
-                        <div id="exploreMenu" class="nav-dropdown absolute top-full right-0 mt-2 w-56 bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-2 shadow-2xl">
-                            <a href="sistemimiz.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition text-xs font-medium">
-                                <span class="w-7 h-7 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[11px]">📊</span>
-                                Sistemimiz
-                            </a>
-                            <a href="online-deneme.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition text-xs font-medium">
-                                <span class="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[11px]">📝</span>
-                                Online Deneme
-                            </a>
-                            <a href="vip-kocluk.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition text-xs font-medium">
-                                <span class="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-[11px]">⭐</span>
-                                VIP Koçluk
-                            </a>
-                            <a href="kurumsal.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition text-xs font-medium">
-                                <span class="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-[11px]">🏢</span>
-                                Kurumsal
-                            </a>
-                            <div class="h-px bg-slate-700/50 my-1.5 mx-2"></div>
-                            <a href="soru-kutusu.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-orange-400 hover:text-orange-300 hover:bg-orange-500/5 transition text-xs font-semibold">
-                                <span class="w-7 h-7 rounded-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-[11px]">🧪</span>
-                                Soru Kutusunu Dene
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- CTA -->
-                    <a href="login.html" class="btn-action font-bold text-[11px] px-6 py-2.5 rounded-full uppercase tracking-widest ml-3">Sisteme Giriş</a>
-                </div>
-
-                <!-- MOBILE HAMBURGER -->
-                <button onclick="toggleMobileSidebar()" class="lg:hidden text-slate-400 hover:text-white p-2 bg-slate-900/60 border border-slate-800 rounded-xl transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                </button>
+    <!-- ═══════════════ SCROLL HEIGHT DRIVER ═══════════════ -->
+    <div id="scroll-space"></div>
+    <!-- ═══════════════ MEGA NAVBAR ═══════════════ -->
+    <nav class="glass-nav fixed top-0 w-full px-6 py-4 z-[9999]" id="navbar">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg">H</div>
+                <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-orange-500 font-medium">.ACADEMIA</span></span>
+            </a>
+            <div class="hidden lg:flex items-center gap-6">
+                <a href="sistemimiz.html" class="text-xs font-semibold text-slate-300 hover:text-white uppercase tracking-widest transition">Sistemimiz</a>
+                <a href="soru-kutusu.html" class="text-xs font-semibold text-orange-400 hover:text-orange-300 uppercase tracking-widest transition">soru Kutusu Dene</a>
+                <div class="w-px h-5 bg-slate-700/50"></div>
+                <a href="login.html" class="btn-action font-bold text-[11px] px-6 py-2.5 rounded-full uppercase tracking-widest">Sisteme Giriş</a>
             </div>
-        </nav>
-
-        <!-- ═══════════════ HERO SECTION ═══════════════ -->
-        <section id="hero" class="min-h-[90vh] flex flex-col lg:flex-row justify-center items-center px-6 max-w-7xl mx-auto gap-12 pt-16 pb-20 relative">
-            <!-- Floating Particles -->
-            <div class="particle w-2 h-2" style="top: 15%; left: 10%; animation-delay: 0s;"></div>
-            <div class="particle w-1.5 h-1.5" style="top: 25%; right: 15%; animation-delay: 2s;"></div>
-            <div class="particle w-1 h-1" style="bottom: 30%; left: 20%; animation-delay: 4s;"></div>
-            <div class="particle w-2.5 h-2.5" style="top: 60%; right: 25%; animation-delay: 1s;"></div>
-
-            <div class="flex-1 text-center lg:text-left">
-                <div class="data-aos="fade-up" data-aos-delay="100" mb-6">
-                    <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-orange-500/20 bg-orange-500/10 backdrop-blur-md">
-                        <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                        <span class="text-orange-300 text-[10px] font-bold tracking-[0.2em] uppercase">Yeni Nesil Eğitim & Koçluk Platformu</span>
-                    </div>
-                </div>
-
-                <h1 class="data-aos="fade-up" data-aos-delay="200" text-4xl md:text-5xl lg:text-[4.5rem] font-black leading-[1.08] tracking-tighter mb-6">
-                    Potansiyelini Keşfet, <br>
-                    <span class="text-gradient-hero">Başarıyı Şansa Bırakma.</span>
+        </div>
+    </nav>
+    <!-- ═══════════════ THE 8 ROOMS (SINGLE PAGE SCROLL) ═══════════════ -->
+    <div id="scene-container">
+        
+        <!-- LAYER 1: DIŞ CEPHE (HERO) -->
+        <div id="layer-1" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(2,6,23,0.95) 100%); pointer-events: none;"></div>
+            <div class="content-container text-center pt-20" style="pointer-events: none;">
+                <h1 class="text-5xl md:text-[8rem] font-black text-white tracking-tighter mb-4" style="text-shadow: 0 10px 50px rgba(0,0,0,0.8), 0 0 100px rgba(249,115,22,0.4);">
+                    HEDEF100 <br><span class="text-transparent bg-clip-text bg-gradient-to-b from-orange-400 to-amber-600">ACADEMIA</span>
                 </h1>
-
-                <p class="data-aos="fade-up" data-aos-delay="300" text-slate-400 max-w-xl text-sm md:text-base mb-10 font-medium leading-relaxed tracking-wide mx-auto lg:mx-0">
-                    Sadece bir takip sistemi değil; seni anlayan, eksiklerini analiz eden ve hedefine giden yolda en büyük destekçin olan yapay zeka entegreli rehberlik üssün.
-                </p>
-
-                <div class="data-aos="fade-up" data-aos-delay="400" flex flex-col sm:flex-row gap-4 items-center justify-center lg:justify-start">
-                    <a href="login.html" class="btn-action font-black py-4 px-10 rounded-full text-xs uppercase tracking-wider text-center w-full sm:w-auto flex items-center justify-center gap-2">
-                        <span>Hemen Başla</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </a>
-                    <a href="soru-kutusu.html" class="btn-ghost font-bold py-4 px-10 rounded-full text-xs uppercase tracking-wider w-full sm:w-auto text-center">Sistemi Deneyimle</a>
-                </div>
-
-                <!-- Trusted By -->
-                <div class="data-aos="fade-up" data-aos-delay="500" mt-12 flex items-center gap-4 justify-center lg:justify-start">
-                    <div class="flex -space-x-2">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 border-2 border-slate-900 flex items-center justify-center text-[9px] font-bold">AY</div>
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 border-2 border-slate-900 flex items-center justify-center text-[9px] font-bold">MK</div>
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 border-2 border-slate-900 flex items-center justify-center text-[9px] font-bold">EL</div>
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 border-2 border-slate-900 flex items-center justify-center text-[9px] font-bold">SÖ</div>
-                    </div>
-                    <span class="text-slate-500 text-xs font-medium">2.500+ öğrenci güveniyor</span>
+                <p class="text-lg md:text-3xl text-slate-200 font-light tracking-wide max-w-3xl mx-auto mb-16 drop-shadow-lg">Gerçek Eğitim Kampüsü. Tek Ekran, Tam Kontrol.</p>
+                <div class="animate-bounce mt-10">
+                    <p class="text-xs text-orange-400 font-black uppercase tracking-widest mb-3">İçeri Girmek İçin Kaydırın</p>
+                    <svg class="w-8 h-8 mx-auto text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
                 </div>
             </div>
-
-            <!-- HERO IMAGE -->
-            <div class="flex-1 data-aos="fade-up" data-aos-delay="300" hidden lg:block max-w-lg relative">
-                <div class="aspect-square bg-slate-900/20 rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl relative group">
-                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80" alt="Hedef100 Academia — Akademik Başarı" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=600&q=80'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
-                    <!-- Floating Badge -->
-                    <div class="absolute bottom-6 left-6 right-6 bg-slate-900/80 backdrop-blur-lg rounded-2xl p-4 border border-white/10">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-lg">✓</div>
-                            <div>
-                                <p class="text-white text-xs font-bold">AI Analiz Tamamlandı</p>
-                                <p class="text-slate-400 text-[10px]">3 eksik konu tespit edildi → Tekrar planı oluşturuldu</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Decorative Elements -->
-                <div class="absolute -top-4 -right-4 w-24 h-24 bg-orange-500/5 rounded-full blur-2xl"></div>
-                <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl"></div>
-            </div>
-        </section>
-
-        <!-- ═══════════════ STATS BAR ═══════════════ -->
-        <section class="py-12 px-6 relative">
-            <div class="section-glow-divider mb-12"></div>
-            <div class="max-w-5xl mx-auto">
-                <div class="flex flex-wrap justify-center items-center gap-8 md:gap-0">
-                    <div class="text-center px-8" data-aos="fade-up" data-aos-delay="100">
-                        <div class="text-3xl md:text-4xl font-black text-white mb-1" data-count="12500">0</div>
-                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Aktif Öğrenci</p>
-                    </div>
-                    <div class="stat-divider hidden md:block"></div>
-                    <div class="text-center px-8" data-aos="fade-up" data-aos-delay="200">
-                        <div class="text-3xl md:text-4xl font-black text-orange-400 mb-1" data-count="150">0</div>
-                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Partner Kurum</p>
-                    </div>
-                    <div class="stat-divider hidden md:block"></div>
-                    <div class="text-center px-8" data-aos="fade-up" data-aos-delay="300">
-                        <div class="text-3xl md:text-4xl font-black text-amber-400 mb-1" data-count="85000">0</div>
-                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">Çözülen Hata</p>
-                    </div>
-                    <div class="stat-divider hidden md:block"></div>
-                    <div class="text-center px-8" data-aos="fade-up" data-aos-delay="400">
-                        <div class="text-3xl md:text-4xl font-black text-emerald-400 mb-1" data-count="99">0</div>
-                        <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest">% Memnuniyet</p>
-                    </div>
-                </div>
-            </div>
-            <div class="section-glow-divider mt-12"></div>
-        </section>
-
-        <!-- ═══════════════ VİZYON SECTION ═══════════════ -->
-        <section id="vision" class="py-24 px-6 relative max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                <div class="data-aos="fade-right"">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-500/15 bg-orange-500/5 mb-6">
-                        <span class="text-orange-400 text-[9px] font-bold tracking-[0.15em] uppercase">Vizyonumuz</span>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-black mb-6 tracking-tight leading-tight">Hatalardan Ders Çıkararak <br><span class="text-orange-500">Zirveye İlerle.</span></h2>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-5">
-                        Gerçek başarı, çözdüğün yüzlerce kolay soruda değil, yapamadığın soruların mantığını kavramakta gizlidir. Hedef100 Academia, seni her hatanda bir adım ileriye taşımak için tasarlandı.
-                    </p>
-                    <p class="text-slate-400 text-sm leading-relaxed mb-8">
-                        Yüklediğin her hatalı soru, branş öğretmenlerinin radarına girer, çözümleri eksiksiz ulaştırılır ve yapay zeka aralıklı tekrar algoritmasıyla o konuyu öğrenene kadar seni destekler.
-                    </p>
-                    <a href="sistemimiz.html" class="inline-flex items-center gap-2 text-orange-400 text-xs font-bold uppercase tracking-widest hover:text-orange-300 transition group">
-                        Sistemimizi Keşfet
-                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </a>
-                </div>
-
-                <div class="data-aos="fade-left" premium-card rounded-[2rem] aspect-video flex flex-col justify-end relative overflow-hidden group">
-                    <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80" alt="Akıllı Analiz Sistemi" class="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80'">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent z-0"></div>
-                    <div class="relative z-10 p-5 font-mono text-[10px] text-orange-400 bg-slate-950/50 backdrop-blur-sm border-t border-white/5">
-                        <p class="animate-pulse">> Akıllı Analiz Aktif: Eksikler Tamamlanıyor...</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ═══════════════ FEATURES SHOWCASE ═══════════════ -->
-        <section id="features" class="py-28 px-6 relative">
-            <div class="section-glow-divider mb-20"></div>
-            <div class="max-w-7xl mx-auto">
+        </div>
+        <!-- LAYER 2: VİZYON & İSTATİSTİKLER -->
+        <div id="layer-2" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(15,8,30,0.95) 0%, rgba(8,15,30,0.90) 100%); pointer-events: none;"></div>
+            <div class="content-container mt-16">
                 <div class="text-center mb-16">
-                    <div class="data-aos="fade-up" inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-500/15 bg-orange-500/5 mb-6">
-                        <span class="text-orange-400 text-[9px] font-bold tracking-[0.15em] uppercase">Neler Sunuyoruz</span>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-purple-500/20 bg-purple-500/10 mb-4">
+                        <span class="text-purple-400 text-[10px] font-bold tracking-[0.2em] uppercase">Vizyonumuz & Gücümüz</span>
                     </div>
-                    <h2 class="data-aos="fade-up" data-aos-delay="100" text-3xl md:text-4xl font-black mb-4 tracking-tight">Başarının Her Adımı İçin <span class="text-orange-500">Güçlü Araçlar.</span></h2>
-                    <p class="data-aos="fade-up" data-aos-delay="200" text-slate-500 text-sm max-w-lg mx-auto">Tek bir platformda ihtiyacın olan her şey — akıllı analiz, kişisel koçluk, canlı takip ve daha fazlası.</p>
+                    <h2 class="text-4xl md:text-5xl font-black mb-6 tracking-tight leading-tight">Başarıyı Şansa Bırakmayan <br><span class="text-purple-500">Devasa Ekosistem.</span></h2>
+                    <p class="text-slate-300 text-sm max-w-3xl mx-auto leading-relaxed">Hedef100 Academia, öğrenciyi yalnız bırakan eski nesil sistemleri yıkar. Yapay zeka ile eksikleri tespit eder, kurum, öğretmen ve veliyi anlık verilerle aynı hedefe odaklar.</p>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    <!-- Feature 1: Soru Kutusu -->
-                    <a href="soru-kutusu.html" class="feature-card rounded-2xl p-6 block group" data-aos="fade-up" data-aos-delay="100">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/20 to-amber-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 mb-5 group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        </div>
-                        <h3 class="text-base font-black text-white mb-2 group-hover:text-orange-400 transition">Akıllı Soru Kutusu</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed mb-4">Yaptığın hataları fotoğrafla, AI analiz etsin. Branş öğretmenlerin çözsün, aralıklı tekrarla konuyu öğren.</p>
-                        <span class="text-orange-400 text-[10px] font-bold uppercase tracking-widest group-hover:text-orange-300 transition flex items-center gap-1">
-                            Demo Dene →
-                        </span>
-                    </a>
-
-                    <!-- Feature 2: AI Analiz -->
-                    <a href="login.html" class="feature-card rounded-2xl p-6 block group" data-aos="fade-up" data-aos-delay="200">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-indigo-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400 mb-5 group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
-                        </div>
-                        <h3 class="text-base font-black text-white mb-2 group-hover:text-blue-400 transition">Yapay Zeka Analiz</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed mb-4">Performansını analiz eden, eksik konularını tespit eden ve sana özel çalışma planı oluşturan AI motoru.</p>
-                        <span class="text-blue-400 text-[10px] font-bold uppercase tracking-widest group-hover:text-blue-300 transition flex items-center gap-1">
-                            Keşfet →
-                        </span>
-                    </a>
-
-                    <!-- Feature 3: Odak Odası -->
-                    <a href="login.html" class="feature-card rounded-2xl p-6 block group" data-aos="fade-up" data-aos-delay="300">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-5 group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <h3 class="text-base font-black text-white mb-2 group-hover:text-emerald-400 transition">Odak Odası</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed mb-4">Kronometre ve zamanlayıcı ile odaklanarak çalış. Çalışma sürelerini kaydet ve haftalık grafiklerini takip et.</p>
-                        <span class="text-emerald-400 text-[10px] font-bold uppercase tracking-widest group-hover:text-emerald-300 transition flex items-center gap-1">
-                            Keşfet →
-                        </span>
-                    </a>
-
-                    <!-- Feature 4: Online Deneme -->
-                    <a href="online-deneme.html" class="feature-card rounded-2xl p-6 block group" data-aos="fade-up" data-aos-delay="400">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-violet-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-5 group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                        </div>
-                        <h3 class="text-base font-black text-white mb-2 group-hover:text-purple-400 transition">Online Deneme Sınavları</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed mb-4">TYT/AYT formatında online denemeler, anlık sonuç analizi ve detaylı konu bazlı performans raporları.</p>
-                        <span class="text-purple-400 text-[10px] font-bold uppercase tracking-widest group-hover:text-purple-300 transition flex items-center gap-1">
-                            Detaylı Bilgi →
-                        </span>
-                    </a>
-
-                    <!-- Feature 5: VIP Koçluk -->
-                    <a href="vip-kocluk.html" class="feature-card rounded-2xl p-6 block group" data-aos="fade-up" data-aos-delay="500">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-5 group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
-                        </div>
-                        <h3 class="text-base font-black text-white mb-2 group-hover:text-amber-400 transition">VIP Koçluk</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed mb-4">Birebir danışman desteği, haftalık motivasyon görüşmeleri ve sana özel strateji planlaması.</p>
-                        <span class="text-amber-400 text-[10px] font-bold uppercase tracking-widest group-hover:text-amber-300 transition flex items-center gap-1">
-                            Detaylı Bilgi →
-                        </span>
-                    </a>
-
-                    <!-- Feature 6: Veli Takibi -->
-                    <a href="login.html" class="feature-card rounded-2xl p-6 block group" data-aos="fade-up" data-aos-delay="600">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500/20 to-pink-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-5 group-hover:scale-110 transition-transform">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        </div>
-                        <h3 class="text-base font-black text-white mb-2 group-hover:text-rose-400 transition">Veli Takip Paneli</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed mb-4">Çocuğunuzun sınav sonuçları, devamsızlığı ve danışman mesajları — her şey tek ekranda.</p>
-                        <span class="text-rose-400 text-[10px] font-bold uppercase tracking-widest group-hover:text-rose-300 transition flex items-center gap-1">
-                            Keşfet →
-                        </span>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- ═══════════════ BENTO GRID ECOSYSTEM ═══════════════ -->
-        <section id="ecosystem" class="py-28 px-6 bg-slate-950/40 backdrop-blur-lg">
-            <div class="section-glow-divider mb-20"></div>
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16 data-aos="fade-up"">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-500/15 bg-orange-500/5 mb-6">
-                        <span class="text-orange-400 text-[9px] font-bold tracking-[0.15em] uppercase">Ekosistem</span>
+                <!-- Detaylı İstatistikler -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto text-center">
+                    <div class="premium-card p-8 rounded-3xl border-purple-500/20">
+                        <div class="text-4xl md:text-5xl font-black text-white mb-2">12.5K</div>
+                        <p class="text-purple-400 text-[10px] font-bold uppercase tracking-widest">Aktif Öğrenci</p>
                     </div>
-                    <h2 class="text-3xl md:text-4xl font-black mb-3 tracking-tight">Herkes İçin <span class="text-orange-500">Bütünsel Ekosistem.</span></h2>
-                    <p class="text-slate-500 text-xs uppercase tracking-widest font-bold">Öğrenci • Eğitmen • Kurum • Veli</p>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                    <!-- Öğrenci Kartı -->
-                    <div class="premium-card rounded-[2rem] flex flex-col overflow-hidden group" data-aos="fade-up" data-aos-delay="100">
-                        <div class="h-40 bg-slate-950 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=500&q=80" alt="Öğrenci Çalışma Alanı" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=500&q=80'">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
-                        </div>
-                        <div class="p-5 flex flex-col flex-1">
-                            <div class="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400 mb-3">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path></svg>
-                            </div>
-                            <h3 class="text-base font-black text-white mb-2">Öğrenci Üssü</h3>
-                            <p class="text-[11px] text-slate-400 leading-relaxed mb-5 flex-1">Kişiselleştirilmiş programlar, net grafikleri ve dijital Soru Kutusu.</p>
-                            <a href="login.html" class="text-orange-400 text-[10px] font-bold uppercase tracking-widest hover:text-orange-300 transition flex items-center gap-1.5 group/link">
-                                Giriş Yap
-                                <svg class="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </a>
-                        </div>
+                    <div class="premium-card p-8 rounded-3xl border-orange-500/20">
+                        <div class="text-4xl md:text-5xl font-black text-white mb-2">150+</div>
+                        <p class="text-orange-400 text-[10px] font-bold uppercase tracking-widest">Partner Kurum</p>
                     </div>
-
-                    <!-- Eğitmen Kartı -->
-                    <div class="premium-card rounded-[2rem] flex flex-col overflow-hidden group" data-aos="fade-up" data-aos-delay="200">
-                        <div class="h-40 bg-slate-950 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=500&q=80" alt="Öğretmen ve Rehberlik" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=500&q=80'">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
-                        </div>
-                        <div class="p-5 flex flex-col flex-1">
-                            <div class="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                            </div>
-                            <h3 class="text-base font-black text-white mb-2">Eğitmen Radarı</h3>
-                            <p class="text-[11px] text-slate-400 leading-relaxed mb-5 flex-1">Dijital yoklama, soru havuzu çözümleri ve risk grubu erken uyarı sistemi.</p>
-                            <a href="login.html" class="text-emerald-400 text-[10px] font-bold uppercase tracking-widest hover:text-emerald-300 transition flex items-center gap-1.5 group/link">
-                                Panele Gir
-                                <svg class="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </a>
-                        </div>
+                    <div class="premium-card p-8 rounded-3xl border-emerald-500/20">
+                        <div class="text-4xl md:text-5xl font-black text-white mb-2">85K+</div>
+                        <p class="text-emerald-400 text-[10px] font-bold uppercase tracking-widest">Çözülen soru</p>
                     </div>
-
-                    <!-- Kurum Kartı -->
-                    <div class="premium-card rounded-[2rem] flex flex-col overflow-hidden group border-orange-500/20 shadow-[0_0_30px_rgba(249,115,22,0.05)]" data-aos="fade-up" data-aos-delay="300">
-                        <div class="h-40 bg-slate-950 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=500&q=80" alt="Eğitim Kurumu" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=500&q=80'">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
-                        </div>
-                        <div class="p-5 flex flex-col flex-1">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-3">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                            </div>
-                            <h3 class="text-base font-black text-white mb-2">Kurumsal Yönetim</h3>
-                            <p class="text-[11px] text-slate-400 leading-relaxed mb-5 flex-1">Şubeler arası senkronizasyon ve kitlesel başarı takibi modülleri.</p>
-                            <a href="kurumsal.html" class="text-amber-500 text-[10px] font-bold uppercase tracking-widest hover:text-amber-400 transition flex items-center gap-1.5 group/link">
-                                Kurumsal Bilgi
-                                <svg class="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Veli Kartı -->
-                    <div class="premium-card rounded-[2rem] flex flex-col overflow-hidden group" data-aos="fade-up" data-aos-delay="400">
-                        <div class="h-40 bg-slate-950 overflow-hidden relative">
-                            <img src="https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b?auto=format&fit=crop&w=500&q=80" alt="Veli Takip Sistemi" class="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b?auto=format&fit=crop&w=500&q=80'">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
-                        </div>
-                        <div class="p-5 flex flex-col flex-1">
-                            <div class="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-3">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                            </div>
-                            <h3 class="text-base font-black text-white mb-2">Veli Paneli</h3>
-                            <p class="text-[11px] text-slate-400 leading-relaxed mb-5 flex-1">Sınav sonuçları, devamsızlık ve danışman iletişimi — tek ekranda.</p>
-                            <a href="login.html" class="text-rose-400 text-[10px] font-bold uppercase tracking-widest hover:text-rose-300 transition flex items-center gap-1.5 group/link">
-                                Giriş Yap
-                                <svg class="w-3 h-3 group-hover/link:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                            </a>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-        <!-- ═══════════════ TESTIMONIALS ═══════════════ -->
-        <section class="py-24 px-6 overflow-hidden">
-            <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16 data-aos="fade-up"">
-                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-500/15 bg-orange-500/5 mb-6">
-                        <span class="text-orange-400 text-[9px] font-bold tracking-[0.15em] uppercase">Başarı Hikayeleri</span>
-                    </div>
-                    <h2 class="text-3xl md:text-4xl font-black mb-3 tracking-tight">Öğrencilerimiz <span class="text-orange-500">Ne Diyor?</span></h2>
-                </div>
-            </div>
-
-            <!-- Marquee Testimonials -->
-            <div class="relative">
-                <div class="flex marquee-track" style="width: max-content;">
-                    <!-- Set 1 -->
-                    <div class="flex gap-5 px-2.5">
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center font-bold text-sm">AY</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Ayşe Y.</p>
-                                    <p class="text-slate-500 text-[10px]">TYT — 12. Sınıf</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5">
-                                    <span class="text-amber-400 text-xs">★★★★★</span>
-                                </div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Soru Kutusu sayesinde sürekli yaptığım hataları görebildim. 3 ayda Matematik netim 12'den 28'e çıktı. Öğretmenim çözüm videolarını bizzat yüklüyor!"</p>
-                        </div>
-
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center font-bold text-sm">MK</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Mehmet K.</p>
-                                    <p class="text-slate-500 text-[10px]">AYT — Mezun</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5">
-                                    <span class="text-amber-400 text-xs">★★★★★</span>
-                                </div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Odak odası ile çalışma disiplinini yakaladım. Günlük 6 saat verimli çalışma hedefime ilk kez ulaşabildim. Program otomatik hatırlatıyor."</p>
-                        </div>
-
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-bold text-sm">EÖ</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Elif Ö.</p>
-                                    <p class="text-slate-500 text-[10px]">Eğitmen — Matematik</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5">
-                                    <span class="text-amber-400 text-xs">★★★★★</span>
-                                </div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Risk radarı sayesinde sınıfta geri kalan öğrencileri erken tespit edip müdahale edebiliyorum. Yoklama ve ödev takibi çok kolaylaştı."</p>
-                        </div>
-
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center font-bold text-sm">SB</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Selma B.</p>
-                                    <p class="text-slate-500 text-[10px]">Veli</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5">
-                                    <span class="text-amber-400 text-xs">★★★★★</span>
-                                </div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Kızımın sınav sonuçlarını anında görebiliyorum. Danışman öğretmeniyle mesajlaşabilmek büyük bir avantaj. Artık sürecin dışında kalmıyorum."</p>
-                        </div>
-
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center font-bold text-sm">CK</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Can K.</p>
-                                    <p class="text-slate-500 text-[10px]">Kurum Müdürü</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5">
-                                    <span class="text-amber-400 text-xs">★★★★★</span>
-                                </div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"3 şubemizi tek panelden yönetiyoruz. Optik okuma, öğrenci analiz ve öğretmen takibi hepsi entegre. Kurumsal demo bizi anında ikna etti."</p>
-                        </div>
-                    </div>
-                    <!-- Set 2 (duplicate for seamless loop) -->
-                    <div class="flex gap-5 px-2.5">
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center font-bold text-sm">AY</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Ayşe Y.</p>
-                                    <p class="text-slate-500 text-[10px]">TYT — 12. Sınıf</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Soru Kutusu sayesinde sürekli yaptığım hataları görebildim. 3 ayda Matematik netim 12'den 28'e çıktı. Öğretmenim çözüm videolarını bizzat yüklüyor!"</p>
-                        </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center font-bold text-sm">MK</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Mehmet K.</p>
-                                    <p class="text-slate-500 text-[10px]">AYT — Mezun</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Odak odası ile çalışma disiplinini yakaladım. Günlük 6 saat verimli çalışma hedefime ilk kez ulaşabildim. Program otomatik hatırlatıyor."</p>
-                        </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-bold text-sm">EÖ</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Elif Ö.</p>
-                                    <p class="text-slate-500 text-[10px]">Eğitmen — Matematik</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Risk radarı sayesinde sınıfta geri kalan öğrencileri erken tespit edip müdahale edebiliyorum. Yoklama ve ödev takibi çok kolaylaştı."</p>
-                        </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center font-bold text-sm">SB</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Selma B.</p>
-                                    <p class="text-slate-500 text-[10px]">Veli</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"Kızımın sınav sonuçlarını anında görebiliyorum. Danışman öğretmeniyle mesajlaşabilmek büyük bir avantaj. Artık sürecin dışında kalmıyorum."</p>
-                        </div>
-                        <div class="testimonial-card rounded-2xl p-6 w-80 flex-shrink-0">
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center font-bold text-sm">CK</div>
-                                <div>
-                                    <p class="text-white text-xs font-bold">Can K.</p>
-                                    <p class="text-slate-500 text-[10px]">Kurum Müdürü</p>
-                                </div>
-                                <div class="ml-auto flex gap-0.5"><span class="text-amber-400 text-xs">★★★★★</span></div>
-                            </div>
-                            <p class="text-slate-300 text-xs leading-relaxed">"3 şubemizi tek panelden yönetiyoruz. Optik okuma, öğrenci analiz ve öğretmen takibi hepsi entegre. Kurumsal demo bizi anında ikna etti."</p>
-                        </div>
+                    <div class="premium-card p-8 rounded-3xl border-blue-500/20">
+                        <div class="text-4xl md:text-5xl font-black text-white mb-2">%99</div>
+                        <p class="text-blue-400 text-[10px] font-bold uppercase tracking-widest">Memnuniyet</p>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- ═══════════════ CTA SECTION ═══════════════ -->
-        <section class="py-24 px-6 relative">
-            <div class="max-w-3xl mx-auto text-center">
-                <div class="data-aos="zoom-in" premium-card rounded-[2.5rem] p-12 md:p-16 relative overflow-hidden">
-                    <!-- BG Glow -->
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5"></div>
-                    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl"></div>
-
-                    <div class="relative z-10">
-                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-2xl mx-auto mb-6 shadow-lg shadow-orange-500/20">🚀</div>
-                        <h2 class="text-2xl md:text-3xl font-black mb-4 tracking-tight">Başarıya Giden Yolculuğuna <br><span class="text-gradient-hero">Bugün Başla.</span></h2>
-                        <p class="text-slate-400 text-sm mb-8 max-w-md mx-auto">Ücretsiz hesabını oluştur, Soru Kutusunu dene ve yapay zeka destekli çalışma planını hemen al.</p>
-                        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                            <a href="register.html" class="btn-action font-black py-4 px-10 rounded-full text-xs uppercase tracking-wider inline-flex items-center justify-center gap-2">
-                                Ücretsiz Kayıt Ol
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                            </a>
-                            <a href="kurum-basvurusu.html" class="btn-ghost font-bold py-4 px-10 rounded-full text-xs uppercase tracking-wider">Kurumsal Demo Talep Et</a>
-                        </div>
-                    </div>
+        </div>
+        <!-- LAYER 3: EĞİTİM PROGRAMLARI -->
+        <div id="layer-3" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(30,15,8,0.95) 0%, rgba(30,8,15,0.90) 100%); pointer-events: none;"></div>
+            <div class="content-container mt-16 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-rose-500/20 bg-rose-500/10 mb-4">
+                    <span class="text-rose-400 text-[10px] font-bold tracking-[0.2em] uppercase">Eğitim Programları</span>
                 </div>
-            </div>
-        </section>
-
-        <!-- ═══════════════ FOOTER ═══════════════ -->
-        <footer class="border-t border-white/5 bg-slate-950/80 backdrop-blur-lg">
-            <div class="max-w-7xl mx-auto px-6 py-16">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-                    <!-- Brand -->
-                    <div>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg">H</div>
-                            <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-orange-500 font-medium">.ACADEMIA</span></span>
-                        </div>
-                        <p class="text-slate-500 text-xs leading-relaxed mb-5">Yapay zeka destekli, kişiselleştirilmiş eğitim ve koçluk platformu. Başarıya giden en net yol.</p>
-                        <div class="flex gap-3">
-                            <a href="#" class="w-9 h-9 rounded-xl bg-slate-800/50 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700/50 transition text-sm">𝕏</a>
-                            <a href="#" class="w-9 h-9 rounded-xl bg-slate-800/50 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700/50 transition text-sm">📷</a>
-                            <a href="#" class="w-9 h-9 rounded-xl bg-slate-800/50 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white hover:bg-slate-700/50 transition text-sm">▶</a>
-                        </div>
-                    </div>
-
-                    <!-- Platform -->
-                    <div>
-                        <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Platform</h4>
-                        <ul class="space-y-3">
-                            <li><a href="sistemimiz.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Sistemimiz</a></li>
-                            <li><a href="online-deneme.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Online Deneme</a></li>
-                            <li><a href="vip-kocluk.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">VIP Koçluk</a></li>
-                            <li><a href="soru-kutusu.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Soru Kutusu Demo</a></li>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Her Seviye İçin <span class="text-rose-500">Nokta Atışı Plan.</span></h2>
+                
+                <div class="flex md:grid md:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto text-left overflow-x-auto snap-x snap-mandatory pb-4 md:pb-0 hide-scroll">
+                    <div class="premium-card p-6 md:p-8 rounded-3xl border-rose-500/30 min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="w-12 h-12 bg-rose-500/20 rounded-xl flex items-center justify-center text-rose-400 mb-6 text-2xl">🎓</div>
+                        <h3 class="text-2xl font-black text-white mb-3">YKS (TYT-AYT)</h3>
+                        <p class="text-xs md:text-sm text-slate-300 mb-6 leading-relaxed">Üniversite hedefine giden yolda deneme analizleri, yapay zeka tekrar döngüleri ve Türkiye geneli sıralama ölçümleri.</p>
+                        <ul class="text-xs text-slate-400 space-y-2 mb-6">
+                            <li>✓ 3 Milyon Soru Havuzu</li>
+                            <li>✓ Anlık Net Takibi</li>
+                            <li>✓ Video Çözüm Desteği</li>
                         </ul>
                     </div>
-
-                    <!-- Kurumsal -->
-                    <div>
-                        <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Kurumsal</h4>
-                        <ul class="space-y-3">
-                            <li><a href="kurumsal.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Kurumsal Çözümler</a></li>
-                            <li><a href="kurum-basvurusu.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Demo Talep Et</a></li>
-                            <li><a href="login.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Kurum Girişi</a></li>
+                    <div class="premium-card p-6 md:p-8 rounded-3xl border-amber-500/30 min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center text-amber-400 mb-6 text-2xl">⚡</div>
+                        <h3 class="text-2xl font-black text-white mb-3">LGS Hazırlık</h3>
+                        <p class="text-xs md:text-sm text-slate-300 mb-6 leading-relaxed">Yeni nesil mantık muhakeme sorularına adaptasyon, zaman yönetimi becerisi ve stressiz sınav pratiği odaklı program.</p>
+                        <ul class="text-xs text-slate-400 space-y-2 mb-6">
+                            <li>✓ Yeni Nesil Soru Radarı</li>
+                            <li>✓ Haftalık Veli Raporu</li>
+                            <li>✓ Odaklanma Atölyesi</li>
                         </ul>
                     </div>
-
-                    <!-- Hesap -->
-                    <div>
-                        <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Hesap</h4>
-                        <ul class="space-y-3">
-                            <li><a href="login.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Sisteme Giriş</a></li>
-                            <li><a href="register.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Ücretsiz Kayıt</a></li>
+                    <div class="premium-card p-6 md:p-8 rounded-3xl border-emerald-500/30 min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400 mb-6 text-2xl">⭐</div>
+                        <h3 class="text-2xl font-black text-white mb-3">Ara Sınıf & VIP Koçluk</h3>
+                        <p class="text-xs md:text-sm text-slate-300 mb-6 leading-relaxed">Sadece sınava değil geleceğe hazırlık. GPA artırma, birebir danışmanlık ve kişisel yetenek keşif analizleri.</p>
+                        <ul class="text-xs text-slate-400 space-y-2 mb-6">
+                            <li>✓ Birebir Motivasyon</li>
+                            <li>✓ Okul Notu Entegrasyonu</li>
+                            <li>✓ Kariyer Planlama</li>
                         </ul>
-                        <div class="mt-6 p-4 rounded-xl bg-orange-500/5 border border-orange-500/10">
-                            <p class="text-orange-400 text-[10px] font-bold uppercase tracking-wider mb-1">Destek</p>
-                            <p class="text-slate-400 text-xs">info@hedef100.com</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Bottom Bar -->
-                <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p class="text-slate-600 text-[11px] font-medium">© 2026 Hedef100 Academia. Tüm hakları saklıdır.</p>
-                    <div class="flex gap-6">
-                        <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] font-medium transition">Gizlilik Politikası</a>
-                        <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] font-medium transition">Kullanım Koşulları</a>
-                        <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] font-medium transition">KVKK</a>
                     </div>
                 </div>
             </div>
-        </footer>
+        </div>
+        <!-- LAYER 4: ÖĞRENCİ ÜSSÜ -->
+        <div id="layer-4" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(4,20,15,0.95) 0%, rgba(8,30,20,0.90) 100%); pointer-events: none;"></div>
+            <div class="content-container mt-16 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 mb-4">
+                    <span class="text-emerald-400 text-[10px] font-bold tracking-[0.2em] uppercase">Öğrenci Laboratuvarı</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Eksiklerini Yapay Zeka İle <span class="text-emerald-500">Kapat.</span></h2>
+                
+                <div class="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto text-left overflow-x-auto snap-x snap-mandatory pb-4 md:pb-0 hide-scroll">
+                    <div class="premium-card rounded-2xl p-6 md:p-8 border-emerald-500/20 flex flex-col min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="text-4xl mb-4 text-emerald-400">🧪</div>
+                        <h3 class="text-xl font-black text-white mb-3">Akıllı soru Kutusu</h3>
+                        <p class="text-xs text-slate-300 mb-4 md:mb-8 flex-1 leading-relaxed">Çözemediğin soruları fotoğrafla, sisteme at. Öğretmenlerin çözümü göndersin, AI algoritması konuyu tam öğrenene kadar sana aynı soru tipini sormaya devam etsin.</p>
+                        <a href="soru-kutusu.html" class="inline-block px-5 py-3 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 text-center rounded-xl text-[11px] font-bold uppercase transition">Test Et</a>
+                    </div>
+                    <div class="premium-card rounded-2xl p-6 md:p-8 border-teal-500/20 flex flex-col min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="text-4xl mb-4 text-teal-400">🤖</div>
+                        <h3 class="text-xl font-black text-white mb-3">Performans AI Radarı</h3>
+                        <p class="text-xs text-slate-300 mb-4 md:mb-8 flex-1 leading-relaxed">Denemelerdeki sorularını konu bazlı analiz eder. "Matematik Türev'de zayıfsın" demez, "Türevde Maksimum Minimum problemlerinde eksiğin var" diyerek nokta atışı yapar.</p>
+                        <a href="login.html" class="inline-block px-5 py-3 bg-teal-600/20 hover:bg-teal-600/40 text-teal-400 text-center rounded-xl text-[11px] font-bold uppercase transition">Öğrenci Girişi</a>
+                    </div>
+                    <div class="premium-card rounded-2xl p-6 md:p-8 border-cyan-500/20 flex flex-col min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="text-4xl mb-4 text-cyan-400">⏱️</div>
+                        <h3 class="text-xl font-black text-white mb-3">Dijital Odak Odası</h3>
+                        <p class="text-xs text-slate-300 mb-4 md:mb-8 flex-1 leading-relaxed">Masaya oturduğunda zamanlayıcını başlat. Çalıştığın her dakika buluta kaydedilsin. Haftalık hedeflerine ulaş, rozetleri topla ve rakiplerinin önüne geç.</p>
+                        <a href="login.html" class="inline-block px-5 py-3 bg-cyan-600/20 hover:bg-cyan-600/40 text-cyan-400 text-center rounded-xl text-[11px] font-bold uppercase transition">Öğrenci Girişi</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- LAYER 5: EĞİTMEN & KURUM -->
+        <div id="layer-5" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(8,20,30,0.95) 0%, rgba(4,10,20,0.90) 100%); pointer-events: none;"></div>
+            <div class="content-container mt-16 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-500/20 bg-blue-500/10 mb-4">
+                    <span class="text-blue-400 text-[10px] font-bold tracking-[0.2em] uppercase">Yönetim ve Takip</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Eğitmen ve Kurum İçin <span class="text-blue-500">Komuta Merkezi.</span></h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 max-w-5xl mx-auto text-left">
+                    <div class="premium-card p-6 md:p-10 rounded-3xl border-blue-500/30">
+                        <h3 class="text-xl md:text-2xl font-black text-white mb-3 md:mb-4">Eğitmen Radar & Soru Havuzu</h3>
+                        <p class="text-xs md:text-sm text-slate-300 mb-6 leading-relaxed">Sınıf yoklamalarını tek tıkla alın, öğrencilerin gönderdiği sorulı soruları topluca görün. Koçluk yaptığınız öğrencilerin deneme sınavı dalgalanmalarını anında raporlayın.</p>
+                        <a href="login.html" class="inline-block px-6 md:px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl text-xs font-bold text-white uppercase tracking-widest text-center shadow-[0_0_20px_rgba(37,99,235,0.4)] transition w-full md:w-auto">Öğretmen Girişi</a>
+                    </div>
+                    <div class="premium-card p-6 md:p-10 rounded-3xl border-amber-500/30">
+                        <h3 class="text-xl md:text-2xl font-black text-white mb-3 md:mb-4">Kurumsal Şube Yönetimi</h3>
+                        <p class="text-xs md:text-sm text-slate-300 mb-6 leading-relaxed">Kurum müdürleri için devasa kontrol paneli. Tüm şubelerin deneme ortalamaları, öğretmen performansları ve öğrenci devam durumu tek bir ekranda, %100 kontrol altında.</p>
+                        <a href="kurumsal.html" class="inline-block px-6 md:px-8 py-3 bg-amber-600 hover:bg-amber-500 rounded-xl text-xs font-bold text-white uppercase tracking-widest text-center shadow-[0_0_20px_rgba(245,158,11,0.4)] transition w-full md:w-auto">Kurumsal Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- LAYER 6: EKOSİSTEM (GİRİŞ) -->
+        <div id="layer-6" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(20,8,4,0.95) 0%, rgba(30,12,8,0.90) 100%); pointer-events: none;"></div>
+            <div class="content-container mt-16 text-center">
+                <div class="mb-8 md:mb-12">
+                    <div class="w-16 h-16 md:w-24 md:h-24 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl md:rounded-[2rem] flex items-center justify-center font-black text-white text-3xl md:text-5xl mx-auto shadow-[0_0_60px_rgba(249,115,22,0.4)] mb-6 md:mb-8">H</div>
+                    <h2 class="text-3xl md:text-6xl font-black mb-4 tracking-tight">Sisteme Hoş Geldiniz.</h2>
+                    <p class="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">Hedefinize giden yolda rolünüzü seçin ve paneline giriş yapın.</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-5xl mx-auto">
+                    <a href="login.html" class="premium-card rounded-2xl md:rounded-3xl p-4 md:p-8 text-center border-orange-500/40 hover:bg-orange-500/20 transition-all group block">
+                        <div class="text-3xl md:text-4xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">🎓</div>
+                        <h3 class="text-sm md:text-base font-black text-white mb-4">Öğrenci</h3>
+                        <span class="text-[9px] md:text-[10px] text-orange-400 uppercase font-bold tracking-widest px-3 md:px-4 py-2 border border-orange-500/50 rounded-full group-hover:bg-orange-500 group-hover:text-white transition-colors">Panele Git</span>
+                    </a>
+                    <a href="login.html" class="premium-card rounded-2xl md:rounded-3xl p-4 md:p-8 text-center border-blue-500/40 hover:bg-blue-500/20 transition-all group block">
+                        <div class="text-3xl md:text-4xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">⚡</div>
+                        <h3 class="text-sm md:text-base font-black text-white mb-4">Eğitmen</h3>
+                        <span class="text-[9px] md:text-[10px] text-blue-400 uppercase font-bold tracking-widest px-3 md:px-4 py-2 border border-blue-500/50 rounded-full group-hover:bg-blue-600 group-hover:text-white transition-colors">Panele Git</span>
+                    </a>
+                    <a href="login.html" class="premium-card rounded-2xl md:rounded-3xl p-4 md:p-8 text-center border-amber-500/40 hover:bg-amber-500/20 transition-all group block">
+                        <div class="text-3xl md:text-4xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">🏢</div>
+                        <h3 class="text-sm md:text-base font-black text-white mb-4">Kurum</h3>
+                        <span class="text-[9px] md:text-[10px] text-amber-400 uppercase font-bold tracking-widest px-3 md:px-4 py-2 border border-amber-500/50 rounded-full group-hover:bg-amber-500 group-hover:text-white transition-colors">Panele Git</span>
+                    </a>
+                    <a href="login.html" class="premium-card rounded-2xl md:rounded-3xl p-4 md:p-8 text-center border-rose-500/40 hover:bg-rose-500/20 transition-all group block">
+                        <div class="text-3xl md:text-4xl mb-3 md:mb-4 group-hover:scale-110 transition-transform">👪</div>
+                        <h3 class="text-sm md:text-base font-black text-white mb-4">Veli</h3>
+                        <span class="text-[9px] md:text-[10px] text-rose-400 uppercase font-bold tracking-widest px-3 md:px-4 py-2 border border-rose-500/50 rounded-full group-hover:bg-rose-500 group-hover:text-white transition-colors">Panele Git</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!-- LAYER 7: KULLANICI YORUMLARI -->
+        <div id="layer-7" class="room-layer">
+            <div class="overlay" style="background: linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(4,8,20,0.95) 100%); pointer-events: none;"></div>
+            <div class="content-container mt-16 text-center">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-orange-500/15 bg-orange-500/5 mb-4">
+                    <span class="text-orange-400 text-[9px] font-bold tracking-[0.15em] uppercase">Başarı Hikayeleri</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black mb-12 tracking-tight">Kullanıcılarımız <span class="text-orange-500">Ne Diyor?</span></h2>
+                <!-- Grid of Testimonials (Replaces Marquee to be fully visible in 100vh) -->
+                <div class="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-6xl mx-auto text-left overflow-x-auto snap-x snap-mandatory pb-4 md:pb-0 hide-scroll">
+                    <div class="testimonial-card min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-amber-500 flex items-center justify-center font-bold text-sm text-white shrink-0">AY</div>
+                            <div><p class="text-white text-xs font-bold">Ayşe Y.</p><p class="text-slate-500 text-[10px]">TYT — 12. Sınıf</p></div>
+                            <div class="ml-auto text-amber-400 text-xs shrink-0">★★★★★</div>
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">"soru kutusu sayesinde sürekli yaptığım soruları görebildim. 3 ayda Matematik netim 12'den 28'e çıktı. Öğretmenim çözüm videolarını bizzat yüklüyor!"</p>
+                    </div>
+                    
+                    <div class="testimonial-card min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center font-bold text-sm text-white shrink-0">MK</div>
+                            <div><p class="text-white text-xs font-bold">Mehmet K.</p><p class="text-slate-500 text-[10px]">AYT — Mezun</p></div>
+                            <div class="ml-auto text-amber-400 text-xs shrink-0">★★★★★</div>
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">"Odak odası ile çalışma disiplinini yakaladım. Günlük 6 saat verimli çalışma hedefime ilk kez ulaşabildim. Program otomatik hatırlatıyor."</p>
+                    </div>
+                    <div class="testimonial-card min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center font-bold text-sm text-white shrink-0">EÖ</div>
+                            <div><p class="text-white text-xs font-bold">Elif Ö.</p><p class="text-slate-500 text-[10px]">Eğitmen</p></div>
+                            <div class="ml-auto text-amber-400 text-xs shrink-0">★★★★★</div>
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">"Risk radarı sayesinde sınıfta geri kalan öğrencileri erken tespit edip müdahale edebiliyorum. Yoklama ve ödev takibi çok kolaylaştı."</p>
+                    </div>
+                    <div class="testimonial-card min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-500 flex items-center justify-center font-bold text-sm text-white shrink-0">SB</div>
+                            <div><p class="text-white text-xs font-bold">Selma B.</p><p class="text-slate-500 text-[10px]">Veli</p></div>
+                            <div class="ml-auto text-amber-400 text-xs shrink-0">★★★★★</div>
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">"Kızımın sınav sonuçlarını anında görebiliyorum. Danışman öğretmeniyle mesajlaşabilmek büyük avantaj. Artık sürecin dışında kalmıyorum."</p>
+                    </div>
+                    <div class="testimonial-card min-w-[85vw] md:min-w-0 snap-center">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center font-bold text-sm text-white shrink-0">CK</div>
+                            <div><p class="text-white text-xs font-bold">Can K.</p><p class="text-slate-500 text-[10px]">Kurum Müdürü</p></div>
+                            <div class="ml-auto text-amber-400 text-xs shrink-0">★★★★★</div>
+                        </div>
+                        <p class="text-slate-300 text-xs leading-relaxed">"3 şubemizi tek panelden yönetiyoruz. Optik okuma, öğrenci analiz ve öğretmen takibi hepsi entegre. Kurumsal demo bizi anında ikna etti."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- LAYER 8: CTA & FOOTER (FİNAL ODA) -->
+        <div id="layer-8" class="room-layer">
+            <!-- Allow scrolling inside this layer if screen is small -->
+            <div class="content-container w-full max-w-full px-0 py-0 overflow-y-auto" style="height: 100vh;">
+                
+                <!-- CTA -->
+                <div class="max-w-4xl mx-auto text-center px-6 mt-32 mb-16">
+                    <div class="premium-card rounded-[2.5rem] p-12 relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5"></div>
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl"></div>
+                        <div class="relative z-10">
+                            <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center text-3xl mx-auto mb-6 shadow-lg shadow-orange-500/20">🚀</div>
+                            <h2 class="text-3xl md:text-4xl font-black mb-6 tracking-tight">Başarıya Giden Yolculuğuna <br><span class="text-gradient-hero">Bugün Başla.</span></h2>
+                            <p class="text-slate-400 text-sm mb-10 max-w-lg mx-auto leading-relaxed">Ücretsiz hesabını oluştur, soru kutusunu dene ve yapay zeka destekli çalışma planını hemen al.</p>
+                            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                                <a href="register.html" class="btn-action font-black py-4 px-10 rounded-full text-xs uppercase tracking-wider inline-flex items-center justify-center gap-2">Kayıt Ol</a>
+                                <a href="kurum-basvurusu.html" class="btn-ghost font-bold py-4 px-10 rounded-full text-xs uppercase tracking-wider">Demo Talep Et</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- FOOTER -->
+                <footer class="border-t border-white/5 bg-slate-950/80">
+                    <div class="max-w-7xl mx-auto px-6 py-16">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+                            <div>
+                                <div class="flex items-center gap-3 mb-5">
+                                    <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg">H</div>
+                                    <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-orange-500 font-medium">.ACADEMIA</span></span>
+                                </div>
+                                <p class="text-slate-500 text-xs leading-relaxed mb-5">Yapay zeka destekli eğitim ve koçluk platformu.</p>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Platform</h4>
+                                <ul class="space-y-3">
+                                    <li><a href="sistemimiz.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Sistemimiz</a></li>
+                                    <li><a href="soru-kutusu.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">soru Kutusu Demo</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">Kurumsal</h4>
+                                <ul class="space-y-3">
+                                    <li><a href="kurumsal.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Kurumsal Çözümler</a></li>
+                                    <li><a href="kurum-basvurusu.html" class="text-slate-500 hover:text-slate-300 transition text-xs font-medium">Demo Talep Et</a></li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-white uppercase tracking-widest mb-5">İletişim</h4>
+                                <div class="p-4 rounded-xl bg-orange-500/5 border border-orange-500/10">
+                                    <p class="text-orange-400 text-[10px] font-bold uppercase tracking-wider mb-1">Destek</p>
+                                    <p class="text-slate-400 text-xs">info@hedef100.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+                            <p class="text-slate-600 text-[11px] font-medium">© 2026 Hedef100 Academia. Tüm hakları saklıdır.</p>
+                            <div class="flex gap-6">
+                                <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] transition">Gizlilik Politikası</a>
+                                <a href="#" class="text-slate-600 hover:text-slate-400 text-[11px] transition">KVKK</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+                
+            </div>
+        </div>
     </div>
-
+    <!-- ═══════════════ SCRIPTS ═══════════════ -->
     <script>
-        // ═══════ MOBILE SIDEBAR ═══════
-        window.toggleMobileSidebar = function() {
-            const drawer = document.getElementById('mobileDrawer');
-            if (drawer.classList.contains('hidden')) {
-                drawer.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-                setTimeout(() => drawer.classList.add('opacity-100'), 10);
-            } else {
-                drawer.classList.remove('opacity-100');
-                document.body.style.overflow = '';
-                setTimeout(() => drawer.classList.add('hidden'), 300);
-            }
-        };
-
-        // ═══════ EXPLORE DROPDOWN ═══════
-        window.toggleExploreMenu = function() {
-            const menu = document.getElementById('exploreMenu');
-            const arrow = document.getElementById('exploreArrow');
-            menu.classList.toggle('show');
-            arrow.style.transform = menu.classList.contains('show') ? 'rotate(180deg)' : '';
-        };
-        // Close dropdown on outside click
-        document.addEventListener('click', (e) => {
-            const dropdown = document.getElementById('exploreDropdown');
-            if (dropdown && !dropdown.contains(e.target)) {
-                document.getElementById('exploreMenu').classList.remove('show');
-                document.getElementById('exploreArrow').style.transform = '';
+        gsap.registerPlugin(ScrollTrigger);
+        // Timeline for the entire 800vh scroll space
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: "#scroll-space",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
             }
         });
-
-        // ═══════ SCROLL REVEAL ═══════
-        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
-        document.querySelectorAll('.data-aos="fade-up", .data-aos="fade-right", .data-aos="fade-left", .data-aos="zoom-in"').forEach(el => observer.observe(el));
-
-        // ═══════ NAVBAR SCROLL EFFECT ═══════
-        let lastScrollY = 0;
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            const scrollY = window.scrollY;
-            if (scrollY > 50) {
-                nav.style.background = 'rgba(4, 8, 20, 0.9)';
-                nav.style.borderBottomColor = 'rgba(255, 255, 255, 0.06)';
-            } else {
-                nav.style.background = 'rgba(4, 8, 20, 0.6)';
-                nav.style.borderBottomColor = 'rgba(255, 255, 255, 0.04)';
-            }
-            lastScrollY = scrollY;
-        });
-
-        // ═══════ COUNTER ANIMATION ═══════
-        function animateCounters() {
-            document.querySelectorAll('[data-count]').forEach(counter => {
-                const target = parseInt(counter.getAttribute('data-count'));
-                const duration = 2000;
-                const startTime = performance.now();
-                const suffix = counter.parentElement.querySelector('p')?.textContent.includes('%') ? '%' : '+';
-
-                function updateCounter(currentTime) {
-                    const elapsed = currentTime - startTime;
-                    const progress = Math.min(elapsed / duration, 1);
-                    // Ease out cubic
-                    const eased = 1 - Math.pow(1 - progress, 3);
-                    const current = Math.floor(eased * target);
-
-                    if (target >= 1000) {
-                        counter.textContent = current.toLocaleString('tr-TR') + suffix;
-                    } else {
-                        counter.textContent = current + suffix;
-                    }
-
-                    if (progress < 1) {
-                        requestAnimationFrame(updateCounter);
-                    }
-                }
-                requestAnimationFrame(updateCounter);
-            });
-        }
-
-        // Trigger counters when stats section is visible
-        const statsObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    statsObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        const statsSection = document.querySelector('[data-count]');
-        if (statsSection) statsObserver.observe(statsSection.closest('.max-w-5xl') || statsSection.closest('section'));
-
-        // ═══════ IMAGE ERROR FALLBACK ═══════
-        document.querySelectorAll('img').forEach(img => {
-            img.addEventListener('error', function() {
-                let currentSrc = this.getAttribute('src');
-                if (currentSrc && currentSrc.endsWith('.png') && !currentSrc.startsWith('http')) {
-                    this.src = currentSrc.replace('.png', '.PNG');
-                }
-            });
-        });
-
-        // ═══════ SMOOTH SCROLL FOR ANCHOR LINKS ═══════
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                const targetEl = document.querySelector(targetId);
-                if (targetEl) {
-                    e.preventDefault();
-                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>
-        // ═══════ AOS SCROLL ANIMATION ═══════
-        AOS.init({
-            duration: 800,
-            easing: 'ease-out-cubic',
-            once: false,
-            offset: 100
-        });
+        // Layer 1 (Hero) -> Layer 2 (Vision & Stats)
+        tl.to("#layer-1", { scale: 1.5, autoAlpha: 0, duration: 1, ease: "none" }, 0)
+          .to("#layer-2", { scale: 1, autoAlpha: 1, duration: 1, ease: "none" }, 0);
+        // Layer 2 -> Layer 3 (Programs)
+        tl.to("#layer-2", { xPercent: -100, autoAlpha: 0, duration: 1, ease: "none" }, 1)
+          .to("#layer-3", { x: "0%", autoAlpha: 1, duration: 1, ease: "none" }, 1);
+        // Layer 3 -> Layer 4 (Student)
+        tl.to("#layer-3", { yPercent: -100, autoAlpha: 0, duration: 1, ease: "none" }, 2)
+          .to("#layer-4", { y: "0%", autoAlpha: 1, duration: 1, ease: "none" }, 2);
+        // Layer 4 -> Layer 5 (Teacher)
+        tl.to("#layer-4", { xPercent: 100, autoAlpha: 0, duration: 1, ease: "none" }, 3)
+          .to("#layer-5", { x: "0%", autoAlpha: 1, duration: 1, ease: "none" }, 3);
+        // Layer 5 -> Layer 6 (Ecosystem)
+        tl.to("#layer-5", { scale: 0.5, autoAlpha: 0, duration: 1, ease: "none" }, 4)
+          .to("#layer-6", { scale: 1, autoAlpha: 1, duration: 1, ease: "none" }, 4);
+        // Layer 6 -> Layer 7 (Testimonials)
+        tl.to("#layer-6", { yPercent: 100, autoAlpha: 0, duration: 1, ease: "none" }, 5)
+          .to("#layer-7", { y: "0%", autoAlpha: 1, duration: 1, ease: "none" }, 5);
+        // Layer 7 -> Layer 8 (CTA & Footer)
+        tl.to("#layer-7", { scale: 1.5, autoAlpha: 0, duration: 1, ease: "none" }, 6)
+          .to("#layer-8", { scale: 1, autoAlpha: 1, duration: 1, ease: "none" }, 6);
     </script>
 </body>
 </html>
-
