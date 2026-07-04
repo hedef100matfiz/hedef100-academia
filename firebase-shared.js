@@ -172,6 +172,7 @@ export async function uploadQuestionImage(file, studentId) {
         return null;
     }
 }
+
 export async function askQuestion(data) {
     try {
         await addDoc(collection(db, "questionBox"), {
@@ -183,6 +184,7 @@ export async function askQuestion(data) {
         return false;
     }
 }
+
 export function listenQuestionBox(callback) {
     // Index hatasını engellemek için orderBy kaldırıldı, frontend'de sıralanıyor
     const q = query(collection(db, "questionBox"));
@@ -561,6 +563,7 @@ export async function sendParentTeacherMessage(parentUid, studentId, teacherId, 
         return false;
     }
 }
+
 // --- FAZ 3: OYUNLAŞTIRMA (XP SİSTEMİ) ---
 export async function addStudentXP(studentId, amount) {
     try {
@@ -573,4 +576,47 @@ export async function addStudentXP(studentId, amount) {
         console.error("XP Eklenemedi:", e);
         return false;
     }
+}
+
+// --- FAZ 4: JITSI CANLI YAYIN (LIVE SESSIONS) ---
+export async function startLiveSession(kurumId, teacherName, roomName, topic) {
+    try {
+        const docRef = await addDoc(collection(db, "liveSessions"), {
+            kurumId,
+            teacherName,
+            roomName,
+            topic,
+            isActive: true,
+            createdAt: serverTimestamp()
+        });
+        return docRef.id;
+    } catch (e) {
+        console.error("Canlı yayın başlatılamadı:", e);
+        return null;
+    }
+}
+
+export async function endLiveSession(sessionId) {
+    try {
+        await updateDoc(doc(db, "liveSessions", sessionId), {
+            isActive: false,
+            endedAt: serverTimestamp()
+        });
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+export function listenLiveSessions(kurumId, callback) {
+    const q = query(
+        collection(db, "liveSessions"), 
+        where("kurumId", "==", kurumId),
+        where("isActive", "==", true)
+    );
+    return onSnapshot(q, (snapshot) => {
+        const sessions = [];
+        snapshot.forEach(doc => sessions.push({ id: doc.id, ...doc.data() }));
+        callback(sessions);
+    });
 }
