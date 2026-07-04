@@ -3,7 +3,7 @@ import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/fi
 import { 
     getFirestore, doc, setDoc, getDoc, collection, addDoc, 
     onSnapshot, query, where, serverTimestamp, orderBy, getDocs,
-    deleteDoc, updateDoc, arrayUnion
+    deleteDoc, updateDoc, arrayUnion, increment
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
 // 1. Firebase Yapılandırması
@@ -172,7 +172,6 @@ export async function uploadQuestionImage(file, studentId) {
         return null;
     }
 }
-
 export async function askQuestion(data) {
     try {
         await addDoc(collection(db, "questionBox"), {
@@ -184,7 +183,6 @@ export async function askQuestion(data) {
         return false;
     }
 }
-
 export function listenQuestionBox(callback) {
     // Index hatasını engellemek için orderBy kaldırıldı, frontend'de sıralanıyor
     const q = query(collection(db, "questionBox"));
@@ -560,6 +558,19 @@ export async function sendParentTeacherMessage(parentUid, studentId, teacherId, 
         return true;
     } catch (e) {
         console.error("Veli mesajı gönderilemedi:", e);
+        return false;
+    }
+}
+// --- FAZ 3: OYUNLAŞTIRMA (XP SİSTEMİ) ---
+export async function addStudentXP(studentId, amount) {
+    try {
+        const studentRef = doc(db, "users", studentId);
+        await updateDoc(studentRef, {
+            xp: increment(amount)
+        });
+        return true;
+    } catch (e) {
+        console.error("XP Eklenemedi:", e);
         return false;
     }
 }
