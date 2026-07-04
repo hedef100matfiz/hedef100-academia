@@ -57,6 +57,10 @@
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                 <span class="text-sm">Yönetim Özeti</span>
             </button>
+            <button onclick="switchSection('liveclass')" id="nav-liveclass" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-rose-500/10 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent text-rose-400">
+                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                <span class="text-sm">Canlı Sınıf (Jitsi)</span>
+            </button>
             <button onclick="switchSection('classes')" id="nav-classes" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 <span class="text-sm">Sınıflar & Davetler</span>
@@ -164,6 +168,39 @@
                         <p class="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Riskli Öğrenci</p>
                         <p class="text-2xl md:text-3xl font-black text-rose-500">2 <span class="text-xs text-rose-400 font-medium ml-1">Müdahale Gerekli</span></p>
                     </div>
+                </div>
+            </div>
+
+            <!-- ================= SEKMELER YENİ: CANLI SINIF YÖNETİMİ ================= -->
+            <div id="section-liveclass" class="section-hidden space-y-6">
+                <div class="glass-card rounded-[2rem] p-6 md:p-8 border-l-4 border-rose-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20"></div>
+                    <h3 class="text-xl md:text-2xl font-black text-white mb-2 flex items-center gap-3">
+                        <span class="relative flex h-4 w-4"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span><span class="relative inline-flex rounded-full h-4 w-4 bg-rose-500"></span></span>
+                        Canlı Sınıf (Jitsi Meet)
+                    </h3>
+                    <p class="text-sm text-slate-400 mb-8 max-w-2xl">Öğrencilerinizle anında, şifreli ve süresiz olarak görüntülü canlı eğitim başlatın. Öğrenciler panellerindeki bildirimden tek tıkla bağlanabilirler.</p>
+                    
+                    <div id="liveSetupForm" class="space-y-4 max-w-md relative z-10">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Hangi Sınıfa Yayın Yapılacak?</label>
+                            <select id="liveClassSelect" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-rose-500 cursor-pointer" required>
+                                <option value="">Sınıf Seçin...</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Ders Konusu (Opsiyonel)</label>
+                            <input type="text" id="liveTopic" placeholder="Örn: Limit ve Süreklilik Soru Çözümü" class="w-full bg-slate-900 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-rose-500">
+                        </div>
+                        <button onclick="startJitsiLive()" class="w-full bg-rose-600 hover:bg-rose-500 text-white font-black py-4 rounded-xl transition-all text-sm uppercase shadow-lg shadow-rose-600/30 tracking-widest mt-4">🔴 Yayını Başlat</button>
+                    </div>
+
+                    <!-- Jitsi Konteyneri -->
+                    <div id="jitsiContainer" class="hidden w-full h-[600px] mt-6 rounded-2xl overflow-hidden border border-slate-700 bg-slate-950 relative z-10">
+                        <!-- Jitsi buraya yüklenecek -->
+                    </div>
+                    
+                    <button id="endLiveBtn" onclick="endJitsiLive()" class="hidden w-full md:w-auto mt-4 bg-slate-800 hover:bg-slate-700 text-rose-400 font-bold py-3 px-8 rounded-xl transition-all text-xs uppercase border border-slate-700">Yayını Bitir</button>
                 </div>
             </div>
 
@@ -583,6 +620,7 @@
                     const classSelectAttendance = document.getElementById('classSelectAttendance');
                     const assignClassSelect = document.getElementById('assignClass');
                     const inviteClassSelect = document.getElementById('inviteClassSelect');
+                    const liveClassSelect = document.getElementById('liveClassSelect');
                     const classesTableBody = document.getElementById('classesTableBody');
                     
                     listenClasses(user.uid, (classes) => {
@@ -594,6 +632,7 @@
                             loadStudentsForAttendance(); 
                         }
                         if(inviteClassSelect) inviteClassSelect.innerHTML = optionsHTML;
+                        if(liveClassSelect) liveClassSelect.innerHTML = optionsHTML;
                         if(assignClassSelect) assignClassSelect.innerHTML = '<option value="all">Tüm Sınıflar</option>' + optionsHTML;
 
                         if(classesTableBody) {
@@ -1008,6 +1047,72 @@
             }
             input.disabled = false;
             input.focus();
+        };
+        let currentJitsiApi = null;
+        let currentLiveSessionId = null;
+
+        window.startJitsiLive = async function() {
+            const classSelect = document.getElementById('liveClassSelect');
+            const classId = classSelect.value;
+            const className = classSelect.options[classSelect.selectedIndex]?.text;
+            const topic = document.getElementById('liveTopic').value || className + ' Etüt';
+
+            if(!classId) return triggerToast('Lütfen yayın yapılacak sınıfı seçin!');
+            
+            const teacherName = document.getElementById('teacherNameDisplay').innerText;
+            const roomName = "Hedef100-" + currentTeacherInfo.kurumId.substring(0,5) + "-" + classId.substring(0,5) + "-" + Date.now();
+            
+            triggerToast('Canlı yayın odası hazırlanıyor...');
+
+            // Firebase'e kaydet
+            const sessionId = await startLiveSession(currentTeacherInfo.kurumId, teacherName, roomName, topic);
+            if(!sessionId) return triggerToast('Yayın başlatılamadı, interneti kontrol edin.');
+            currentLiveSessionId = sessionId;
+
+            // UI Güncelle
+            document.getElementById('liveSetupForm').classList.add('hidden');
+            const container = document.getElementById('jitsiContainer');
+            container.classList.remove('hidden');
+            document.getElementById('endLiveBtn').classList.remove('hidden');
+
+            // Jitsi'yi başlat
+            const domain = 'meet.jit.si';
+            const options = {
+                roomName: roomName,
+                width: '100%',
+                height: 600,
+                parentNode: container,
+                userInfo: {
+                    displayName: teacherName + ' (Öğretmen)'
+                },
+                configOverwrite: {
+                    startWithAudioMuted: false,
+                    startWithVideoMuted: false,
+                    prejoinPageEnabled: false
+                }
+            };
+            
+            currentJitsiApi = new JitsiMeetExternalAPI(domain, options);
+            triggerToast('Yayın başladı! Öğrenciler panele girince görebilecek.');
+        };
+
+        window.endJitsiLive = async function() {
+            if(currentJitsiApi) {
+                currentJitsiApi.dispose();
+                currentJitsiApi = null;
+            }
+            if(currentLiveSessionId) {
+                await endLiveSession(currentLiveSessionId);
+                currentLiveSessionId = null;
+            }
+            
+            document.getElementById('jitsiContainer').classList.add('hidden');
+            document.getElementById('jitsiContainer').innerHTML = ''; // temizle
+            document.getElementById('endLiveBtn').classList.add('hidden');
+            document.getElementById('liveSetupForm').classList.remove('hidden');
+            document.getElementById('liveTopic').value = '';
+            
+            triggerToast('Yayın sonlandırıldı.');
         };
     </script>
 </body>
