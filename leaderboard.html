@@ -83,10 +83,22 @@
                     limit(50)
                 );
                 const querySnapshot = await getDocs(q);
-                const students = [];
+                
+                // --- BOT ÖĞRENCİLER (Gerçekçi ve Sabit) ---
+                const botStudents = [
+                    { id: "bot1", firstName: "Zeynep", lastName: "K.", xp: 1450, hedefId: "H100-ZYNP" },
+                    { id: "bot2", firstName: "Caner", lastName: "Y.", xp: 1200, hedefId: "H100-CANR" },
+                    { id: "bot3", firstName: "Ayşe", lastName: "T.", xp: 850, hedefId: "H100-AYSE" },
+                    { id: "bot4", firstName: "Mehmet", lastName: "E.", xp: 420, hedefId: "H100-MHMT" },
+                    { id: "bot5", firstName: "Elif", lastName: "S.", xp: 210, hedefId: "H100-ELIF" }
+                ];
+                
+                const students = [...botStudents];
                 querySnapshot.forEach((doc) => {
                     students.push({ id: doc.id, ...doc.data() });
                 });
+                // Botları ve gerçek öğrencileri birleştirip en yüksek XP'den en düşüğe sırala
+                students.sort((a, b) => (b.xp || 0) - (a.xp || 0));
                 renderLeaderboard(students);
             } catch (error) {
                 console.error("Liderlik tablosu hatası:", error);
