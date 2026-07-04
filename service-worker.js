@@ -1,15 +1,15 @@
 const CACHE_NAME = 'hedef100-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/login.html',
-  '/register.html',
-  '/student-dashboard.html',
-  '/teacher-dashboard.html',
-  '/vip-kocluk.html',
-  '/sistemimiz.html',
-  '/soru-kutusu.html',
-  '/firebase-shared.js',
+  './',
+  './index.html',
+  './login.html',
+  './register.html',
+  './student-dashboard.html',
+  './teacher-dashboard.html',
+  './vip-kocluk.html',
+  './sistemimiz.html',
+  './soru-kutusu.html',
+  './firebase-shared.js',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap'
 ];
