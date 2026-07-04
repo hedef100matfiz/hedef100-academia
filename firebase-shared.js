@@ -1,622 +1,1316 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { 
-    getFirestore, doc, setDoc, getDoc, collection, addDoc, 
-    onSnapshot, query, where, serverTimestamp, orderBy, getDocs,
-    deleteDoc, updateDoc, arrayUnion, increment
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-storage.js";
-// 1. Firebase Yapılandırması
-const firebaseConfig = {
-    apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
-    authDomain: "hedef100-academia.firebaseapp.com",
-    projectId: "hedef100-academia",
-    storageBucket: "hedef100-academia.firebasestorage.app",
-    messagingSenderId: "886084339971",
-    appId: "1:886084339971:web:ca31ab9d1575344d234136"
-};
-// Uygulamayı ve servisleri başlat
-const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-// 2. Temel Kullanıcı Fonksiyonları
-export function listenAuthState(callback) {
-    return onAuthStateChanged(auth, callback);
-}
-export async function getUserProfile(uid) {
-    const docRef = doc(db, "users", uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        return docSnap.data();
-    }
-    return null;
-}
-export async function logoutUser() {
-    try {
-        await signOut(auth);
-        window.location.href = 'login.html';
-    } catch (error) {
-        console.error("Çıkış yapılırken hata oluştu:", error);
-    }
-}
-// 3. Koçluk Talebi Fonksiyonları (Aşama 2 İçin)
-export async function sendCoachingRequest(data) {
-    try {
-        const docRef = await addDoc(collection(db, "coachingRequests"), {
-            ...data,
-            status: 'pending',
-            createdAt: serverTimestamp()
-        });
-        return { success: true, id: docRef.id };
-    } catch (error) {
-        console.error("Talep gönderilemedi:", error);
-        return { success: false, error };
-    }
-}
-export function listenCoachingRequests(teacherId, callback) {
-    // Tüm koçluk taleplerini çekip istemci tarafında tarihe göre sıralıyoruz (Firebase Index hatasını önlemek için)
-    const q = query(collection(db, "coachingRequests"));
-    
-    return onSnapshot(q, (snapshot) => {
-        const requests = [];
-        snapshot.forEach((doc) => {
-            requests.push({ id: doc.id, ...doc.data() });
-        });
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f97316">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <title>Öğrenci Paneli | Hedef100 Academia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #020617; color: #f8fafc; }
+        .bg-grid-pattern { background-image: radial-gradient(rgba(249, 115, 22, 0.1) 1px, transparent 1px); background-size: 30px 30px; }
         
-        // Frontend Sıralama (En yeniden eskiye)
-        requests.sort((a, b) => {
-            const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
-            const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
-            return timeB - timeA;
-        });
+        .section-hidden { display: none; }
+        .section-active { display: block; animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f97316; }
+
+        .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .neon-text { text-shadow: 0 0 10px rgba(249, 115, 22, 0.5); }
         
-        callback(requests);
-    });
-}
-export async function updateCoachingRequest(id, status) {
-    try {
-        const docRef = doc(db, "coachingRequests", id);
-        await setDoc(docRef, { status: status, updatedAt: serverTimestamp() }, { merge: true });
-        return true;
-    } catch (error) {
-        console.error("Durum güncellenemedi:", error);
-        return false;
-    }
-}
-export function listenStudentCoachingRequests(studentId, callback) {
-    const q = query(collection(db, "coachingRequests"), where("studentId", "==", studentId));
-    return onSnapshot(q, (snapshot) => {
-        const requests = [];
-        snapshot.forEach((doc) => {
-            requests.push({ id: doc.id, ...doc.data() });
-        });
-        requests.sort((a, b) => {
-            const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
-            const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
-            return timeB - timeA;
-        });
-        callback(requests);
-    });
-}
-export async function addCoachingMessage(requestId, messageObj) {
-    try {
-        const docRef = doc(db, "coachingRequests", requestId);
-        await updateDoc(docRef, {
-            messages: arrayUnion({ ...messageObj, timestamp: Date.now() })
-        });
-        return true;
-    } catch (error) {
-        console.error("Mesaj gönderilemedi:", error);
-        return false;
-    }
-}
-// ================= 4. AŞAMA 3 (GERÇEK VERİ HAVUZU) FONKSİYONLARI =================
-// --- 4.1 Yoklama (Attendance) ---
-export async function saveAttendance(date, classId, teacherId, absentStudents) {
-    try {
-        await addDoc(collection(db, "attendance"), {
-            date, classId, teacherId, absentStudents,
-            createdAt: serverTimestamp()
-        });
-        return true;
-    } catch (error) {
-        console.error("Yoklama kaydedilemedi:", error);
-        return false;
-    }
-}
-// --- 4.2 Ödev & Görev Merkezi (Assignments) ---
-export async function addAssignment(data) {
-    try {
-        await addDoc(collection(db, "assignments"), {
-            ...data, createdAt: serverTimestamp()
-        });
-        return true;
-    } catch (error) {
-        console.error("Ödev eklenemedi:", error);
-        return false;
-    }
-}
-export function listenAssignments(targetClass, callback) {
-    // Firebase Composite Index hatasını önlemek için filtreleme ve sıralamayı frontend'de yapıyoruz
-    const q = query(collection(db, "assignments"));
-    
-    return onSnapshot(q, (snapshot) => {
-        const assignments = [];
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            // Sadece ilgili sınıfın veya tüm sınıfların ödevlerini al
-            if (data.targetClass === targetClass || data.targetClass === "all" || targetClass === "all") {
-                assignments.push({ id: doc.id, ...data });
+        .completed-task { opacity: 0.5; text-decoration: line-through; color: #94a3b8; }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="h-[100dvh] flex relative bg-slate-950 overflow-x-hidden">
+
+    <div class="fixed inset-0 w-full h-full bg-grid-pattern opacity-40 pointer-events-none z-0"></div>
+
+    <div id="sidebarBackdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-950/80 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+
+    <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-96 opacity-0 transition-all duration-400 bg-orange-500 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl shadow-orange-500/30 uppercase tracking-widest flex items-center gap-3">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        <span id="toastMessage">İşlem Başarılı</span>
+    </div>
+
+    <div id="focusRoomModal" class="fixed inset-0 z-[99999] hidden bg-slate-950 flex flex-col items-center justify-center p-6 text-center">
+        <img src="focus-room-bg.png" alt="Focus Success Background" class="absolute inset-0 w-full h-full object-cover opacity-15 pointer-events-none" onerror="this.src='https://images.unsplash.com/photo-1518655061766-48f23af930d0?auto=format&fit=crop&w=1200&q=80'">
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/40 to-slate-950 pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-2xl w-full flex flex-col items-center space-y-8">
+            <div>
+                <span id="focusRoomModeBadge" class="px-4 py-1.5 bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-black uppercase tracking-widest rounded-full shadow-lg">DENEME SINAV MODU</span>
+                <h2 class="text-xl font-bold text-slate-400 mt-4 tracking-wide uppercase">Zaman Akıyor, Odaklanma Zamanı</h2>
+            </div>
+            <div class="bg-slate-900/40 border border-slate-800 backdrop-blur-md px-12 py-8 rounded-[3rem] shadow-2xl min-w-[320px]">
+                <p id="modalStopwatchDisplay" class="text-6xl md:text-8xl font-black text-white font-mono tracking-widest text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">00:00:00</p>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-4 w-full">
+                <button id="modalStartBtn" onclick="toggleStopwatch()" class="bg-orange-500 hover:bg-orange-400 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-orange-500/20 min-w-[140px]">BAŞLAT</button>
+                <button onclick="saveStudySession()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest transition-all shadow-lg shadow-emerald-600/20 min-w-[140px]">ÇALIŞMAMI KAYDET</button>
+                <button onclick="closeFocusRoom()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold px-8 py-4 rounded-2xl text-xs uppercase tracking-widest transition-all min-w-[140px]">KAPAT VE ÇIK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sınıfa Katılma Modalı -->
+    <div id="joinClassModal" class="fixed inset-0 z-[99999] hidden bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center p-6">
+        <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl w-full max-w-md shadow-2xl relative">
+            <button onclick="document.getElementById('joinClassModal').classList.add('hidden')" class="absolute top-4 right-4 text-slate-400 hover:text-white">✕</button>
+            <h3 class="text-xl font-black text-white mb-2">Sınıfa Katıl</h3>
+            <p class="text-xs text-slate-400 mb-6">Eğitmeninizin verdiği davet kodunu girerek sınıfınıza dahil olun.</p>
+            <form onsubmit="handleJoinClass(event)" class="space-y-4">
+                <input type="text" id="inviteCodeInput" placeholder="Örn: X7A9K" class="w-full p-4 bg-slate-950 border border-slate-700 rounded-xl text-lg text-center font-mono font-black text-white outline-none focus:border-orange-500 uppercase tracking-widest" required>
+                <button type="submit" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-4 rounded-xl shadow-lg transition-all uppercase tracking-widest text-xs">Katıl</button>
+            </form>
+        </div>
+    </div>
+
+    <aside id="sidebar" class="w-64 fixed inset-y-0 left-0 z-50 bg-slate-900/90 backdrop-blur-xl border-r border-slate-800 flex flex-col flex-shrink-0 shadow-2xl transform -translate-x-full md:translate-x-0 md:static text-slate-400 transition-transform duration-300 ease-in-out">
+        <div class="h-20 flex items-center justify-between px-5 border-b border-slate-800 bg-slate-950/50">
+            <div class="flex items-center gap-2.5">
+                <div class="w-8 h-8 bg-orange-500 text-white rounded-lg flex items-center justify-center font-black shadow-lg shadow-orange-500/30">H</div>
+                <span class="font-black text-base tracking-tighter text-white">HEDEF100<span class="text-orange-500">.ÖĞRENCİ</span></span>
+            </div>
+            <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-400 hover:text-white focus:outline-none">✕</button>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1 relative z-10">
+            <p class="px-3 text-[10px] font-bold text-slate-500 mb-2.5 uppercase tracking-widest">Akademik Modüller</p>
+            
+            <button onclick="switchSection('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/10 text-orange-400 rounded-xl font-bold transition-all text-left border-l-4 border-orange-500">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <span class="text-sm">Özet Ekranı</span>
+            </button>
+            <button onclick="switchSection('focusroom')" id="nav-focusroom" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="text-sm">Odak & Sınav Odası</span>
+            </button>
+            <button onclick="switchSection('program')" id="nav-program" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                <span class="text-sm">Görevler & Program</span>
+            </button>
+            <button onclick="switchSection('analytics')" id="nav-analytics" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <div class="flex items-center gap-3">
+                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center font-black text-white shadow-lg shrink-0 text-xl" id="selectedTeacherAvatar">?</div>
+                    <div>
+                        <span class="px-2 py-0.5 bg-orange-500/10 text-orange-400 text-[9px] font-black uppercase tracking-widest rounded border border-orange-500/20 mb-1 inline-block" id="selectedTeacherBranch">BRANŞ</span>
+                        <h3 class="text-2xl font-black text-white leading-none" id="selectedTeacherName">Eğitmen Seçiniz</h3>
+                    </div>
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button onclick="triggerToast('Eğitmen istatistikleri hazırlanıyor', 'info')" class="flex-1 sm:flex-none px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest transition-colors border border-slate-700 flex items-center justify-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg> Analiz</button>
+                </div>
+            </button>
+            <button onclick="switchSection('exams')" id="nav-exams" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                <span class="text-sm">Deneme Girişi</span>
+            </button>
+            <button onclick="switchSection('reportcards')" id="nav-reportcards" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <span class="text-sm">Karnelerim</span>
+            </button>
+            <button onclick="switchSection('announcements')" id="nav-announcements" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+                <span class="text-sm">Kurum Duyuruları</span>
+            </button>
+            <button onclick="switchSection('koc')" id="nav-koc" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span class="text-sm">Koçluk & İletişim</span>
+            </button>
+            <button onclick="switchSection('ayarlar')" id="nav-ayarlar" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path></svg>
+                <span class="text-sm">Sistem Ayarları</span>
+            </button>
+
+            <p class="px-3 text-[10px] font-bold text-orange-400 mb-2.5 mt-6 uppercase tracking-widest">Akıllı Modüller</p>
+               <a href="soru-kutusu.html" class="nav-item w-full flex items-center justify-between px-3 py-2.5 bg-orange-500/10 text-orange-400 hover:bg-orange-500/20 hover:text-orange-300 rounded-xl font-bold transition-all text-left border-l-4 border-orange-500 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path></svg>
+                    <span class="text-sm">Soru Kutusu</span>
+                </div>
+                <span class="bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-black shadow-md shadow-emerald-500/30">AI</span>
+            </a>
+            <a href="leaderboard.html" class="nav-item w-full flex items-center justify-between px-3 py-2.5 mt-1 bg-yellow-500/10 text-yellow-400 hover:bg-yellow-500/20 hover:text-yellow-300 rounded-xl font-bold transition-all text-left border-l-4 border-yellow-500 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <span class="text-sm">Liderlik Tablosu</span>
+                </div>
+                <span class="bg-yellow-500 text-white text-[9px] px-1.5 py-0.5 rounded-full font-black animate-pulse shadow-md shadow-yellow-500/30">YENİ</span>
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800 bg-slate-950/50">
+            <button onclick="logoutUser()" class="w-full flex items-center gap-3 px-3 py-2.5 text-rose-400 hover:bg-rose-500/10 hover:text-rose-500 rounded-xl font-bold transition-colors text-left text-xs uppercase tracking-wider">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg> Çıkış Yap
+            </button>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col h-full relative z-10">
+        
+        <header class="bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-800 px-4 md:px-8 py-4 flex justify-between items-center relative">
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMobileSidebar()" class="md:hidden p-2 -ml-2 text-slate-400 focus:outline-none"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+                <div class="text-xs md:text-sm font-bold text-slate-400">Hedef ID: <span id="hedefIdDisplay" class="px-2 py-1 bg-slate-800 border border-slate-700 rounded font-mono text-slate-300 tracking-widest text-[10px]">H100-...</span></div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-right hidden sm:block">
+                    <p id="studentNameDisplay" class="text-sm font-bold text-white">Yükleniyor...</p>
+                    <p id="targetExamBadge" class="text-[9px] text-orange-400 font-black uppercase tracking-widest bg-orange-500/10 px-2 py-0.5 rounded border border-orange-500/20 mt-1 inline-block">ADAY</p>
+                </div>
+                <div id="avatarInitials" class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-700 text-white rounded-xl flex items-center justify-center font-black text-sm shadow-md">?</div>
+            </div>
+        </header>
+
+        <main class="p-4 md:p-6 lg:p-8 flex-1 w-full max-w-7xl mx-auto overflow-y-auto">
+            
+            <!-- CANLI YAYIN BİLDİRİM BAR (Gizli) -->
+            <div id="liveSessionBanner" class="hidden mb-6 bg-gradient-to-r from-rose-600 to-red-500 rounded-2xl p-4 md:p-5 shadow-[0_0_30px_rgba(225,29,72,0.4)] border border-rose-400 flex flex-col sm:flex-row justify-between items-center gap-4 relative overflow-hidden cursor-pointer" onclick="joinLiveSession()">
+                <div class="absolute inset-0 bg-white/10 w-full h-full transform -skew-x-12 -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+                <div class="flex items-center gap-4 relative z-10">
+                    <span class="relative flex h-5 w-5 md:h-6 md:w-6"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span><span class="relative inline-flex rounded-full h-5 w-5 md:h-6 md:w-6 bg-white shadow-lg flex items-center justify-center text-[10px] md:text-xs">🔴</span></span>
+                    <div>
+                        <h3 class="text-white font-black text-sm md:text-lg tracking-wide uppercase"><span id="liveTeacherName">Öğretmen</span> CANLI YAYINDA!</h3>
+                        <p id="liveTopicText" class="text-rose-100 text-[10px] md:text-xs font-bold mt-1">Sınıfınıza özel etüt başladı.</p>
+                    </div>
+                </div>
+                <button class="bg-white text-rose-600 hover:bg-rose-50 font-black px-6 py-2 md:py-3 rounded-xl text-xs uppercase tracking-widest transition-all shadow-lg shrink-0 relative z-10">Derse Katıl</button>
+            </div>
+
+            <!-- JİTSİ CANLI YAYIN MODALI -->
+            <div id="jitsiModal" class="hidden fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-md flex flex-col">
+                <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-900">
+                    <h3 class="text-white font-black text-sm uppercase tracking-widest flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> Canlı Sınıf Odası</h3>
+                    <button onclick="leaveLiveSession()" class="bg-rose-500 hover:bg-rose-400 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors">Dersten Çık</button>
+                </div>
+                <div id="jitsiStudentContainer" class="flex-1 w-full bg-black relative"></div>
+            </div>
+
+            <div id="section-dashboard" class="section-active space-y-6">
+                <div class="glass-card rounded-[2rem] p-6 md:p-10 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row justify-between items-stretch gap-6 border-slate-700">
+                    <div class="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-slate-900 to-transparent pointer-events-none z-10"></div>
+                    <div class="flex-1 flex flex-col justify-between py-1 relative z-20">
+                        <div>
+                            <span class="px-3 py-1 bg-white/10 border border-white/20 text-white/80 text-[10px] font-bold uppercase tracking-widest rounded-lg mb-5 inline-block backdrop-blur-md">Kuantum Motoru Aktif</span>
+                            <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight mb-4">Zirveye Uçuşa Hazır Mısın, <br/><span id="welcomeName" class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-300 neon-text">Öğrenci</span>? 🚀</h1>
+                            <p class="text-slate-400 text-sm leading-relaxed max-w-lg">Yapay zeka koçun haftalık verilerini işledi. Denemelerindeki zayıf noktalar tespit edildi ve sana özel optimizasyon görevleri oluşturuldu.</p>
+                        </div>
+                        <div class="mt-8 flex flex-wrap gap-3">
+                            <button onclick="switchSection('focusroom')" class="bg-orange-500 hover:bg-orange-400 text-white font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all shadow-lg shadow-orange-500/20">⏱️ Odak Odasını Aç</button>
+                            <button onclick="switchSection('analytics')" class="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold py-3 px-6 rounded-xl text-xs uppercase tracking-wider transition-all">AI Raporunu Oku</button>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-[350px] h-48 lg:h-auto min-h-[200px] bg-slate-950/80 border border-slate-800/80 rounded-3xl relative overflow-hidden flex items-center justify-center shadow-inner">
+                        <img src="student-hero.png" alt="Student Sunrise Focus" class="w-full h-full object-cover opacity-70 absolute inset-0" onerror="this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=500&q=80'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 border border-orange-500/20 bg-orange-500/5">
+                        <p class="text-[10px] font-bold text-orange-400 uppercase tracking-widest flex items-center gap-1">⏱️ Aktif Çalışma Süresi</p>
+                        <div class="flex items-end justify-between">
+                            <p id="dashboardStopwatchDisplay" class="text-2xl font-black text-white font-mono tracking-widest">00:00:00</p>
+                            <button onclick="openFocusRoom('etut')" class="bg-slate-800 hover:bg-slate-700 text-white text-[9px] px-2.5 py-1.5 rounded-lg font-bold uppercase border border-slate-700 transition-all">Odaya Gir</button>
+                        </div>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 border-l-4 border-l-indigo-500">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sınıfım / Ekibim</p>
+                        <div id="classStatusPanel">
+                            <p class="text-sm font-black text-white" id="classNameDisplay">Sınıfa Katılmadınız</p>
+                            <button onclick="document.getElementById('joinClassModal').classList.remove('hidden')" class="mt-2 text-[10px] bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded font-bold transition-colors">Kod ile Katıl</button>
+                        </div>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Net Ortalaması</p>
+                        <div><p class="text-2xl font-black text-white" id="netAvgDisplay">0.0</p><p class="text-[10px] text-emerald-400 font-bold mt-0.5">Yapay Zeka İzlemede</p></div>
+                    </div>
+                    <div class="glass-card p-5 rounded-2xl flex flex-col justify-between h-28 bg-emerald-500/10 border border-emerald-500/20">
+                        <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Görev Durumu</p>
+                        <div>
+                            <p class="text-2xl font-black text-emerald-400" id="taskPercentText">%0</p>
+                            <div class="w-full bg-slate-800 h-1.5 rounded-full mt-2"><div id="taskPercentBar" class="bg-emerald-500 h-1.5 rounded-full w-[0%] shadow-[0_0_10px_#10b981] transition-all duration-1000"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-focusroom" class="section-hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4 mb-4">
+                    <h2 class="text-2xl font-black text-white">⏱️ Odak ve Sınav Yönetim Merkezi</h2>
+                    <p class="text-xs text-slate-400">Çalışmalarınız ve denemeleriniz için kesintisiz, odaklanmış tam ekran seansları başlatın.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-6 rounded-3xl flex flex-col justify-between border border-orange-500/10">
+                        <div>
+                            <h3 class="text-lg font-black text-white mb-2">Yeni Odak Seansı</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-6">Deneme sınavları veya konu etütleri yaparken tam ekran moduna geçerek dikkatinizi maksimuma çıkarın.</p>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="openFocusRoom('deneme')" class="flex-1 bg-orange-500 hover:bg-orange-400 text-white font-black py-3.5 rounded-xl text-xs uppercase tracking-wider shadow-lg">📝 Deneme Sınav Modu</button>
+                            <button onclick="openFocusRoom('etut')" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold py-3.5 rounded-xl text-xs uppercase tracking-wider">📚 Serbest Etüt Modu</button>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 rounded-3xl border border-indigo-500/10">
+                        <h3 class="text-lg font-black text-white mb-4">📊 Dönemsel Çalışma Raporu</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 flex justify-between items-center">
+                                <div><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Haftalık Toplam</p></div>
+                                <p class="text-xl font-black text-orange-400 font-mono">24.5 Saat</p>
+                            </div>
+                            <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800 flex justify-between items-center">
+                                <div><p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Aylık Rapor</p></div>
+                                <p class="text-xl font-black text-indigo-400 font-mono">102.0 Saat</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-program" class="section-hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    <div class="glass-card p-6 rounded-3xl border border-slate-800 space-y-4">
+                        <div class="border-b border-slate-800 pb-2">
+                            <h3 class="text-base font-black text-white">🎯 Günlük Hedef Planlayıcı</h3>
+                            <p class="text-[11px] text-slate-400">Kendine özel ders, kütüphane veya tekrar görevleri ata.</p>
+                        </div>
+                        <form onsubmit="addUserTask(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Görev Açıklaması</label>
+                                <input type="text" id="customTaskTitle" placeholder="Örn: Apotemi Trigonometri 50 Soru" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-orange-500 font-semibold" required>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Program Günü</label>
+                                <select id="customTaskDay" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-300 font-semibold outline-none focus:border-orange-500 cursor-pointer">
+                                    <option value="pazartesi">Pazartesi</option>
+                                    <option value="sali">Salı</option>
+                                    <option value="carsamba">Çarşamba</option>
+                                    <option value="persembe">Perşembe</option>
+                                    <option value="cuma">Cuma</option>
+                                    <option value="cumartesi">Cumartesi</option>
+                                    <option value="pazar">Pazar</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-3 rounded-xl text-xs uppercase tracking-widest shadow-md transition-all">
+                                Ajandama Ekle
+                            </button>
+                        </form>
+                        <div class="rounded-2xl border border-slate-800 overflow-hidden aspect-video relative mt-4 hidden lg:block">
+                            <img src="student-scheduler-view.png" alt="Scheduler Layout" class="absolute inset-0 w-full h-full object-cover opacity-30" onerror="this.src='https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=500&q=80'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="flex justify-between items-center bg-slate-900/40 p-4 rounded-xl border border-slate-800">
+                            <h3 class="font-black text-sm text-white tracking-wide uppercase">📅 Haftalık Akademik Takvim Matrisi</h3>
+                            <button onclick="clearAllUserTasks()" class="text-[10px] font-bold text-rose-400 hover:text-rose-300">Tümünü Temizle</button>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]"><h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Pazartesi</h4><div id="day-pazartesi" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div></div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]"><h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Salı</h4><div id="day-sali" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div></div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]"><h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Çarşamba</h4><div id="day-carsamba" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div></div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]"><h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Perşembe</h4><div id="day-persembe" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div></div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]"><h4 class="font-black text-xs text-orange-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Cuma</h4><div id="day-cuma" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div></div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]"><h4 class="font-black text-xs text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Cumartesi</h4><div id="day-cumartesi" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div></div>
+                            <div class="glass-card p-4 rounded-2xl border border-slate-800 flex flex-col min-h-[160px]"><h4 class="font-black text-xs text-amber-400 uppercase tracking-widest border-b border-slate-800 pb-1.5 mb-2">Pazar</h4><div id="day-pazar" class="space-y-2 flex-1 overflow-y-auto max-h-[120px]"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-analytics" class="section-hidden space-y-6">
+                <div class="glass-card p-6 rounded-2xl flex flex-col lg:flex-row gap-6 items-center justify-between">
+                    <div class="flex-1"><h3 class="text-xl font-black text-white mb-4">🧠 AI Kazanım Tomografisi</h3></div>
+                    <img src="student-focus-time.png" alt="Analytics View" class="w-full lg:w-72 rounded-xl border border-slate-800 opacity-60">
+                </div>
+            </div>
+
+            <div id="section-exams" class="section-hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    <div class="lg:col-span-2 glass-card p-6 md:p-8 rounded-[2rem] border border-slate-800">
+                        <div class="border-b border-slate-800 pb-4 mb-6">
+                            <h3 class="text-xl font-black text-white">Akademik Deneme Analiz Girişi</h3>
+                            <p class="text-xs text-slate-400 mt-1">Girdiğin her veri yapay zeka kazanım tomografini atomik düzeyde besler.</p>
+                        </div>
+                        <form onsubmit="handleAdvancedExamSubmit(event)" class="space-y-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Sınav Türü Matrixi</label>
+                                    <select id="examTypeSelector" onchange="renderExamFields()" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none focus:border-orange-500 cursor-pointer">
+                                        <option value="TYT">📋 YKS - TYT Oturumu</option>
+                                        <option value="AYT">⚡ YKS - AYT Oturumu</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Yayın Tercihi</label>
+                                    <select id="examPublisher" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none focus:border-orange-500 cursor-pointer">
+                                        <option value="3D">3D Yayınları</option>
+                                        <option value="Bilgi Sarmal">Bilgi Sarmal</option>
+                                        <option value="Apotemi">Apotemi</option>
+                                        <option value="Özdebir">Özdebir Türkiye Geneli</option>
+                                        <option value="Diğer">Diğer / Manuel Başlık</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Deneme No / Başlık</label>
+                                    <input type="text" id="examTitle" placeholder="Örn: Deneme - 3" class="w-full p-3 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-semibold outline-none focus:border-orange-500" required>
+                                </div>
+                            </div>
+                            <div id="dynamicExamContainer" class="space-y-4"></div>
+                            <button type="submit" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-4 rounded-xl shadow-lg shadow-orange-500/20 transition-all uppercase tracking-widest text-xs">
+                                Verileri Güvenle Arşive Kaydet
+                            </button>
+                        </form>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="glass-card p-5 rounded-2xl border border-slate-800">
+                            <h4 class="text-xs font-black text-orange-400 uppercase tracking-widest mb-2">💡 Neden Detaylı Giriş?</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed">Sadece net girmek eksiklerinizi görmenizi engeller. İsteğe bağlı sunulan konu analiz kutucuklarını doldurursanız, Ahmet Kula ve AI Motoru bir sonraki haftalık programınızda o açıkları kapatacak ödevleri otomatik listeler.</p>
+                        </div>
+                        <div class="rounded-3xl border border-slate-800 overflow-hidden aspect-video relative group shadow-2xl">
+                            <img src="exam-entry-analytics.png" alt="Advanced Analytics Layout" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-102 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&q=80'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 to-transparent"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-reportcards" class="section-hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4 mb-4">
+                    <h2 class="text-2xl font-black text-white">📝 Kurumsal Karnelerim</h2>
+                    <p class="text-xs text-slate-400">Bağlı olduğunuz kurum tarafından yayınlanan değerlendirmeleriniz.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="reportCardList">
+                    <div class="glass-card p-6 rounded-2xl flex items-center justify-center border-dashed border border-slate-800">
+                        <p class="text-slate-500 text-sm font-bold">Karneniz bulunmuyor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-announcements" class="section-hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4 mb-4">
+                    <h2 class="text-2xl font-black text-white">📢 Kurum Duyuruları</h2>
+                    <p class="text-xs text-slate-400">Kurumunuzdan gelen güncel duyurular ve mesajlar.</p>
+                </div>
+                <div class="max-w-2xl space-y-4" id="announcementList">
+                    <div class="glass-card p-6 rounded-2xl flex items-center justify-center border-dashed border border-slate-800">
+                        <p class="text-slate-500 text-sm font-bold">Yeni duyuru yok.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-koc" class="section-hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4 mb-4">
+                    <h2 class="text-2xl font-black text-white">🌍 Global Mentorlük ve Eğitmen Ağı</h2>
+                    <p class="text-xs text-slate-400">Vizyoner eğitmen kadromuzu incele, öğrenci yorumlarını oku ve hedeflerine en uygun koça mentorluk talebi gönder.</p>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2" id="dynamicTeacherList">
+                        <div class="glass-card p-6 rounded-2xl flex items-center justify-center border-dashed border border-slate-800">
+                            <p class="text-slate-500 text-sm font-bold text-center">Bağlı olduğunuz kurumun eğitmenleri bekleniyor...</p>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2 glass-card p-0 rounded-[2rem] border border-slate-800 flex flex-col relative overflow-hidden h-full min-h-[600px]">
+                        <div class="h-40 w-full relative shrink-0">
+                            <img src="coach-avatar-bg.png" alt="Coach Profile Background" class="absolute inset-0 w-full h-full object-cover opacity-30" onerror="this.src='https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=800&q=80'">
+                            <div class="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-slate-950/80 to-slate-950"></div>
+                            <div class="absolute bottom-4 left-6 flex items-end gap-4 z-10">
+                                <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center font-black text-3xl text-white shadow-2xl border-2 border-slate-800 shrink-0">AK</div>
+                                <div class="pb-1">
+                                    <span class="px-2 py-0.5 bg-orange-500/20 text-orange-400 text-[9px] font-black uppercase tracking-widest rounded border border-orange-500/30 mb-1 inline-block">Kurucu Eğitmen</span>
+                                    <h3 class="text-2xl font-black text-white leading-none">Ahmet Kula</h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 flex-1 flex flex-col gap-6 overflow-y-auto">
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-3 text-center"><p class="text-xl font-black text-emerald-400">4.9</p><p class="text-[9px] text-slate-400 uppercase tracking-widest font-bold mt-1">Öğrenci Puanı</p></div>
+                                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-3 text-center"><p class="text-xl font-black text-orange-400">120+</p><p class="text-[9px] text-slate-400 uppercase tracking-widest font-bold mt-1">Aktif Öğrenci</p></div>
+                                <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-3 text-center"><p class="text-xl font-black text-indigo-400">45</p><p class="text-[9px] text-slate-400 uppercase tracking-widest font-bold mt-1">Türkiye Derecesi</p></div>
+                            </div>
+                            <div class="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4">
+                                <p class="text-xs text-indigo-200 italic leading-relaxed">"Sınav sadece bir bilgi testi değil, stres ve strateji yönetimidir. Benimle çalışan öğrenciler sadece formül ezberlemez, sistemin açığını bulur. Hedefin zirveyse, doğru yerdesin."</p>
+                            </div>
+                            <div>
+                                <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 border-b border-slate-800 pb-2">Öğrenci Değerlendirmeleri</h4>
+                                <div class="space-y-3">
+                                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60">
+                                        <div class="flex justify-between items-center mb-1"><span class="text-[10px] font-bold text-white">Can Y. (YKS 2025)</span><span class="text-[10px] text-emerald-400">⭐⭐⭐⭐⭐</span></div>
+                                        <p class="text-[11px] text-slate-400">Ahmet Hoca'nın fizik anlatımı sayesinde 2 aydır çözemediğim mekanik denemelerini fullüyorum. Vizyonu çok başka.</p>
+                                    </div>
+                                    <div class="bg-slate-900/40 p-3 rounded-xl border border-slate-800/60">
+                                        <div class="flex justify-between items-center mb-1"><span class="text-[10px] font-bold text-white">Zeynep A. (Mezun)</span><span class="text-[10px] text-emerald-400">⭐⭐⭐⭐⭐</span></div>
+                                        <p class="text-[11px] text-slate-400">Koçluk seanslarında eksiklerimi benden daha iyi görüyor. Hata Kutusuna attığım soruları detaylı açıklaması efsane.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-auto pt-4 border-t border-slate-800">
+                                <div id="myCoachingRequests" class="mb-4 space-y-3 max-h-64 overflow-y-auto hidden">
+                                    <h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-800 pb-2">Taleplerim & Mesajlar</h4>
+                                </div>
+                                <form onsubmit="handleMentorshipRequest(event)" class="space-y-3">
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Çalışma & Mentorluk Talep Et</label>
+                                    <textarea rows="2" placeholder="Hedeflerini ve Ahmet Hocadan beklentini kısaca yaz..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-xs text-white outline-none focus:border-orange-500 resize-none font-medium placeholder:text-slate-600" required></textarea>
+                                    <button type="submit" class="w-full bg-orange-500 hover:bg-orange-400 text-white font-black py-3 rounded-xl text-[11px] uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all flex items-center justify-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> Talebi Gönder
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-ayarlar" class="section-hidden space-y-6">
+                <div class="border-b border-slate-800 pb-4 mb-4 flex justify-between items-end">
+                    <div>
+                        <h2 class="text-2xl font-black text-white">⚙️ Sistem ve Vizyon Ayarları</h2>
+                        <p class="text-xs text-slate-400">Akademik kimliğini, hedeflerini ve platform güvenlik tercihlerini buradan yönetebilirsin.</p>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-[2rem] flex flex-col md:flex-row h-auto md:min-h-[65vh] overflow-hidden border border-slate-800 relative">
+                    <img src="student-settings-bg.png" alt="Settings Vision" class="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none" onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80'">
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/95 to-slate-950/80 pointer-events-none"></div>
+
+                    <div class="w-full md:w-72 border-b md:border-b-0 md:border-r border-slate-800/60 bg-slate-900/30 p-6 relative z-10 flex flex-col">
+                        <h3 class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Ayar Kategorileri</h3>
+                        <div class="flex md:flex-col gap-2 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
+                            <button onclick="switchSettingsTab('profil')" id="tab-profil" class="text-left px-4 py-3.5 rounded-xl font-bold text-xs bg-orange-500/10 text-orange-400 border border-orange-500/30 transition-all shrink-0">
+                                👤 Profil & Kimlik
+                            </button>
+                            <button onclick="switchSettingsTab('hedef')" id="tab-hedef" class="text-left px-4 py-3.5 rounded-xl font-bold text-xs text-slate-400 hover:text-white border border-transparent hover:bg-slate-800/50 transition-all shrink-0">
+                                🎯 Akademik Hedefler
+                            </button>
+                            <button onclick="switchSettingsTab('guvenlik')" id="tab-guvenlik" class="text-left px-4 py-3.5 rounded-xl font-bold text-xs text-slate-400 hover:text-white border border-transparent hover:bg-slate-800/50 transition-all shrink-0">
+                                🔒 Güvenlik & Sistem
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto p-6 md:p-10 relative z-10">
+                        
+                        <div id="settings-profil" class="block space-y-8 max-w-2xl animate-fade-in">
+                            <div class="flex items-center gap-6 pb-6 border-b border-slate-800/60">
+                                <div class="relative group cursor-pointer" onclick="document.getElementById('profileImageUpload').click()">
+                                    <div class="w-24 h-24 bg-gradient-to-br from-slate-800 to-slate-900 rounded-full border-2 border-dashed border-slate-600 flex items-center justify-center text-3xl overflow-hidden shadow-xl group-hover:border-orange-500 transition-colors">
+                                        <img id="profileImagePreview" src="" class="w-full h-full object-cover hidden">
+                                        <span id="profileImagePlaceholder" class="text-slate-500 group-hover:text-orange-400 transition-colors">📷</span>
+                                    </div>
+                                    <div class="absolute inset-0 bg-slate-950/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <span class="text-[9px] font-black text-white uppercase tracking-widest">Değiştir</span>
+                                    </div>
+                                    <input type="file" class="hidden" id="profileImageUpload" accept="image/*" onchange="handleProfileUpload(event)">
+                                </div>
+                                <div>
+                                    <h3 class="font-black text-white text-xl">Profil Fotoğrafı</h3>
+                                    <p class="text-xs text-slate-400 mt-1">Sistemin seni tanıması için ilham verici bir fotoğraf yükle.</p>
+                                    <button onclick="document.getElementById('profileImageUpload').click()" class="mt-3 px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg transition-colors border border-slate-700">Görsel Seç</button>
+                                </div>
+                            </div>
+
+                            <form onsubmit="handleSettingsUpdate(event, 'Kişisel kimliğin başarıyla güncellendi.')" class="space-y-5">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div><label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Adınız</label><input type="text" id="setFirstName" class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-orange-500 font-semibold transition-colors"></div>
+                                    <div><label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Soyadınız</label><input type="text" id="setLastName" class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-orange-500 font-semibold transition-colors"></div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Akademik Manifesto / Motivasyon Sözün</label>
+                                    <textarea rows="2" placeholder="Örn: Çalışmaktan yorulmadığım tek yer zirve olacak." class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-orange-500 font-medium resize-none transition-colors"></textarea>
+                                </div>
+                                <button type="submit" class="bg-orange-500 hover:bg-orange-400 text-white font-black py-3.5 px-8 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all">Kimliği Kaydet</button>
+                            </form>
+                        </div>
+
+                        <div id="settings-hedef" class="hidden space-y-8 max-w-2xl animate-fade-in">
+                            <div class="pb-6 border-b border-slate-800/60">
+                                <h3 class="font-black text-white text-xl">Kariyer & Zirve Hedefleri</h3>
+                                <p class="text-xs text-slate-400 mt-1">Yapay zeka asistanın haftalık programını buraya gireceğin üniversite ve net hedeflerine göre optimize edecektir.</p>
+                            </div>
+
+                            <form onsubmit="handleSettingsUpdate(event, 'Akademik hedefleriniz AI sistemine işlendi.')" class="space-y-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-[10px] font-black text-orange-400 mb-1.5 uppercase tracking-widest">Hedef Üniversite</label>
+                                        <input type="text" placeholder="Örn: Boğaziçi Üniversitesi" class="w-full px-4 py-3.5 bg-orange-500/5 border border-orange-500/30 rounded-xl text-xs text-white outline-none focus:border-orange-500 font-bold transition-colors" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-orange-400 mb-1.5 uppercase tracking-widest">Hedef Bölüm</label>
+                                        <input type="text" placeholder="Örn: Bilgisayar Mühendisliği" class="w-full px-4 py-3.5 bg-orange-500/5 border border-orange-500/30 rounded-xl text-xs text-white outline-none focus:border-orange-500 font-bold transition-colors" required>
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-900/40 p-5 rounded-2xl border border-slate-800">
+                                    <h4 class="text-xs font-black text-white mb-4 uppercase tracking-widest border-b border-slate-800 pb-2">Kritik Net Hedefleri</h4>
+                                    <div class="grid grid-cols-2 gap-5">
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">TYT Hedef Net</label>
+                                            <input type="number" placeholder="105" min="0" max="120" class="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-lg text-emerald-400 outline-none focus:border-emerald-500 font-black text-center transition-colors">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] font-bold text-slate-400 mb-1.5 uppercase tracking-widest">AYT Hedef Net</label>
+                                            <input type="number" placeholder="75" min="0" max="80" class="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-lg text-indigo-400 outline-none focus:border-indigo-500 font-black text-center transition-colors">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="bg-orange-500 hover:bg-orange-400 text-white font-black py-3.5 px-8 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-orange-500/20 transition-all w-full sm:w-auto">Hedefleri Yapay Zekaya Gönder</button>
+                            </form>
+                        </div>
+
+                        <div id="settings-guvenlik" class="hidden space-y-8 max-w-2xl animate-fade-in">
+                            <div class="pb-6 border-b border-slate-800/60">
+                                <h3 class="font-black text-white text-xl">Sistem Güvenliği</h3>
+                                <p class="text-xs text-slate-400 mt-1">Şifre değişikliği ve bildirim ayarlarını buradan yönetebilirsin.</p>
+                            </div>
+
+                            <form onsubmit="handleSettingsUpdate(event, 'Şifreniz güvenlik protokolüyle güncellendi.')" class="space-y-5">
+                                <div>
+                                    <label class="block text-[10px] font-black text-slate-500 mb-1.5 uppercase tracking-widest">Sistem E-Postası (Sabit)</label>
+                                    <input type="email" id="setEmail" class="w-full px-4 py-3.5 bg-slate-950 border border-slate-800/50 rounded-xl text-xs text-slate-500 cursor-not-allowed font-medium" disabled>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div><label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Yeni Şifre</label><input type="password" placeholder="••••••••" class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-indigo-500 transition-colors" required minlength="6"></div>
+                                    <div><label class="block text-[10px] font-black text-slate-400 mb-1.5 uppercase tracking-widest">Yeni Şifre (Tekrar)</label><input type="password" placeholder="••••••••" class="w-full px-4 py-3.5 bg-slate-900/60 border border-slate-700 rounded-xl text-xs text-white outline-none focus:border-indigo-500 transition-colors" required minlength="6"></div>
+                                </div>
+                                
+                                <label class="flex items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-900/30 cursor-pointer hover:border-indigo-500/50 transition-colors mt-4 group">
+                                    <input type="checkbox" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-indigo-500 focus:ring-indigo-500" checked>
+                                    <div>
+                                        <p class="text-xs font-bold text-white group-hover:text-indigo-300 transition-colors">Odak Odası Katı Mod</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">Sınav modundayken sekme değiştirdiğimde beni uyar.</p>
+                                    </div>
+                                </label>
+
+                                <button type="submit" class="bg-slate-800 hover:bg-slate-700 text-white font-black py-3.5 px-8 rounded-xl text-xs uppercase tracking-widest transition-all border border-slate-700 hover:border-slate-500 mt-2">Değişiklikleri Uygula</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script type="module">
+        import { 
+            auth, listenAuthState, getUserProfile, sendCoachingRequest, 
+            addStudentTask, listenStudentTasks, toggleStudentTask, deleteStudentTask,
+            saveExamResult, uploadProfilePhoto, updateUserProfile,
+            logoutUser as firebaseLogout, listenStudentCoachingRequests, addCoachingMessage,
+            joinClassWithCode, listenReportCards, listenAnnouncements, listenKurumMembers, addStudentXP,
+            listenLiveSessions
+        } from './firebase-shared.js';
+        
+        // Jitsi API
+        const jitsiScript = document.createElement('script');
+        jitsiScript.src = "https://meet.jit.si/external_api.js";
+        document.head.appendChild(jitsiScript);
+
+        let currentStudentInfo = null;
+        let userProgramTasks = []; // Artık Firebase'den dolacak
+
+        // --- AUTH & KULLANICI BİLGİLERİ ---
+        listenAuthState(async (user) => {
+            if (user) {
+                const data = await getUserProfile(user.uid);
+                if (data) {
+                    currentStudentInfo = { uid: user.uid, ...data };
+                    const fullName = data.firstName + " " + data.lastName;
+                    
+                    // Arayüzü Güncelle
+                    document.getElementById('studentNameDisplay').innerText = fullName;
+                    document.getElementById('welcomeName').innerText = data.firstName;
+                    document.getElementById('hedefIdDisplay').innerText = data.hedefId || "H100-" + user.uid.substring(0, 5).toUpperCase();
+                    document.getElementById('targetExamBadge').innerText = (data.targetExam || "YKS") + " ADAYI";
+                    document.getElementById('avatarInitials').innerText = (data.firstName.charAt(0) + data.lastName.charAt(0)).toUpperCase();
+                    
+                    // Ayarlar Formunu Doldur
+                    document.getElementById('setFirstName').value = data.firstName || '';
+                    document.getElementById('setLastName').value = data.lastName || '';
+                    document.getElementById('setEmail').value = data.email || '';
+                    if(data.profilePhotoUrl) {
+                        document.getElementById('profileImagePreview').src = data.profilePhotoUrl;
+                        document.getElementById('profileImagePreview').classList.remove('hidden');
+                        document.getElementById('profileImagePlaceholder').classList.add('hidden');
+                        const avatarBox = document.getElementById('avatarInitials');
+                        avatarBox.innerHTML = `<img src="${data.profilePhotoUrl}" class="w-full h-full object-cover rounded-xl">`;
+                    }
+
+                    // Sınıf Bilgisi Gösterimi
+                    if(data.className) {
+                        document.getElementById('classNameDisplay').innerText = data.className;
+                        document.getElementById('classNameDisplay').classList.add('text-indigo-400');
+                        document.getElementById('classNameDisplay').nextElementSibling.classList.add('hidden'); // Katıl butonunu gizle
+                    }
+
+                    // Firebase'den Görevleri Dinle
+                    listenStudentTasks(user.uid, (tasks) => {
+                        userProgramTasks = tasks;
+                        renderSchedulerGrid();
+                    });
+
+                    // Koçluk Taleplerini ve Mesajları Dinle
+                    listenStudentCoachingRequests(user.uid, (requests) => {
+                        renderCoachingRequests(requests);
+                    });
+
+                    // Kurum Entegrasyonları: Karne ve Duyurular
+                    if(data.kurumId) {
+                        listenReportCards(user.uid, (cards) => {
+                            const container = document.getElementById('reportCardList');
+                            if(cards.length > 0) {
+                                container.innerHTML = '';
+                                cards.forEach(c => {
+                                    container.innerHTML += `
+                                        <div class="glass-card p-6 rounded-2xl shadow-lg border border-slate-800 hover:border-indigo-500 transition-colors">
+                                            <div class="flex justify-between items-start mb-4">
+                                                <h3 class="text-lg font-black text-white">${c.title}</h3>
+                                                <span class="text-[10px] font-bold bg-indigo-500/10 text-indigo-400 px-2 py-1 rounded">KARNE</span>
+                                            </div>
+                                            <div class="mb-4">
+                                                <p class="text-xs text-slate-500 uppercase font-bold tracking-widest mb-1">Kurum Notu / Puan</p>
+                                                <p class="text-3xl font-black text-emerald-400 font-mono">${c.score}</p>
+                                            </div>
+                                            <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                                                <p class="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Eğitmen Görüşü</p>
+                                                <p class="text-xs text-slate-300 italic">"${c.feedback}"</p>
+                                            </div>
+                                        </div>
+                                    `;
+                                });
+                            }
+                        });
+
+                        listenAnnouncements(data.kurumId, 'student', (msgs) => {
+                            const container = document.getElementById('announcementList');
+                            if(msgs.length > 0) {
+                                container.innerHTML = '';
+                                msgs.forEach(m => {
+                                    const timeStr = m.createdAt ? new Date(m.createdAt.toDate()).toLocaleString() : 'Az önce';
+                                    container.innerHTML += `
+                                        <div class="glass-card p-5 rounded-2xl border-l-4 border-orange-500 shadow-md transition-transform hover:scale-[1.01]">
+                                            <div class="flex justify-between items-start mb-2">
+                                                <h4 class="font-bold text-white text-sm">Kurum Duyurusu</h4>
+                                                <span class="text-[10px] text-orange-400 font-bold bg-orange-500/10 px-2 py-1 rounded">${timeStr}</span>
+                                            </div>
+                                            <p class="text-xs text-slate-300">"${m.message}"</p>
+                                        </div>
+                                    `;
+                                });
+                            }
+                        });
+
+                        // 🔴 CANLI YAYIN DİNLEME
+                        listenLiveSessions(data.kurumId, (sessions) => {
+                            const activeSession = sessions.find(s => !data.classId || s.classId === data.classId || !s.classId); // Öğrencinin sınıfına ait mi kontrolü
+                            
+                            const banner = document.getElementById('liveSessionBanner');
+                            if(activeSession) {
+                                window.currentLiveSession = activeSession;
+                                document.getElementById('liveTeacherName').innerText = activeSession.teacherName;
+                                document.getElementById('liveTopicText').innerText = activeSession.topic || 'Sınıfınıza özel etüt başladı.';
+                                banner.classList.remove('hidden');
+                                banner.classList.add('flex'); // hidden'ı kaldırdıktan sonra flex uygulanması için
+                            } else {
+                                window.currentLiveSession = null;
+                                banner.classList.add('hidden');
+                                banner.classList.remove('flex');
+                            }
+                        });
+                    }
+                    
+                    const avatarDiv = document.getElementById('profileImagePreview');
+                                                <span class="text-[10px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded">${timeStr}</span>
+                                            </div>
+                                            <p class="text-xs text-slate-300 leading-relaxed">${m.message}</p>
+                                        </div>
+                                    `;
+                                });
+                                // Butonda yeni duyuru bildirimi gösterebiliriz (basitçe toast)
+                            }
+                        });
+
+                        // Kuruma Bağlı Eğitmenleri Dinle ve Listele
+                        listenKurumMembers(data.kurumId, "teacher", (teachers) => {
+                            const listContainer = document.getElementById('dynamicTeacherList');
+                            if(teachers.length === 0) {
+                                listContainer.innerHTML = `
+                                    <div class="glass-card p-6 rounded-2xl flex items-center justify-center border-dashed border border-slate-800">
+                                        <p class="text-slate-500 text-sm font-bold text-center">Kurumunuza henüz eğitmen eklenmemiş.</p>
+                                    </div>
+                                `;
+                                return;
+                            }
+                            listContainer.innerHTML = '';
+                            teachers.forEach(t => {
+                                const initials = (t.firstName.charAt(0) + t.lastName.charAt(0)).toUpperCase();
+                                const fullName = t.firstName + " " + t.lastName;
+                                const branch = t.specialtyOrExam || "Eğitmen";
+                                listContainer.innerHTML += `
+                                    <div onclick="selectTeacher('${t.uid}', '${fullName}', '${branch}', '${initials}')" class="glass-card p-4 rounded-2xl border border-slate-800 hover:border-orange-500 cursor-pointer bg-slate-900/60 transition-all shadow-md">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg shrink-0">${initials}</div>
+                                            <div><h4 class="text-sm font-black text-white">${fullName}</h4><p class="text-[9px] text-orange-400 uppercase tracking-widest font-bold">${branch}</p></div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        });
+                    } else {
+                        // Kuruma bağlı değilse uyarı göster
+                        const listContainer = document.getElementById('dynamicTeacherList');
+                        if (listContainer) {
+                            listContainer.innerHTML = `
+                                <div class="glass-card p-6 rounded-2xl flex items-center justify-center border-dashed border border-slate-800">
+                                    <p class="text-slate-500 text-sm font-bold text-center">Mentor ağını görebilmek için bir kuruma bağlı olmalısınız.</p>
+                                </div>
+                            `;
+                        }
+                    }
+
+                } else {
+                    window.location.href = 'login.html';
+                }
+            } else {
+                window.location.href = 'login.html';
             }
         });
-        
-        // Frontend Sıralama
-        assignments.sort((a, b) => {
-            const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
-            const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
-            return timeB - timeA;
-        });
-        
-        callback(assignments);
-    });
-}
-// --- 4.3 Akıllı Soru Kutusu (Question Box & Storage) ---
-export async function uploadQuestionImage(file, studentId) {
-    try {
-        const fileRef = ref(storage, `questionBox/${studentId}/${Date.now()}_${file.name}`);
-        await uploadBytes(fileRef, file);
-        return await getDownloadURL(fileRef);
-    } catch (error) {
-        console.error("Resim yüklenemedi:", error);
-        return null;
-    }
-}
 
-export async function askQuestion(data) {
-    try {
-        await addDoc(collection(db, "questionBox"), {
-            ...data, status: 'pending', createdAt: serverTimestamp()
-        });
-        return true;
-    } catch (error) {
-        console.error("Soru gönderilemedi:", error);
-        return false;
-    }
-}
+        // --- İNTERAKTİF ÖĞRENCİ GÖREV EKLEME MOTORU (FİREBASE ENTEGRELİ) ---
+        function renderSchedulerGrid() {
+            const days = ["pazartesi", "sali", "carsamba", "persembe", "cuma", "cumartesi", "pazar"];
+            days.forEach(day => {
+                const el = document.getElementById(`day-${day}`);
+                if(el) el.innerHTML = "";
+            });
 
-export function listenQuestionBox(callback) {
-    // Index hatasını engellemek için orderBy kaldırıldı, frontend'de sıralanıyor
-    const q = query(collection(db, "questionBox"));
-    return onSnapshot(q, (snapshot) => {
-        const questions = [];
-        snapshot.forEach((doc) => questions.push({ id: doc.id, ...doc.data() }));
-        
-        // Frontend Sıralama
-        questions.sort((a, b) => {
-            const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
-            const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
-            return timeB - timeA;
-        });
-        
-        callback(questions);
-    });
-}
-// --- 4.4 Öğrenci Haftalık Görevleri (Student Tasks) ---
-export async function addStudentTask(studentId, taskData) {
-    try {
-        await addDoc(collection(db, "studentTasks"), {
-            studentId, ...taskData, createdAt: serverTimestamp()
-        });
-        return true;
-    } catch (e) { return false; }
-}
-export function listenStudentTasks(studentId, callback) {
-    const q = query(collection(db, "studentTasks"), where("studentId", "==", studentId));
-    return onSnapshot(q, (snapshot) => {
-        const tasks = [];
-        snapshot.forEach((doc) => tasks.push({ id: doc.id, ...doc.data() }));
-        callback(tasks);
-    });
-}
-export async function toggleStudentTask(taskId, isDone) {
-    await setDoc(doc(db, "studentTasks", taskId), { done: isDone }, { merge: true });
-}
-export async function deleteStudentTask(taskId) {
-    try {
-        await deleteDoc(doc(db, "studentTasks", taskId));
-        return true;
-    } catch (error) {
-        console.error("Görev silinemedi:", error);
-        return false;
-    }
-}
-// --- 4.5 Deneme ve Risk Radarı (Exam Results) ---
-export async function saveExamResult(data) {
-    try {
-        await addDoc(collection(db, "examResults"), {
-            ...data, createdAt: serverTimestamp()
-        });
-        return true;
-    } catch (e) { return false; }
-}
-// Eğitmenin sınıfındaki öğrencileri çekmesi
-export async function getStudentsByClass(classId) {
-    try {
-        const q = query(collection(db, "users"), where("role", "==", "student"), where("classId", "==", classId));
-        const snapshot = await getDocs(q);
-        const students = [];
-        snapshot.forEach(doc => students.push({ id: doc.id, ...doc.data() }));
-        return students;
-    } catch (e) {
-        console.error("Öğrenciler çekilemedi:", e);
-        return [];
-    }
-}
-// ================= 5. SINIF VE DAVET KODU YÖNETİMİ =================
-// Öğrencinin Kod ile Sınıfa Katılması
-export async function joinClassWithCode(studentId, code) {
-    try {
-        const q = query(collection(db, "inviteCodes"), where("code", "==", code.toUpperCase().trim()));
-        const snapshot = await getDocs(q);
-        
-        if (snapshot.empty) {
-            return { success: false, error: "Geçersiz davet kodu! Lütfen eğitmeninizden doğru kodu isteyin." };
-        }
-        
-        let inviteData = null;
-        snapshot.forEach(doc => inviteData = doc.data());
-        
-        // Öğrencinin classId bilgisini güncelle
-        const docRef = doc(db, "users", studentId);
-        await setDoc(docRef, {
-            classId: inviteData.classId,
-            className: inviteData.className,
-            updatedAt: serverTimestamp()
-        }, { merge: true });
-        
-        return { success: true, className: inviteData.className };
-    } catch (error) {
-        console.error("Sınıfa katılamadı:", error);
-        return { success: false, error: "Sunucu bağlantı hatası." };
-    }
-}
-// Yeni Sınıf Oluştur
-export async function createClass(teacherId, className) {
-    try {
-        const docRef = await addDoc(collection(db, "classes"), {
-            name: className,
-            teacherId: teacherId,
-            createdAt: serverTimestamp()
-        });
-        return { success: true, id: docRef.id };
-    } catch (error) {
-        console.error("Sınıf oluşturulamadı:", error);
-        return { success: false, error };
-    }
-}
-// Eğitmenin kendi oluşturduğu sınıfları dinlemesi
-export function listenClasses(teacherId, callback) {
-    const q = query(collection(db, "classes"), where("teacherId", "==", teacherId));
-    return onSnapshot(q, (snapshot) => {
-        const classes = [];
-        snapshot.forEach((doc) => classes.push({ id: doc.id, ...doc.data() }));
-        
-        // Frontend Sıralama
-        classes.sort((a, b) => {
-            const timeA = a.createdAt ? a.createdAt.toMillis() : Date.now();
-            const timeB = b.createdAt ? b.createdAt.toMillis() : Date.now();
-            return timeA - timeB; // Eskiden yeniye (ilk açılan sınıf üstte)
-        });
-        
-        callback(classes);
-    });
-}
-// Davet Kodu Üret (Bir sınıfa ait)
-export async function createInviteCode(teacherId, classId, className, customCode) {
-    try {
-        // İsteğe bağlı özel kod girilmişse onu kullan, yoksa rastgele üret
-        const code = customCode ? customCode.toUpperCase() : Math.random().toString(36).substring(2, 8).toUpperCase();
-        
-        // Kodun daha önce alınıp alınmadığını kontrol et (Basit güvenlik)
-        const checkQ = query(collection(db, "inviteCodes"), where("code", "==", code));
-        const checkSnap = await getDocs(checkQ);
-        if (!checkSnap.empty) {
-            return { success: false, error: "Bu kod zaten kullanımda, lütfen başka bir tane deneyin." };
-        }
-        await addDoc(collection(db, "inviteCodes"), {
-            code: code,
-            role: "student", // Bu kod sadece öğrencileri hedefliyor
-            classId: classId,
-            className: className,
-            createdBy: teacherId,
-            createdAt: serverTimestamp()
-        });
-        return { success: true, code: code };
-    } catch (error) {
-        console.error("Davet kodu üretilemedi:", error);
-        return { success: false, error };
-    }
-}
-// ================= 6. PROFİL GÜNCELLEME VE FOTOĞRAF =================
-export async function uploadProfilePhoto(file, userId) {
-    try {
-        const fileRef = ref(storage, `profilePhotos/${userId}/${Date.now()}_${file.name}`);
-        await uploadBytes(fileRef, file);
-        return await getDownloadURL(fileRef);
-    } catch (error) {
-        console.error("Profil fotoğrafı yüklenemedi:", error);
-        return null;
-    }
-}
-export async function updateUserProfile(uid, data) {
-    try {
-        const docRef = doc(db, "users", uid);
-        await setDoc(docRef, { ...data, updatedAt: serverTimestamp() }, { merge: true });
-        return true;
-    } catch (error) {
-        console.error("Profil güncellenemedi:", error);
-        return false;
-    }
-}
-// ================= 7. KURUM PANELİ YÖNETİM FONKSİYONLARI =================
-// Hedef ID ile kullanıcıyı bul ve Kurum ağına ekle
-export async function addMemberByHedefId(kurumId, hedefId) {
-    try {
-        const q = query(collection(db, "users"), where("hedefId", "==", hedefId.toUpperCase().trim()));
-        const snapshot = await getDocs(q);
-        
-        if (snapshot.empty) {
-            return { success: false, error: "Bu Hedef ID'ye ait kullanıcı bulunamadı." };
-        }
-        
-        let targetUser = null;
-        snapshot.forEach(doc => { targetUser = { id: doc.id, ...doc.data() }; });
-        
-        if(targetUser.kurumId === kurumId) {
-            return { success: false, error: "Bu kullanıcı zaten ağınızda." };
-        }
-        // Kullanıcıya kurumId ekle
-        await setDoc(doc(db, "users", targetUser.id), {
-            kurumId: kurumId,
-            kurumJoinedAt: serverTimestamp()
-        }, { merge: true });
-        
-        return { success: true, user: targetUser };
-    } catch (error) {
-        console.error("Üye eklenemedi:", error);
-        return { success: false, error: "Bağlantı hatası." };
-    }
-}
-// Kuruma ait üyeleri dinle (role: 'teacher' veya 'student')
-export function listenKurumMembers(kurumId, role, callback) {
-    const q = query(collection(db, "users"), where("kurumId", "==", kurumId), where("role", "==", role));
-    return onSnapshot(q, (snapshot) => {
-        const members = [];
-        snapshot.forEach((doc) => members.push({ id: doc.id, ...doc.data() }));
-        callback(members);
-    });
-}
-// Kurum için yeni sınıf oluştur
-export async function createKurumClass(kurumId, className, level) {
-    try {
-        const docRef = await addDoc(collection(db, "classes"), {
-            name: className,
-            level: level,
-            kurumId: kurumId,
-            assignedTeachers: [], // Kurum sonradan atayacak
-            createdAt: serverTimestamp()
-        });
-        return { success: true, id: docRef.id };
-    } catch (error) {
-        return { success: false, error };
-    }
-}
-export function listenKurumClasses(kurumId, callback) {
-    const q = query(collection(db, "classes"), where("kurumId", "==", kurumId));
-    return onSnapshot(q, (snapshot) => {
-        const classes = [];
-        snapshot.forEach((doc) => classes.push({ id: doc.id, ...doc.data() }));
-        classes.sort((a, b) => {
-            const tA = a.createdAt ? a.createdAt.toMillis() : 0;
-            const tB = b.createdAt ? b.createdAt.toMillis() : 0;
-            return tB - tA;
-        });
-        callback(classes);
-    });
-}
-export async function assignTeacherToClass(classId, teacherId, teacherName) {
-    try {
-        const docRef = doc(db, "classes", classId);
-        // add to assignedTeachers array
-        await updateDoc(docRef, {
-            assignedTeachers: arrayUnion({ id: teacherId, name: teacherName })
-        });
-        
-        // Eğitmenin profiline de eklenebilir veya eğitmen "classes" tablosunda assignedTeachers içinde kendi ID'si geçenleri dinleyebilir.
-        return true;
-    } catch (error) {
-        return false;
-    }
-}
-// Karne İşlemleri
-export async function createReportCard(kurumId, studentId, studentName, title, dataObj) {
-    try {
-        await addDoc(collection(db, "reportCards"), {
-            kurumId, studentId, studentName, title, ...dataObj,
-            createdAt: serverTimestamp()
-        });
-        return true;
-    } catch (error) {
-        return false;
-    }
-}
-export function listenReportCards(studentId, callback) {
-    const q = query(collection(db, "reportCards"), where("studentId", "==", studentId));
-    return onSnapshot(q, (snapshot) => {
-        const cards = [];
-        snapshot.forEach((doc) => cards.push({ id: doc.id, ...doc.data() }));
-        callback(cards);
-    });
-}
-// Toplu Mesaj (Duyuru) İşlemleri
-export async function createAnnouncement(kurumId, targetRole, message) {
-    try {
-        await addDoc(collection(db, "announcements"), {
-            kurumId: kurumId,
-            targetRole: targetRole, // 'all', 'teacher', 'student'
-            message: message,
-            createdAt: serverTimestamp()
-        });
-        return true;
-    } catch (error) {
-        return false;
-    }
-}
-export function listenAnnouncements(kurumId, role, callback) {
-    const q = query(collection(db, "announcements"), where("kurumId", "==", kurumId));
-    return onSnapshot(q, (snapshot) => {
-        const msgs = [];
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            if(data.targetRole === 'all' || data.targetRole === role) {
-                msgs.push({ id: doc.id, ...data });
-            }
-        });
-        msgs.sort((a, b) => {
-            const tA = a.createdAt ? a.createdAt.toMillis() : 0;
-            const tB = b.createdAt ? b.createdAt.toMillis() : 0;
-            return tB - tA; // en yeni en üstte
-        });
-        callback(msgs);
-    });
-}
-// ================= 8. VELİ PANELİ (PARENT DASHBOARD) FONKSİYONLARI =================
-// Hedef ID kullanarak öğrenciyi velinin profiline bağla
-export async function linkStudentToParent(parentUid, hedefId) {
-    try {
-        const cleanId = hedefId.toUpperCase().trim();
-        const q = query(collection(db, "users"), where("hedefId", "==", cleanId), where("role", "==", "student"));
-        const snapshot = await getDocs(q);
-        
-        if (snapshot.empty) {
-            return { success: false, error: "Bu Hedef ID'ye ait bir öğrenci bulunamadı." };
-        }
-        
-        let studentData = null;
-        snapshot.forEach(doc => { studentData = { id: doc.id, ...doc.data() }; });
-        
-        // Velinin profiline öğrenci ID'sini ekle
-        const parentRef = doc(db, "users", parentUid);
-        await updateDoc(parentRef, {
-            linkedStudents: arrayUnion(studentData.id)
-        });
-        
-        return { success: true, student: studentData };
-    } catch (error) {
-        console.error("Öğrenci eklenemedi:", error);
-        return { success: false, error: "Sunucu hatası veya izin reddedildi." };
-    }
-}
-// Veliye bağlı tüm öğrencileri anlık olarak dinle
-export function listenParentStudents(parentUid, callback) {
-    // 1. Önce velinin dokümanını dinle ki `linkedStudents` dizisi güncellendiğinde tetiklensin
-    const parentRef = doc(db, "users", parentUid);
-    
-    return onSnapshot(parentRef, async (parentSnap) => {
-        if (!parentSnap.exists()) return callback([]);
-        
-        const parentData = parentSnap.data();
-        const linkedIds = parentData.linkedStudents || [];
-        
-        if (linkedIds.length === 0) {
-            return callback([]);
-        }
-        
-        // 2. Bağlı olan öğrencilerin profillerini çek
-        // (Eğer öğrenci sayısı 10'dan azsa 'in' query'si kullanılabilir, biz basit bir döngüyle çekeceğiz)
-        const students = [];
-        for (const sId of linkedIds) {
-            const sSnap = await getDoc(doc(db, "users", sId));
-            if (sSnap.exists()) {
-                students.push({ id: sSnap.id, ...sSnap.data() });
+            userProgramTasks.forEach(task => {
+                const dayContainer = document.getElementById(`day-${task.day}`);
+                if (dayContainer) {
+                    // ID firebase'den gelen id string'idir.
+                    let html = `
+                        <div class="p-2.5 rounded-xl bg-slate-950 border border-slate-800/60 hover:border-orange-500/40 transition-all flex items-start justify-between gap-2 group">
+                            <div class="flex items-start gap-2 cursor-pointer flex-1" onclick="toggleTaskState('${task.id}', ${task.done})">
+                                <span class="w-3.5 h-3.5 rounded-full border border-slate-600 flex items-center justify-center text-[8px] font-bold mt-0.5 shrink-0 ${task.done ? 'bg-emerald-500 border-emerald-500 text-white' : 'text-transparent group-hover:border-orange-500'}">✓</span>
+                                <p class="text-[10px] font-semibold leading-tight text-slate-300 ${task.done ? 'completed-task' : ''}">${task.title}</p>
+                            </div>
+                            <button onclick="deleteTask('${task.id}')" class="text-slate-600 hover:text-rose-500 text-[10px] hidden group-hover:block transition-colors">🗑️</button>
+                        </div>
+                    `;
+                    dayContainer.innerHTML += html;
+                }
+            });
+            // Görev yüzdesini hesapla
+            const totalTasks = userProgramTasks.length;
+            const completedTasks = userProgramTasks.filter(t => t.done).length;
+            const percent = totalTasks === 0 ? 0 : Math.round((completedTasks / totalTasks) * 100);
+            
+            // Yüzde alanlarını güncelle (Ana panelde varsa)
+            const taskPercentEl = document.getElementById('taskPercentText');
+            const taskBarEl = document.getElementById('taskPercentBar');
+            if(taskPercentEl && taskBarEl) {
+                taskPercentEl.innerText = `%${percent}`;
+                taskBarEl.style.width = `${percent}%`;
             }
         }
         
-        callback(students);
-    });
-}
-// Veli-Öğretmen mesajlaşması için (messages tablosuna yazar)
-export async function sendParentTeacherMessage(parentUid, studentId, teacherId, text) {
-    try {
-        await addDoc(collection(db, "messages"), {
-            senderId: parentUid,
-            senderRole: "parent",
-            receiverId: teacherId,
-            studentContext: studentId,
-            message: text,
-            createdAt: serverTimestamp()
-        });
-        return true;
-    } catch (e) {
-        console.error("Veli mesajı gönderilemedi:", e);
-        return false;
-    }
-}
+        window.handleJoinClass = async function(e) {
+            e.preventDefault();
+            const input = document.getElementById('inviteCodeInput');
+            const code = input.value;
+            
+            triggerToast('Sınıfa katılma talebi işleniyor...', 'info');
+            const result = await joinClassWithCode(currentStudentInfo.uid, code);
+            
+            if(result.success) {
+                triggerToast(`${result.className} sınıfına başarıyla katıldınız!`, 'success');
+                document.getElementById('joinClassModal').classList.add('hidden');
+                document.getElementById('classNameDisplay').innerText = result.className;
+                document.getElementById('classNameDisplay').classList.add('text-indigo-400');
+                document.getElementById('classNameDisplay').nextElementSibling.classList.add('hidden');
+            } else {
+                triggerToast(result.error || 'Katılım sağlanamadı.', 'error');
+            }
+        };
+        
+        window.addUserTask = async function(e) {
+            e.preventDefault();
+            if(!currentStudentInfo) return;
+            const titleInput = document.getElementById('customTaskTitle');
+            const dayInput = document.getElementById('customTaskDay');
+            
+            triggerToast('Görev kaydediliyor...', 'info');
+            const success = await addStudentTask(currentStudentInfo.uid, {
+                title: titleInput.value,
+                day: dayInput.value,
+                done: false
+            });
 
-// --- FAZ 3: OYUNLAŞTIRMA (XP SİSTEMİ) ---
-export async function addStudentXP(studentId, amount) {
-    try {
-        const studentRef = doc(db, "users", studentId);
-        await updateDoc(studentRef, {
-            xp: increment(amount)
-        });
-        return true;
-    } catch (e) {
-        console.error("XP Eklenemedi:", e);
-        return false;
-    }
-}
+            if(success) {
+                triggerToast('Görev haftalık ajandanıza başarıyla işlendi!', 'success');
+                titleInput.value = "";
+            } else {
+                triggerToast('Görev kaydedilemedi!', 'error');
+            }
+        };
 
-// --- FAZ 4: JITSI CANLI YAYIN (LIVE SESSIONS) ---
-export async function startLiveSession(kurumId, teacherName, roomName, topic) {
-    try {
-        const docRef = await addDoc(collection(db, "liveSessions"), {
-            kurumId,
-            teacherName,
-            roomName,
-            topic,
-            isActive: true,
-            createdAt: serverTimestamp()
-        });
-        return docRef.id;
-    } catch (e) {
-        console.error("Canlı yayın başlatılamadı:", e);
-        return null;
-    }
-}
+        window.toggleTaskState = async function(taskId, currentStatus) {
+            const newStatus = !currentStatus;
+            if(newStatus) {
+                triggerToast('Harika, bir hedefi daha tamamladın! +50 XP 🎉', 'success');
+                if(currentStudentInfo) {
+                    await addStudentXP(currentStudentInfo.uid, 50);
+                }
+            }
+            await toggleStudentTask(taskId, newStatus);
+        };
 
-export async function endLiveSession(sessionId) {
-    try {
-        await updateDoc(doc(db, "liveSessions", sessionId), {
-            isActive: false,
-            endedAt: serverTimestamp()
-        });
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
+        window.deleteTask = async function(taskId) {
+            if(confirm("Bu görevi silmek istediğinize emin misiniz?")) {
+                await deleteStudentTask(taskId);
+                triggerToast('Görev silindi.', 'info');
+            }
+        };
 
-export function listenLiveSessions(kurumId, callback) {
-    const q = query(
-        collection(db, "liveSessions"), 
-        where("kurumId", "==", kurumId),
-        where("isActive", "==", true)
-    );
-    return onSnapshot(q, (snapshot) => {
-        const sessions = [];
-        snapshot.forEach(doc => sessions.push({ id: doc.id, ...doc.data() }));
-        callback(sessions);
-    });
-}
+        window.clearAllUserTasks = async function() { 
+            if(confirm("Tüm görevleri silmek istediğinize emin misiniz?")) {
+                triggerToast('Görevler siliniyor...', 'info');
+                for(let task of userProgramTasks) {
+                    await deleteStudentTask(task.id);
+                }
+                triggerToast('Haftalık ajandanız temizlendi.', 'success');
+            }
+        };
+
+        // --- DENEME GİRİŞ MATRIX MOTORU ---
+        const examDataMatrix = {
+            TYT: [
+                { name: "Temel Matematik", max: 40, topics: ["Sayı Basamakları", "Üslü-Köklü İfadeler", "Problemler", "Fonksiyonlar", "Geometri"] },
+                { name: "Türkçe", max: 40, topics: ["Paragrafta Anlam", "Dil Bilgisi", "Cümle Yorumu", "Yazım Kuralları"] },
+                { name: "Fen Bilimleri", max: 20, topics: ["Optik (Fizik)", "Maddenin Halleri (Kimya)", "Hücre Bölünmeleri (Biyoloji)", "Kalıtım"] },
+                { name: "Sosyal Bilimler", max: 20, topics: ["Tarih ve Zaman", "İklim Bilgisi", "Felsefi Akımlar", "Din Kültürü Kavramları"] }
+            ],
+            AYT: [
+                { name: "Matematik (İleri Düzey)", max: 40, topics: ["Trigonometri", "Logaritma", "Diziler", "Limit ve Süreklilik", "Türev Kuralları", "İntegral"] },
+                { name: "Fen Bilimleri (AYT)", max: 40, topics: ["Mekanik & Çembersel Hareket", "Elektromanyetizma", "Modern Fizik", "Kimyasal Denge", "Sistemler (Biyoloji)"] },
+                { name: "Türk Dili ve Edebiyatı - Sosyal 1", max: 40, topics: ["Divan Edebiyatı", "Cumhuriyet Dönemi", "Tarih-1", "Coğrafya-1"] },
+                { name: "Sosyal Bilimler - 2 Oturumu", max: 40, topics: ["Tarih-2", "Coğrafya-2", "Felsefe Grubu", "Mantık"] }
+            ]
+        };
+
+        window.renderExamFields = function() {
+            const type = document.getElementById('examTypeSelector').value;
+            const container = document.getElementById('dynamicExamContainer');
+            if(!container) return;
+            container.innerHTML = "";
+            examDataMatrix[type].forEach((subject, index) => {
+                let boxTopicId = `box_topic_${index}`;
+                container.innerHTML += `
+                    <div class="p-4 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <h4 class="font-black text-sm text-white tracking-wide flex items-center gap-2">🔶 ${subject.name} <span class="text-[10px] text-slate-500 font-medium">(Soru: ${subject.max})</span></h4>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="correct_${index}" placeholder="D" class="w-14 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs font-bold text-emerald-400 outline-none focus:border-emerald-500" min="0" max="${subject.max}" required>
+                                <input type="number" id="wrong_${index}" placeholder="Y" class="w-14 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs font-bold text-rose-400 outline-none focus:border-rose-500" min="0" max="${subject.max}" required>
+                                <input type="number" id="blank_${index}" placeholder="B" class="w-14 p-2 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs font-bold text-slate-400 outline-none focus:border-slate-500" min="0" max="${subject.max}" required>
+                            </div>
+                        </div>
+                        <div>
+                            <button type="button" onclick="document.getElementById('${boxTopicId}').classList.toggle('hidden')" class="text-[10px] font-bold text-orange-400 hover:text-orange-300 transition-colors">🔍 Konu Bazlı Hata Analizi Ekle (İsteğe Bağlı)</button>
+                            <div id="${boxTopicId}" class="hidden mt-3 p-3 bg-slate-950/60 border border-slate-800/80 rounded-xl grid grid-cols-1 sm:grid-cols-2 gap-2 animate-fade-in">
+                                ${subject.topics.map((t, tIndex) => `<label class="flex items-center justify-between p-2 rounded-lg bg-slate-900/40 text-[11px] text-slate-300 border border-transparent hover:border-slate-800 cursor-pointer"><span>${t}</span><select id="topic_${index}_${tIndex}" class="bg-slate-950 border border-slate-800 rounded px-1 text-[10px] font-bold text-rose-400 outline-none"><option value="0">Sorun Yok</option><option value="1">1 Yanlış</option><option value="2">2+ Yanlış</option><option value="boş">Boş Bırakıldı</option></select></label>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        };
+        document.addEventListener('DOMContentLoaded', renderExamFields);
+
+        window.handleAdvancedExamSubmit = async function(e) {
+            e.preventDefault();
+            if(!currentStudentInfo) return;
+
+            const type = document.getElementById('examTypeSelector').value;
+            const pub = document.getElementById('examPublisher').value;
+            const title = document.getElementById('examTitle').value;
+
+            // Verileri topla
+            const results = [];
+            let totalNet = 0;
+            examDataMatrix[type].forEach((subject, index) => {
+                const correct = parseFloat(document.getElementById(`correct_${index}`).value || 0);
+                const wrong = parseFloat(document.getElementById(`wrong_${index}`).value || 0);
+                const blank = parseFloat(document.getElementById(`blank_${index}`).value || 0);
+                const net = correct - (wrong * 0.25);
+                totalNet += net;
+
+                // Konu analizlerini topla (isteğe bağlı)
+                const topicAnalysis = {};
+                subject.topics.forEach((t, tIndex) => {
+                    const val = document.getElementById(`topic_${index}_${tIndex}`).value;
+                    if(val !== "0") {
+                        topicAnalysis[t] = val;
+                    }
+                });
+
+                results.push({ subject: subject.name, correct, wrong, blank, net, topicAnalysis });
+            });
+
+            triggerToast('Deneme analizi kaydediliyor...', 'info');
+
+            const success = await saveExamResult({
+                studentId: currentStudentInfo.uid,
+                studentName: currentStudentInfo.firstName + " " + currentStudentInfo.lastName,
+                examType: type,
+                publisher: pub,
+                title: title,
+                totalNet: totalNet,
+                subjectDetails: results
+            });
+
+            if (success) {
+                triggerToast(`${pub} - ${title} Analizi Başarıyla Kaydedildi! +100 XP (Net: ${totalNet})`, 'success');
+                await addStudentXP(currentStudentInfo.uid, 100);
+                e.target.reset(); renderExamFields(); 
+                setTimeout(() => { switchSection('analytics'); }, 1500);
+            } else {
+                triggerToast('Kaydedilirken hata oluştu.', 'error');
+            }
+        };
+
+        // --- EĞİTMEN SEÇİMİ ---
+        let currentSelectedTeacherUid = null;
+        window.selectTeacher = function(uid, name, branch, initials) {
+            currentSelectedTeacherUid = uid;
+            document.getElementById('selectedTeacherName').innerText = name;
+            document.getElementById('selectedTeacherBranch').innerText = branch;
+            document.getElementById('selectedTeacherAvatar').innerText = initials;
+            triggerToast(name + " seçildi. Analizini inceleyebilirsiniz.", 'success');
+        };
+
+        // --- KRONOMETRE VE ALTYAPI MOTORLARI ---
+        let stopwatchInterval; let isRunning = false;
+        let elapsedSeconds = parseInt(localStorage.getItem('h100_focus_seconds')) || 0;
+
+        function updateDisplays() {
+            let hrs = Math.floor(elapsedSeconds / 3600).toString().padStart(2, '0');
+            let mins = Math.floor((elapsedSeconds % 3600) / 60).toString().padStart(2, '0');
+            let secs = (elapsedSeconds % 60).toString().padStart(2, '0');
+            const timeStr = `${hrs}:${mins}:${secs}`;
+            document.getElementById('modalStopwatchDisplay').innerText = timeStr;
+            document.getElementById('dashboardStopwatchDisplay').innerText = timeStr;
+        }
+        updateDisplays();
+
+        window.openFocusRoom = function(type = 'deneme') {
+            const badge = document.getElementById('focusRoomModeBadge');
+            if (type === 'deneme') {
+                badge.innerText = "DENEME SINAV MODU";
+                badge.className = "px-4 py-1.5 bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-black uppercase tracking-widest rounded-full shadow-lg";
+            } else {
+                badge.innerText = "SERBEST KONU ETÜT MODU";
+                badge.className = "px-4 py-1.5 bg-orange-500/10 border border-orange-500/30 text-orange-400 text-xs font-black uppercase tracking-widest rounded-full shadow-lg";
+            }
+            document.getElementById('focusRoomModal').classList.remove('hidden');
+        };
+        window.closeFocusRoom = function() { document.getElementById('focusRoomModal').classList.add('hidden'); };
+
+        window.toggleStopwatch = function() {
+            const btn = document.getElementById('modalStartBtn');
+            if (isRunning) {
+                clearInterval(stopwatchInterval); btn.innerText = "BAŞLAT"; btn.className = "bg-orange-500 hover:bg-orange-400 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest transition-all min-w-[140px] shadow-lg shadow-orange-500/20"; isRunning = false;
+            } else {
+                isRunning = true; btn.innerText = "DURDUR"; btn.className = "bg-rose-500 hover:bg-rose-400 text-white font-black px-8 py-4 rounded-2xl text-xs uppercase tracking-widest transition-all min-w-[140px] shadow-lg shadow-rose-500/20 animate-pulse";
+                stopwatchInterval = setInterval(() => { elapsedSeconds++; localStorage.setItem('h100_focus_seconds', elapsedSeconds); updateDisplays(); }, 1000);
+            }
+        };
+
+        window.saveStudySession = async function() {
+            if (elapsedSeconds === 0) { triggerToast('Süre bulunamadı.', 'info'); return; }
+            let totalHours = (elapsedSeconds / 3600).toFixed(1);
+            
+            // Firebase'e eklemek için basit log
+            if(currentStudentInfo) {
+                const minutesFocused = Math.floor(elapsedSeconds / 60);
+                let xpEarned = 0;
+                
+                if(minutesFocused > 0) {
+                    xpEarned = minutesFocused * 10; // Her dakikaya 10 XP
+                    await addStudentXP(currentStudentInfo.uid, xpEarned);
+                    triggerToast(`${totalHours} saatlik çalışmanız işlendi! +${xpEarned} XP Zirve Puanı!`, 'success');
+                } else {
+                    triggerToast(`Süre çok kısaydı, en az 1 dakika odaklanmalısın.`, 'info');
+                }
+            }
+
+            clearInterval(stopwatchInterval); elapsedSeconds = 0; localStorage.setItem('h100_focus_seconds', 0); updateDisplays();
+            isRunning = false; document.getElementById('modalStartBtn').innerText = "BAŞLAT"; document.getElementById('focusRoomModal').classList.add('hidden');
+        };
+
+        window.triggerToast = function(message, type = 'success') {
+            const toast = document.getElementById('toastBox');
+            document.getElementById('toastMessage').innerText = message;
+            toast.className = type === 'success' ? "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl bg-orange-500 shadow-orange-500/30" : (type === 'error' ? "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl bg-rose-600 shadow-rose-600/30" : "fixed top-6 right-6 z-[9999] transform transition-all duration-400 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-2xl bg-indigo-600 shadow-indigo-600/30");
+            toast.classList.remove('translate-x-96', 'opacity-0');
+            setTimeout(() => { toast.classList.add('translate-x-96', 'opacity-0'); }, 3000);
+        };
+
+        window.toggleMobileSidebar = function() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebarBackdrop').classList.toggle('hidden'); };
+        window.logoutUser = async function() { await firebaseLogout(); };
+
+        // AYARLAR SEKMESİ VE PROFİL FOTOĞRAFI YÜKLEME
+        window.switchSettingsTab = function(tabId) {
+            document.querySelectorAll('[id^="settings-"]').forEach(el => el.classList.replace('block', 'hidden'));
+            document.getElementById('settings-' + tabId).classList.replace('hidden', 'block');
+            
+            document.querySelectorAll('[id^="tab-"]').forEach(el => { 
+                el.className = "text-left px-4 py-3.5 rounded-xl font-bold text-xs text-slate-400 hover:text-white border border-transparent hover:bg-slate-800/50 transition-all shrink-0"; 
+            });
+            document.getElementById('tab-' + tabId).className = "text-left px-4 py-3.5 rounded-xl font-bold text-xs bg-orange-500/10 text-orange-400 border border-orange-500/30 transition-all shrink-0";
+        };
+
+        let pendingProfilePhoto = null;
+
+        window.handleProfileUpload = async function(e) {
+            const file = e.target.files[0];
+            if(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profileImagePreview').src = e.target.result;
+                    document.getElementById('profileImagePreview').classList.remove('hidden');
+                    document.getElementById('profileImagePlaceholder').classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+                
+                // Anında yüklemek yerine kaydet butonuna basıldığında yüklemek isteyebiliriz ama
+                // doğrudan yüklemek daha pürüzsüzdür.
+                triggerToast('Fotoğraf yükleniyor, lütfen bekleyin...', 'info');
+                const url = await uploadProfilePhoto(file, currentStudentInfo.uid);
+                if(url) {
+                    await updateUserProfile(currentStudentInfo.uid, { profilePhotoUrl: url });
+                    triggerToast('Profil fotoğrafınız güncellendi!', 'success');
+                    document.getElementById('avatarInitials').innerHTML = `<img src="${url}" class="w-full h-full object-cover rounded-xl">`;
+                } else {
+                    triggerToast('Fotoğraf yüklenirken hata oluştu.', 'error');
+                }
+            }
+        };
+
+        window.handleSettingsUpdate = async function(event, msg) { 
+            event.preventDefault(); 
+            if(!currentStudentInfo) return;
+
+            const formId = event.target.closest('div').id;
+            const updateData = {};
+
+            if(formId === 'settings-profil') {
+                updateData.firstName = document.getElementById('setFirstName').value;
+                updateData.lastName = document.getElementById('setLastName').value;
+                const manifesto = event.target.querySelector('textarea').value;
+                if(manifesto) updateData.manifesto = manifesto;
+            } else if (formId === 'settings-hedef') {
+                const inputs = event.target.querySelectorAll('input[type="text"]');
+                if(inputs.length >= 2) {
+                    updateData.targetUniversity = inputs[0].value;
+                    updateData.targetExam = inputs[1].value;
+                }
+            }
+
+            if(Object.keys(updateData).length > 0) {
+                triggerToast('Ayarlar kaydediliyor...', 'info');
+                const success = await updateUserProfile(currentStudentInfo.uid, updateData);
+                if(success) {
+                    triggerToast(msg, 'success');
+                    if(updateData.firstName) document.getElementById('welcomeName').innerText = updateData.firstName;
+                    if(updateData.firstName && updateData.lastName) document.getElementById('studentNameDisplay').innerText = updateData.firstName + " " + updateData.lastName;
+                } else {
+                    triggerToast('Ayarlar güncellenemedi.', 'error');
+                }
+            } else {
+                triggerToast(msg, 'success'); // Sadece UI mesajı
+            }
+        };
+
+        window.switchSection = function(sectionId) {
+            document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.replace('section-active', 'section-hidden'));
+            document.getElementById('section-' + sectionId).classList.replace('section-hidden', 'section-active');
+            document.querySelectorAll('.nav-item').forEach(el => { if(el.tagName === 'BUTTON') el.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:bg-slate-800/60 hover:text-white rounded-xl font-bold transition-all text-left border-l-4 border-transparent"; });
+            const activeBtn = document.getElementById('nav-' + sectionId);
+            if(activeBtn) activeBtn.className = "nav-item w-full flex items-center gap-3 px-3 py-2.5 bg-orange-500/10 text-orange-400 rounded-xl font-bold text-left border-l-4 border-orange-500";
+            if (window.innerWidth < 768) toggleMobileSidebar();
+            
+            if (sectionId === 'program') { renderSchedulerGrid(); }
+        };
+
+        window.handleMentorshipRequest = async function(event) {
+            event.preventDefault();
+            if(!currentStudentInfo) {
+                triggerToast("Kullanıcı bilgisi alınamadı!", "error");
+                return;
+            }
+            
+            const message = event.target.querySelector('textarea').value;
+            triggerToast("Talebiniz iletiliyor...", "info");
+            
+            const result = await sendCoachingRequest({
+                studentId: currentStudentInfo.uid,
+                studentName: currentStudentInfo.firstName + " " + currentStudentInfo.lastName,
+                teacherId: 'GLOBAL', // Şimdilik tüm eğitmenlere düşsün
+                message: message
+            });
+
+            if(result.success) {
+                triggerToast("Talebiniz başarıyla hocanıza iletildi!", "success");
+                event.target.reset();
+            } else {
+                triggerToast("Bir hata oluştu, tekrar deneyin.", "error");
+            }
+        };
+
+        window.renderCoachingRequests = function(requests) {
+            const container = document.getElementById('myCoachingRequests');
+            if(!container) return;
+            
+            if(requests.length > 0) {
+                container.classList.remove('hidden');
+                let html = '<h4 class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 border-b border-slate-800 pb-2">Taleplerim & Mesajlar</h4>';
+                
+                requests.forEach(req => {
+                    const statusText = req.status === 'pending' ? '<span class="text-amber-500">⏳ Bekliyor</span>' : (req.status === 'accepted' ? '<span class="text-emerald-500">✅ Kabul Edildi</span>' : '<span class="text-rose-500">❌ Reddedildi</span>');
+                    
+                    html += `
+                        <div class="bg-slate-900/50 p-3 rounded-xl border ${req.status === 'accepted' ? 'border-emerald-500/30' : 'border-slate-800/60'}">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-[10px] font-bold text-white">Talep Durumu:</span>
+                                <span class="text-[10px] font-bold">${statusText}</span>
+                            </div>
+                            <p class="text-[11px] text-slate-400 italic mb-2">"${req.message}"</p>
+                    `;
+
+                    if(req.status === 'accepted') {
+                        html += `<div class="mt-2 pt-2 border-t border-slate-800 space-y-2 max-h-40 overflow-y-auto mb-2 pr-1" id="chat_${req.id}">`;
+                        if(req.messages && req.messages.length > 0) {
+                            req.messages.forEach(msg => {
+                                const isMe = msg.senderId === currentStudentInfo.uid;
+                                html += `
+                                    <div class="flex ${isMe ? 'justify-end' : 'justify-start'}">
+                                        <div class="max-w-[85%] rounded-lg p-2 text-[11px] ${isMe ? 'bg-orange-500 text-white' : 'bg-slate-800 text-slate-300'} break-words">
+                                            <p>${msg.text || msg.message || ''}</p>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            html += `<p class="text-[10px] text-slate-500 text-center italic">Henüz mesaj yok, sohbete başlayın.</p>`;
+                        }
+                        html += `</div>
+                            <form onsubmit="sendChat(event, '${req.id}')" class="flex gap-2">
+                                <input type="text" placeholder="Mesaj yaz..." class="flex-1 bg-slate-950 border border-slate-700 rounded-lg px-2 py-1.5 text-[10px] text-white outline-none focus:border-orange-500" required>
+                                <button type="submit" class="bg-orange-500 text-white px-3 rounded-lg text-[10px] font-bold">Gönder</button>
+                            </form>
+                        `;
+                    }
+                    html += `</div>`;
+                });
+                container.innerHTML = html;
+
+                requests.forEach(req => {
+                    if(req.status === 'accepted') {
+                        const chatDiv = document.getElementById('chat_' + req.id);
+                        if(chatDiv) chatDiv.scrollTop = chatDiv.scrollHeight;
+                    }
+                });
+            } else {
+                container.classList.add('hidden');
+            }
+        };
+
+        window.sendChat = async function(event, reqId) {
+            event.preventDefault();
+            const input = event.target.querySelector('input');
+            const text = input.value.trim();
+            if(!text) return;
+
+            input.value = "";
+            input.disabled = true;
+            
+            await addCoachingMessage(reqId, {
+                text: text,
+                message: text, // Geriye dönük uyumluluk
+                senderId: currentStudentInfo.uid,
+                senderName: currentStudentInfo.firstName
+            });
+            input.disabled = false;
+            input.focus();
+        };
+
+        document.querySelectorAll('img').forEach(img => { img.addEventListener('error', function() { let src = this.getAttribute('src'); if (src && src.endsWith('.png')) this.src = src.replace('.png', '.PNG'); }); });
+
+        // --- JİTSİ KATILIM FONKSİYONLARI ---
+        let currentJitsiApi = null;
+        window.joinLiveSession = function() {
+            if(!window.currentLiveSession) return;
+            const session = window.currentLiveSession;
+            
+            document.getElementById('jitsiModal').classList.remove('hidden');
+            const container = document.getElementById('jitsiStudentContainer');
+            container.innerHTML = '';
+            
+            const domain = 'meet.jit.si';
+            const options = {
+                roomName: session.roomName,
+                width: '100%',
+                height: '100%',
+                parentNode: container,
+                userInfo: {
+                    displayName: currentStudentInfo.firstName + ' ' + currentStudentInfo.lastName + ' (Öğrenci)'
+                },
+                configOverwrite: {
+                    startWithAudioMuted: true,
+                    startWithVideoMuted: true,
+                    prejoinPageEnabled: false
+                }
+            };
+            
+            currentJitsiApi = new JitsiMeetExternalAPI(domain, options);
+            
+            // Jitsi Events
+            currentJitsiApi.addEventListener('videoConferenceLeft', () => {
+                leaveLiveSession();
+            });
+        };
+
+        window.leaveLiveSession = function() {
+            if(currentJitsiApi) {
+                currentJitsiApi.dispose();
+                currentJitsiApi = null;
+            }
+            document.getElementById('jitsiModal').classList.add('hidden');
+            document.getElementById('jitsiStudentContainer').innerHTML = '';
+        };
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js')
+                .then(registration => console.log('ServiceWorker registration successful'))
+                .catch(err => console.log('ServiceWorker registration failed: ', err));
+            });
+        }
+    </script>
+</body>
+</html>
