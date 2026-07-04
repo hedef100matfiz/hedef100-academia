@@ -16,6 +16,7 @@
         
         .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .neon-text { text-shadow: 0 0 10px rgba(249, 115, 22, 0.5); }
+
         .podium-1 { transform: scale(1.1); z-index: 10; border-color: #fbbf24; box-shadow: 0 0 30px rgba(251, 191, 36, 0.3); }
         .podium-2 { transform: translateY(20px); z-index: 9; border-color: #94a3b8; }
         .podium-3 { transform: translateY(40px); z-index: 8; border-color: #d97706; }
@@ -25,6 +26,7 @@
     <!-- ARKA PLAN -->
     <div class="fixed inset-0 w-full h-full bg-grid-pattern opacity-40 pointer-events-none z-0"></div>
     <div class="absolute inset-0 bg-gradient-to-b from-orange-500/5 via-transparent to-transparent pointer-events-none z-0"></div>
+
     <!-- HEADER -->
     <header class="bg-slate-900/60 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-800 px-6 py-4 flex justify-between items-center relative">
         <div class="flex items-center gap-3">
@@ -33,16 +35,19 @@
         </div>
         <a href="student-dashboard.html" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-bold transition-all uppercase tracking-wider border border-slate-700">Panele Dön</a>
     </header>
+
     <main class="flex-1 overflow-y-auto relative z-10 p-4 md:p-8 w-full max-w-6xl mx-auto flex flex-col h-full">
         <div class="text-center mb-10 mt-4">
             <span class="px-3 py-1 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[10px] font-black uppercase tracking-widest rounded-lg mb-4 inline-block">Kurumsal Deneme ve Etüt Sıralaması</span>
             <h1 class="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">Kurum <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-300">Liderlik Tablosu</span></h1>
             <p class="text-slate-400 text-sm mt-3">Odak odasında geçirdiğin süre ve tamamladığın görevlerle zirveye tırman.</p>
         </div>
+
         <!-- PODIUM (İLK 3) -->
         <div class="flex justify-center items-end gap-2 md:gap-6 mb-12 h-64" id="podiumContainer">
             <div class="w-full text-center text-slate-500 text-xs font-bold animate-pulse">Liderler Yükleniyor...</div>
         </div>
+
         <!-- DİĞER SIRALAMALAR (4 VE SONRASI) -->
         <div class="glass-card rounded-3xl p-6 md:p-8 flex-1 flex flex-col border border-slate-800 shadow-2xl overflow-hidden">
             <h3 class="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 border-b border-slate-800 pb-3">Tüm Sıralama</h3>
@@ -51,17 +56,20 @@
             </div>
         </div>
     </main>
+
     <!-- Firebase SDK'ları -->
     <script type="module">
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { collection, query, where, orderBy, limit, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         import { auth, db } from "./firebase-shared.js";
+
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 const userDoc = await getDoc(doc(db, "users", user.uid));
                 if (userDoc.exists()) {
                     const userData = userDoc.data();
                     const kurumId = userData.kurumId;
+
                     if(kurumId) {
                         fetchLeaderboard(kurumId);
                     } else {
@@ -72,6 +80,7 @@
                 window.location.href = 'login.html';
             }
         });
+
         async function fetchLeaderboard(kurumId) {
             try {
                 const q = query(
@@ -81,6 +90,7 @@
                     orderBy("xp", "desc"),
                     limit(50)
                 );
+
                 const querySnapshot = await getDocs(q);
                 
                 // --- BOT ÖĞRENCİLER (Gerçekçi ve Sabit) ---
@@ -96,24 +106,29 @@
                 querySnapshot.forEach((doc) => {
                     students.push({ id: doc.id, ...doc.data() });
                 });
+
                 // Botları ve gerçek öğrencileri birleştirip en yüksek XP'den en düşüğe sırala
                 students.sort((a, b) => (b.xp || 0) - (a.xp || 0));
+
                 renderLeaderboard(students);
             } catch (error) {
                 console.error("Liderlik tablosu hatası:", error);
                 document.getElementById('podiumContainer').innerHTML = `<p class="text-rose-400 font-bold text-xs mt-10">Sıralama yüklenemedi. Veritabanı Index oluşturma işlemi gerekiyor olabilir. F12 konsolunu kontrol edin.</p>`;
             }
         }
+
         function renderLeaderboard(students) {
             const podium = document.getElementById('podiumContainer');
             const list = document.getElementById('leaderboardList');
             
             podium.innerHTML = '';
             list.innerHTML = '';
+
             if (students.length === 0) {
                 podium.innerHTML = `<p class="text-slate-500 font-bold mt-10">Henüz XP kazanan kimse yok.</p>`;
                 return;
             }
+
             const top3 = students.slice(0, 3);
             let podiumHTML = "";
             
@@ -125,6 +140,7 @@
                     <p class="text-[10px] text-slate-400 uppercase tracking-widest mt-1">${top3[1].xp || 0} XP</p>
                 </div>`;
             }
+
             if(top3.length > 0) {
                 podiumHTML += `
                 <div class="glass-card podium-1 w-32 md:w-44 rounded-[2rem] p-5 flex flex-col items-center border-t-4 bg-orange-500/10">
@@ -133,6 +149,7 @@
                     <p class="text-[11px] text-orange-400 uppercase tracking-widest font-black mt-1">${top3[0].xp || 0} XP</p>
                 </div>`;
             }
+
             if(top3.length > 2) {
                 podiumHTML += `
                 <div class="glass-card podium-3 w-28 md:w-36 rounded-[2rem] p-4 flex flex-col items-center border-t-4 bg-slate-900/80">
@@ -143,10 +160,12 @@
             }
             
             podium.innerHTML = podiumHTML;
+
             const others = students.slice(3);
             if(others.length === 0) {
                 list.innerHTML = `<div class="text-center p-4 text-xs font-bold text-slate-600">Başka öğrenci bulunmuyor.</div>`;
             }
+
             others.forEach((s, index) => {
                 const rank = index + 4;
                 list.innerHTML += `
