@@ -622,10 +622,17 @@
         let currentStudentInfo = null;
         let userProgramTasks = []; // Artık Firebase'den dolacak
 
-        // --- AUTH & KULLANICI BİLGİLERİ ---
+               // --- AUTH & KULLANICI BİLGİLERİ ---
         listenAuthState(async (user) => {
             if (user) {
-                const data = await getUserProfile(user.uid);
+                let data = null;
+                try {
+                    data = await getUserProfile(user.uid);
+                } catch (err) {
+                    console.error("Profil verisi çekilemedi:", err);
+                    document.getElementById('studentNameDisplay').innerText = "Bağlantı Hatası";
+                    return;
+                }
                 if (data) {
                     currentStudentInfo = { uid: user.uid, ...data };
                     const fullName = data.firstName + " " + data.lastName;
@@ -771,6 +778,9 @@
                     }
 
                 } else {
+                    // Kullanıcı var ama Firestore'da profili yok
+                    console.error("Profil verisi bulunamadı, uid:", user.uid);
+                    document.getElementById('studentNameDisplay').innerText = "Profil Bulunamadı";
                     window.location.href = 'login.html';
                 }
             } else {
