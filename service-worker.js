@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hedef100-cache-v1';
+const CACHE_NAME = 'hedef100-cache-v2';
 const urlsToCache = [
   './',
   './index.html',
@@ -6,9 +6,16 @@ const urlsToCache = [
   './register.html',
   './student-dashboard.html',
   './teacher-dashboard.html',
+  './kurum-dashboard.html',
+  './parent-dashboard.html',
+  './leaderboard.html',
+  './soru-kutusu.html',
   './vip-kocluk.html',
   './sistemimiz.html',
-  './soru-kutusu.html',
+  './online-deneme.html',
+  './kurumsal.html',
+  './kurum-basvurusu.html',
+  './manifest.json',
   './firebase-shared.js',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap'
