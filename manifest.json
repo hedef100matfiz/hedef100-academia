@@ -1,0 +1,22 @@
+{
+  "name": "Hedef100 Academia",
+  "short_name": "Hedef100",
+  "description": "Yapay zeka destekli eğitim, koçluk ve başarı simülatörü.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#f97316",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
