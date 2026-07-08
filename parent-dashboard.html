@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veli Paneli | Hedef100 Academia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #040814; color: #f8fafc; }
+        
+        .bg-grid { background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px); background-size: 30px 30px; }
+        
+        .section-hidden { display: none; }
+        .section-active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #040814; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #f97316; }
+        .glass-panel { background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .btn-action { background: linear-gradient(135deg, #f97316 0%, #d97706 100%); color: white; transition: all 0.3s; }
+        .btn-action:hover { box-shadow: 0 0 20px rgba(249, 115, 22, 0.4); transform: translateY(-2px); }
+        .btn-disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+        
+        .nav-item { border-left: 3px solid transparent; transition: all 0.3s; }
+        .nav-item.active { background: rgba(249, 115, 22, 0.1); border-left-color: #f97316; color: white; }
+        
+        .modal-bg { background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        
+        /* Loading Overlay */
+        #globalLoader { transition: opacity 0.5s; z-index: 99999; }
+    </style>
+</head>
+<body class="h-screen flex relative overflow-hidden bg-grid">
+    <!-- YÜKLENİYOR EKRANI -->
+    <div id="globalLoader" class="fixed inset-0 bg-[#040814] flex flex-col items-center justify-center">
+        <div class="w-16 h-16 border-4 border-slate-800 border-t-orange-500 rounded-full animate-spin mb-4"></div>
+        <p class="text-orange-500 font-bold tracking-widest text-sm uppercase animate-pulse">Sistem Bağlantısı Kuruluyor...</p>
+    </div>
+    <!-- MOBİL SİDEBAR BACKDROP -->
+    <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+    <!-- YENİ ÖĞRENCİ EKLE MODAL -->
+    <div id="addStudentModal" class="fixed inset-0 z-[9999] modal-bg hidden flex items-center justify-center p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-8 border-orange-500/20 shadow-2xl relative transform transition-all scale-95 opacity-0" id="modalContent">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-slate-400 hover:text-white">✕</button>
+            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mb-6 shadow-lg shadow-orange-500/20">🎓</div>
+            <h2 class="text-2xl font-black text-white mb-2">Öğrenci Bağla</h2>
+            <p class="text-xs text-slate-400 mb-6 leading-relaxed">Çocuğunuza kurum tarafından verilen ve sadece ona özel olan <strong>Hedef ID</strong> kodunu aşağıya giriniz.</p>
+            
+            <form id="addStudentForm" class="space-y-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Hedef ID</label>
+                    <input type="text" id="hedefIdInput" placeholder="Örn: HDF-10452-ACD" required class="w-full bg-slate-900/50 border border-slate-700 text-white text-sm rounded-xl px-4 py-3 outline-none focus:border-orange-500 transition-colors uppercase">
+                </div>
+                <button type="submit" id="addStudentBtn" class="w-full btn-action py-3 rounded-xl font-black text-xs uppercase tracking-widest mt-2">Öğrenciyi Sisteme Ekle</button>
+                <p id="addStudentError" class="text-rose-500 text-xs font-bold mt-2 hidden"></p>
+            </form>
+        </div>
+    </div>
+    <!-- TOAST BİLDİRİM -->
+    <div id="toastBox" class="fixed top-6 right-6 z-[9999] transform translate-x-80 opacity-0 transition-all duration-300 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-bold text-xs px-6 py-4 rounded-xl shadow-lg shadow-emerald-500/20 uppercase tracking-widest flex items-center gap-3 border border-emerald-400/30">
+        <span class="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">✓</span> 
+        <span id="toastMessage">İşlem Başarılı</span>
+    </div>
+    <!-- SİDEBAR -->
+    <aside id="sidebar" class="w-72 fixed inset-y-0 left-0 z-50 glass-panel border-r border-white/5 flex flex-col flex-shrink-0 transform -translate-x-full md:translate-x-0 md:static transition-transform duration-300 ease-in-out">
+        <div class="h-20 flex items-center justify-between px-6 border-b border-white/5">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white text-sm shadow-lg">H</div>
+                <span class="font-black text-lg tracking-tighter text-white">HEDEF100<span class="text-orange-500 font-medium">.VELİ</span></span>
+            </div>
+            <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">✕</button>
+        </div>
+        <div class="p-6">
+            <p class="text-[10px] font-bold text-slate-500 mb-3 uppercase tracking-widest">Seçili Öğrenci</p>
+            <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-2 relative">
+                <select id="studentSelector" class="w-full bg-transparent text-sm font-bold text-white outline-none cursor-pointer appearance-none px-3 py-2">
+                    <option value="" disabled selected>Öğrenci Yükleniyor...</option>
+                </select>
+                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 text-xs">▼</div>
+            </div>
+            <button onclick="openModal()" class="w-full mt-3 border border-dashed border-slate-700 text-slate-400 hover:text-white hover:border-orange-500 hover:bg-orange-500/10 rounded-xl py-2.5 text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2">
+                <span>+</span> Yeni Öğrenci Ekle
+            </button>
+        </div>
+        <nav class="flex-1 overflow-y-auto px-4 space-y-2 mt-2">
+            <p class="px-2 text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-widest">Akademik Takip</p>
+            
+            <button onclick="switchSection('dashboard')" id="nav-dashboard" class="nav-item active w-full flex items-center gap-3 px-4 py-3 text-slate-400 rounded-xl font-bold text-left">
+                <span class="text-lg">📊</span> <span class="text-xs uppercase tracking-wider">Genel Özet</span>
+            </button>
+            <button onclick="switchSection('exams')" id="nav-exams" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl font-bold text-left">
+                <span class="text-lg">🤖</span> <span class="text-xs uppercase tracking-wider">AI Sınav Radarı</span>
+            </button>
+            <button onclick="switchSection('homework')" id="nav-homework" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl font-bold text-left">
+                <span class="text-lg">📚</span> <span class="text-xs uppercase tracking-wider">Ödev & Hata Kutusu</span>
+            </button>
+            <button onclick="switchSection('messages')" id="nav-messages" class="nav-item w-full flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl font-bold text-left">
+                <span class="text-lg">💬</span> <span class="text-xs uppercase tracking-wider">Danışman İletişim</span>
+            </button>
+        </nav>
+        <div class="p-6 border-t border-white/5">
+            <button id="logoutBtn" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-rose-400 hover:bg-rose-500/10 hover:text-rose-500 border border-transparent hover:border-rose-500/20 rounded-xl font-bold transition-all text-xs uppercase tracking-wider">
+                🚪 Güvenli Çıkış
+            </button>
+        </div>
+    </aside>
+    <!-- ANA İÇERİK -->
+    <div class="flex-1 flex flex-col h-full relative overflow-hidden">
+        
+        <header class="h-20 glass-panel border-b border-white/5 px-6 flex justify-between items-center relative z-10 shrink-0">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+                <div>
+                    <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Firebase Aktif</p>
+                    <h2 class="text-sm font-black text-white" id="headerStudentName">Öğrenci Bekleniyor...</h2>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p id="parentNameDisplay" class="text-xs font-bold text-white">Yükleniyor...</p>
+                    <p class="text-[10px] text-slate-400">Ana Veli</p>
+                </div>
+                <div id="parentInitials" class="w-10 h-10 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center font-bold text-white text-sm">--</div>
+            </div>
+        </header>
+        <main class="p-6 md:p-8 flex-1 relative z-10 w-full max-w-7xl mx-auto overflow-y-auto" id="mainContentArea">
+            
+            <!-- SECTION: GENEL ÖZET -->
+            <div id="section-dashboard" class="section-active space-y-6">
+                <!-- Empty State (Öğrenci Yoksa) -->
+                <div id="noStudentState" class="hidden glass-panel rounded-[2rem] p-12 text-center border-dashed border-2 border-slate-700">
+                    <div class="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center text-4xl mx-auto mb-6">📭</div>
+                    <h2 class="text-2xl font-black text-white mb-2">Sisteme Kayıtlı Öğrenci Yok</h2>
+                    <p class="text-sm text-slate-400 max-w-md mx-auto mb-6">Kurum tarafından size verilen "Hedef ID" kodunu kullanarak çocuğunuzun hesabını panelinize bağlayabilirsiniz.</p>
+                    <button onclick="openModal()" class="bg-orange-500 hover:bg-orange-400 text-white font-black py-3 px-8 rounded-xl text-xs uppercase tracking-widest transition-all">Şimdi Öğrenci Ekle</button>
+                </div>
+                <!-- Normal Dashboard (Öğrenci Varsa) -->
+                <div id="hasStudentState" class="hidden space-y-6">
+                    <div class="glass-panel rounded-[2rem] p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 border-orange-500/10">
+                        <div class="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-transparent pointer-events-none"></div>
+                        <div class="relative z-10">
+                            <span class="px-3 py-1 bg-orange-500/10 border border-orange-500/20 text-orange-400 text-[9px] font-bold uppercase tracking-widest rounded-lg mb-4 inline-block">Akademik Durum Özeti</span>
+                            <h1 class="text-3xl md:text-4xl font-black text-white tracking-tight leading-tight mb-3">Çocuğunuzun Gelişimi <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">Firebase ile Canlı İzleniyor.</span></h1>
+                            <p class="text-slate-400 text-xs md:text-sm max-w-xl leading-relaxed"><span id="summaryStudentName" class="font-bold text-white">---</span> için veritabanından çekilen en güncel istatistikler aşağıda listelenmiştir.</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="glass-panel p-6 rounded-2xl border-t-4 border-t-emerald-500">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Son Deneme Neti</p>
+                            <div class="flex items-end gap-2"><p class="text-3xl font-black text-white" id="statNet">--</p></div>
+                        </div>
+                        <div class="glass-panel p-6 rounded-2xl border-t-4 border-t-blue-500">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Odak Odası (Dk)</p>
+                            <div class="flex items-end gap-2"><p class="text-3xl font-black text-white" id="statFocus">--</p></div>
+                        </div>
+                        <div class="glass-panel p-6 rounded-2xl border-t-4 border-t-orange-500">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Hata Kutusu</p>
+                            <div class="flex items-end gap-2"><p class="text-3xl font-black text-white" id="statHata">--</p></div>
+                        </div>
+                        <div class="glass-panel p-6 rounded-2xl border-t-4 border-t-amber-500">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Ödev Uyum Oranı</p>
+                            <div class="flex items-end gap-2"><p class="text-3xl font-black text-white" id="statOdev">%--</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- SECTION: SİNAV AI RADARI -->
+            <div id="section-exams" class="section-hidden space-y-6">
+                <div class="glass-panel rounded-3xl p-12 text-center">
+                    <h2 class="text-xl font-black text-white mb-2">AI Sınav Radarı Yükleniyor...</h2>
+                    <p class="text-sm text-slate-400">Eğitmenler tarafından sınav sonuçları girildikçe bu alan otomatik olarak güncellenecektir.</p>
+                </div>
+            </div>
+            <!-- SECTION: ÖDEV & HATA KUTUSU -->
+            <div id="section-homework" class="section-hidden space-y-6">
+                <div class="glass-panel rounded-3xl p-12 text-center">
+                    <h2 class="text-xl font-black text-white mb-2">Haftalık Görevler Veritabanında Taranıyor...</h2>
+                    <p class="text-sm text-slate-400">Öğrenci kendi panelinden veya mobil uygulamadan ödev işlemlerini tamamladığında burada anlık belirecektir.</p>
+                </div>
+            </div>
+            <!-- SECTION: DANIŞMAN İLETİŞİM -->
+            <div id="section-messages" class="section-hidden space-y-6 max-w-4xl mx-auto">
+                <div class="glass-panel p-6 md:p-8 rounded-[2.5rem]">
+                    <h3 class="text-sm font-black text-white mb-4 uppercase tracking-widest flex items-center gap-2"><span>💬</span> Eğitmene Güvenli Mesaj Gönder</h3>
+                    <p class="text-xs text-slate-400 mb-4">Kurum danışmanınıza göndereceğiniz mesaj doğrudan Eğitmen paneline düşecektir.</p>
+                    <form id="sendMessageForm" class="space-y-4">
+                        <textarea id="veliMsgInput" rows="4" placeholder="Mesajınızı buraya yazın..." class="w-full p-4 bg-slate-900/50 border border-slate-700 rounded-2xl text-xs text-white outline-none focus:border-orange-500 transition-colors resize-none" required></textarea>
+                        <div class="flex justify-end">
+                            <button type="submit" class="bg-white text-slate-900 hover:bg-slate-200 font-black py-3 px-8 rounded-xl text-xs uppercase tracking-widest transition-all shadow-md">Firebase ile Gönder</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- UI Functions (NO FIREBASE YET) -->
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full'); backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full'); backdrop.classList.add('hidden');
+            }
+        }
+        function switchSection(sectionId) {
+            document.querySelectorAll('[id^="section-"]').forEach(el => el.classList.replace('section-active', 'section-hidden'));
+            document.getElementById('section-' + sectionId).classList.replace('section-hidden', 'section-active');
+            
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active', 'text-white', 'bg-white/5');
+                el.classList.add('text-slate-400');
+            });
+            const activeNav = document.getElementById('nav-' + sectionId);
+            if(activeNav) {
+                activeNav.classList.add('active', 'text-white');
+                activeNav.classList.remove('text-slate-400');
+            }
+            if (window.innerWidth < 768) toggleSidebar();
+        }
+        function triggerToast(message) {
+            const toast = document.getElementById('toastBox');
+            document.getElementById('toastMessage').innerText = message;
+            toast.classList.remove('translate-x-80', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-x-80', 'opacity-0'), 3000);
+        }
+        function openModal() {
+            const modal = document.getElementById('addStudentModal');
+            const content = document.getElementById('modalContent');
+            modal.classList.remove('hidden');
+            gsap.to(content, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" });
+        }
+        function closeModal() {
+            const content = document.getElementById('modalContent');
+            gsap.to(content, { scale: 0.95, opacity: 0, duration: 0.2, onComplete: () => {
+                document.getElementById('addStudentModal').classList.add('hidden');
+                document.getElementById('addStudentError').classList.add('hidden');
+            }});
+        }
+    </script>
+    <!-- FIREBASE BAĞLANTISI -->
+    <script type="module">
+        import { 
+            auth, 
+            listenAuthState, 
+            getUserProfile, 
+            logoutUser, 
+            linkStudentToParent, 
+            listenParentStudents,
+            sendParentTeacherMessage
+        } from './firebase-shared.js';
+        let currentParent = null;
+        let studentsList = [];
+        let activeStudentId = null;
+        // 1. Auth Kontrolü
+        listenAuthState(async (user) => {
+            if (user) {
+                const profile = await getUserProfile(user.uid);
+                if(profile) {
+                    if(profile.role === 'veli' || profile.role === 'parent') {
+                        currentParent = { uid: user.uid, ...profile };
+                        // firstName ve lastName birleştir
+                        const fullName = (profile.firstName && profile.lastName) ? `${profile.firstName} ${profile.lastName}` : (profile.fullName || "İsimsiz Veli");
+                        document.getElementById('parentNameDisplay').innerText = fullName;
+                        const initial = fullName.charAt(0).toUpperCase();
+                        document.getElementById('parentInitials').innerText = initial;
+                        
+                        // Loader'ı kaldır
+                        document.getElementById('globalLoader').style.opacity = 0;
+                        setTimeout(() => document.getElementById('globalLoader').style.display = 'none', 500);
+                        // Öğrencileri Dinle
+                        initStudentsListener();
+                    } else {
+                        // Veli değilse login sayfasına yönlendir
+                        alert(`Hata: Veritabanındaki rolünüz '${profile.role}' olarak görünüyor. Bu panele sadece 'veli' rolüne sahip olanlar erişebilir.`);
+                        logoutUser();
+                    }
+                } else {
+                    alert("Hata: Profil veriniz veritabanında bulunamadı.");
+                    logoutUser();
+                }
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+        // 2. Çıkış
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            logoutUser();
+        });
+        // 3. Öğrencileri Çek ve UI Güncelle
+        function initStudentsListener() {
+            listenParentStudents(currentParent.uid, (students) => {
+                studentsList = students;
+                const selector = document.getElementById('studentSelector');
+                selector.innerHTML = ''; // Temizle
+                if(students.length === 0) {
+                    // Kayıtlı öğrenci yok
+                    document.getElementById('noStudentState').classList.remove('hidden');
+                    document.getElementById('hasStudentState').classList.add('hidden');
+                    selector.innerHTML = '<option disabled selected>Kayıtlı Öğrenci Yok</option>';
+                    document.getElementById('headerStudentName').innerText = "Öğrenci Bekleniyor...";
+                } else {
+                    // Öğrenci var
+                    document.getElementById('noStudentState').classList.add('hidden');
+                    document.getElementById('hasStudentState').classList.remove('hidden');
+                    students.forEach(s => {
+                        const opt = document.createElement('option');
+                        opt.value = s.id;
+                        opt.className = 'bg-slate-900 text-white';
+                        const sFullName = (s.firstName && s.lastName) ? `${s.firstName} ${s.lastName}` : (s.fullName || "İsimsiz Öğrenci");
+                        opt.text = `${sFullName} (${s.hedefId})`;
+                        selector.appendChild(opt);
+                    });
+                    // Eğer aktif bir seçim yoksa ilkini seç
+                    if(!activeStudentId || !students.find(x => x.id === activeStudentId)) {
+                        activeStudentId = students[0].id;
+                    }
+                    selector.value = activeStudentId;
+                    renderStudentData(activeStudentId);
+                }
+            });
+        }
+        // 4. Öğrenci Seçimi Değiştiğinde
+        document.getElementById('studentSelector').addEventListener('change', (e) => {
+            activeStudentId = e.target.value;
+            renderStudentData(activeStudentId);
+        });
+        function renderStudentData(sId) {
+            const student = studentsList.find(s => s.id === sId);
+            if(!student) return;
+            const sFullName = (student.firstName && student.lastName) ? `${student.firstName} ${student.lastName}` : (student.fullName || "İsimsiz Öğrenci");
+            document.getElementById('headerStudentName').innerText = `${sFullName} Paneli`;
+            document.getElementById('summaryStudentName').innerText = sFullName.split(' ')[0];
+            // İstatistikler (Eğer öğrencinin stats objesi varsa göster, yoksa varsayılan)
+            const stats = student.stats || {};
+            document.getElementById('statNet').innerText = stats.lastNet || "--";
+            document.getElementById('statFocus').innerText = stats.focusTime || "--";
+            document.getElementById('statHata').innerText = stats.errorBoxCount || "--";
+            document.getElementById('statOdev').innerText = stats.homeworkRate ? `%${stats.homeworkRate}` : "--";
+            triggerToast(`${student.fullName} verileri çekildi.`);
+        }
+        // 5. Yeni Öğrenci Ekle (Hedef ID ile)
+        document.getElementById('addStudentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('addStudentBtn');
+            const err = document.getElementById('addStudentError');
+            const hedefId = document.getElementById('hedefIdInput').value;
+            btn.disabled = true;
+            btn.classList.add('btn-disabled');
+            btn.innerText = "Aranıyor...";
+            err.classList.add('hidden');
+            const result = await linkStudentToParent(currentParent.uid, hedefId);
+            
+            btn.disabled = false;
+            btn.classList.remove('btn-disabled');
+            btn.innerText = "Öğrenciyi Sisteme Ekle";
+            if(result.success) {
+                closeModal();
+                document.getElementById('hedefIdInput').value = '';
+                triggerToast("Öğrenci başarıyla profilinize eklendi!");
+            } else {
+                err.innerText = result.error;
+                err.classList.remove('hidden');
+            }
+        });
+        // 6. Danışmana Mesaj Gönder
+        document.getElementById('sendMessageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if(!activeStudentId) return alert("Önce öğrenci seçmelisiniz.");
+            
+            const text = document.getElementById('veliMsgInput').value;
+            if(!text.trim()) return;
+            const student = studentsList.find(s => s.id === activeStudentId);
+            if(!student) return alert("Öğrenci verisi bulunamadı.");
+            
+            // Mesajı öğrencinin kayıtlı olduğu kuruma veya öğretmene gönder
+            const targetTeacher = student.assignedTeacherId || student.kurumId || "GLOBAL"; 
+            const success = await sendParentTeacherMessage(currentParent.uid, activeStudentId, targetTeacher, text);
+            if(success) {
+                document.getElementById('veliMsgInput').value = '';
+                triggerToast("Mesaj Firebase üzerinden güvenle iletildi!");
+            } else {
+                alert("Bağlantı hatası: Mesaj gönderilemedi.");
+            }
+        });
+    </script>
+</body>
+</html>
