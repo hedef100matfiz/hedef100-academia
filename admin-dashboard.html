@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Admin Paneli | Hedef100 Academia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body, html { margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: #040814; color: #f8fafc; overflow-x: hidden; }
+        .glass-panel { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5); }
+        .btn-action { background: linear-gradient(135deg, #f97316 0%, #d97706 100%); color: white; transition: all 0.3s ease; }
+        .btn-action:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4); }
+        .input-field { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); color: white; transition: all 0.3s ease; }
+        .input-field:focus { border-color: #f97316; outline: none; box-shadow: 0 0 10px rgba(249,115,22,0.2); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-6 relative">
+
+    <!-- Dekorasyon -->
+    <div class="absolute top-0 left-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+    <div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+
+    <div class="w-full max-w-3xl glass-panel rounded-3xl p-8 md:p-12 z-10">
+        <div class="flex items-center gap-4 mb-8 border-b border-white/10 pb-6">
+            <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center font-black text-white shadow-lg">H</div>
+            <div>
+                <h1 class="text-2xl font-black tracking-tight text-white">Master Admin</h1>
+                <p class="text-slate-400 text-xs uppercase tracking-widest font-bold">Platform Yönetim Paneli</p>
+            </div>
+        </div>
+
+        <!-- YAYINLAMA FORMU -->
+        <div id="publishSection">
+            <h2 class="text-lg font-bold text-orange-400 mb-6">📝 Yeni Blog Yazısı Yayınla</h2>
+            <form id="blogForm" class="space-y-5">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Yazı Başlığı</label>
+                        <input type="text" id="blogTitle" class="w-full px-4 py-3 rounded-xl input-field text-sm" placeholder="Örn: Yapay Zeka Güncellemesi" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Kategori (Örn: Kurumsal, Teknoloji)</label>
+                        <input type="text" id="blogCategory" class="w-full px-4 py-3 rounded-xl input-field text-sm" placeholder="Örn: Yeni Özellik" required>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Kapak Resmi URL (Unsplash vs.)</label>
+                    <input type="url" id="blogImage" class="w-full px-4 py-3 rounded-xl input-field text-sm" placeholder="https://images.unsplash.com/photo-..." required>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Blog Metni (Kısa Açıklama)</label>
+                    <textarea id="blogContent" rows="4" class="w-full px-4 py-3 rounded-xl input-field text-sm resize-none" placeholder="Bu yazının içeriğini buraya girin..." required></textarea>
+                </div>
+
+                <div class="pt-4 flex items-center justify-between">
+                    <p id="statusMsg" class="text-sm font-bold text-emerald-400 hidden">✅ Başarıyla yayınlandı!</p>
+                    <button type="submit" class="btn-action font-bold py-3 px-8 rounded-xl text-sm tracking-wide ml-auto">
+                        Yayına Al 🚀
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase Bağlantısı -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvO9NCk8PbDmFxYjVl7HAE8PkjpwCJLaI",
+            authDomain: "hedef100-academia.firebaseapp.com",
+            projectId: "hedef100-academia",
+            storageBucket: "hedef100-academia.firebasestorage.app",
+            messagingSenderId: "886084339971",
+            appId: "1:886084339971:web:ca31ab9d1575344d234136"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Kullanıcı giriş yapmamışsa uyar
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                alert("Uyarı: Sisteme giriş yapmadığınız için blog yayınlayamazsınız (Güvenlik Kalkanı devrede). Lütfen önce login.html üzerinden giriş yapın.");
+                window.location.href = "login.html";
+            }
+        });
+
+        // Form Gönderimi (Veritabanına Yazma)
+        document.getElementById('blogForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerText;
+            btn.innerText = "Yükleniyor...";
+            btn.disabled = true;
+
+            try {
+                await addDoc(collection(db, "blogs"), {
+                    title: document.getElementById('blogTitle').value,
+                    category: document.getElementById('blogCategory').value,
+                    imageUrl: document.getElementById('blogImage').value,
+                    content: document.getElementById('blogContent').value,
+                    createdAt: serverTimestamp(),
+                    author: "Hedef100 Yönetim"
+                });
+
+                document.getElementById('statusMsg').classList.remove('hidden');
+                e.target.reset();
+                
+                setTimeout(() => {
+                    document.getElementById('statusMsg').classList.add('hidden');
+                }, 3000);
+
+            } catch (error) {
+                console.error("Hata:", error);
+                alert("Yayınlanırken bir hata oluştu: " + error.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
