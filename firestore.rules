@@ -1,0 +1,49 @@
+﻿rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // === GÜVENLİK YARDIMCI FONKSİYONLARI ===
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // 1. KULLANICI PROFİLLERİ (users)
+    match /users/{userId} {
+      // Platformdaki giriş yapmış tüm kullanıcılar okuyabilir (Sınıf arkadaşları, eğitmenler, kurumlar).
+      allow read: if isAuthenticated();
+      
+      // Oluşturma: Sadece kişinin kendisi yapabilir.
+      allow create: if isAuthenticated() && isOwner(userId);
+      
+      // Güncelleme: Ya kullanıcının kendisidir, ya da bir Kurum tarafından sadece 'kurumId' alanı ekleniyordur.
+      allow update: if isAuthenticated() && (
+        isOwner(userId) || 
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['kurumId', 'kurumJoinedAt'])
+      );
+      
+      allow delete: if isAuthenticated() && isOwner(userId);
+    }
+
+    // 2. AKADEMİK VERİLER (Görevler, Sınavlar, Sınıflar, Ödevler vb.)
+    // Temel güvenlik: Sisteme kayıtlı olmayan HİÇ KİMSE bu verilere erişemez ve değiştiremez.
+    match /studentTasks/{docId} { allow read, write: if isAuthenticated(); }
+    match /examResults/{docId} { allow read, write: if isAuthenticated(); }
+    match /reportCards/{docId} { allow read, write: if isAuthenticated(); }
+    match /classes/{docId} { allow read, write: if isAuthenticated(); }
+    match /assignments/{docId} { allow read, write: if isAuthenticated(); }
+    match /attendance/{docId} { allow read, write: if isAuthenticated(); }
+    match /inviteCodes/{docId} { allow read, write: if isAuthenticated(); }
+
+    // 3. İLETİŞİM & SOSYAL (Mesajlar, Koçluk, Duyurular, Canlı Yayın)
+    match /messages/{docId} { allow read, write: if isAuthenticated(); }
+    match /coachingRequests/{docId} { allow read, write: if isAuthenticated(); }
+    match /questionBox/{docId} { allow read, write: if isAuthenticated(); }
+    match /announcements/{docId} { allow read, write: if isAuthenticated(); }
+    match /liveSessions/{docId} { allow read, write: if isAuthenticated(); }
+  }
+}
+
